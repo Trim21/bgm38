@@ -6,3 +6,7 @@ import (
 
 var RedisAddr = utils.GetEnv("REDIS_HOST", "127.0.0.1") + ":6379"
 var RedisPassword = utils.GetEnv("REDIS_PASSWORD", "")
+var AppId = utils.GetEnv("appid", "")
+
+var PROTOCOL = utils.GetEnv("PROTOCOL", "http")
+var VIRTUAL_HOST = utils.GetEnv("VIRTUAL_HOST", "127.0.0.1")
