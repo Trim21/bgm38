@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-cn">
+{{ template "base/head.tmpl" "hehe" }}
+<body>
+<div class="container">
+    <div class="row text-center">
+        <div class="col">{{ .ActionName }}</div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 offset-lg-3 col-md-12 text-center ">
+            <!--suppress HtmlUnknownTarget -->
+            <form action="/login" method="post">
+
+                <div class="form-group">
+                    <label>服务器地址
+                        <input type="text" class="form-control" name="server"
+                               value="{{ .Config.Server }}">
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label>username
+                        <input type="text" name="username" class="form-control"
+                               value="{{ .Config.Username }}">
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label>password
+                        <input type="password" name="password"
+                               class="form-control" value="{{ .Config.Password }}">
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label>sync path
+                        <input type="text" name="syncPath"
+                               class="form-control"
+                               value="{{ .Config.SyncPath }}">
+                    </label>
+                </div>
+
+                <label>
+                    <input type="submit"
+                           class="btn btn-primary form-control">
+                </label>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

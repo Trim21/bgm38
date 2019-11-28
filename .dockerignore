@@ -1,0 +1,6 @@
+.idea
+*.exe
+.git
+.dockerignore
+Dockerfile
+gowatch.yml
