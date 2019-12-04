@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//Serve start http server on env `PORT` or 8080
 func Serve() error {
 	app := newApp()
 	return app.Run(":" + utils.GetEnv("PORT", "8080"))

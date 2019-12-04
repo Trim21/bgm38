@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//Part bind vote routers to gin app
 func Part(app *gin.Engine) {
 	indexPart(app)
 }

@@ -1,29 +1,27 @@
 package model
 
-type Product struct {
-	Model
-	Code  string
-	Price uint
-}
-
+//VoteOption table for vote options
 type VoteOption struct {
-	Model
+	base
 	Text   string
 	Count  int
 	VoteID uint `sql:"index"`
 }
 
+//Vote table for vote
 type Vote struct {
-	Model
+	base
 	Title   string
 	Creator int
 }
 
+//VoteFull a model with vote title and all options
 type VoteFull struct {
 	Title   string
 	Options []VoteOption
 }
 
+//GetVoteFull get a VoteFull from id
 func GetVoteFull(id uint) (VoteFull, error) {
 	var options []VoteOption
 	var vote Vote

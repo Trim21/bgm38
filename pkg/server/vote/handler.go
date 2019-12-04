@@ -22,13 +22,13 @@ func createUI(ctx *gin.Context) {
 	})
 }
 
-type SubmitVote struct {
+type submitVote struct {
 	Title   string   `form:"title" binding:"required"`
 	Options []string `form:"options" binding:"required"`
 }
 
 func create(ctx *gin.Context) {
-	var form = &SubmitVote{}
+	var form = &submitVote{}
 	if ctx.ShouldBind(form) != nil {
 		ctx.String(401, "submit data error")
 		return

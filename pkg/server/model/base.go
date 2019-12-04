@@ -4,23 +4,19 @@ import (
 	"bgm38/config"
 	"fmt"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	_ "github.com/jinzhu/gorm/dialects/mysql" // mysql driver
 
 	"time"
 )
 
-// Model base model definition, including fields `ID`, `CreatedAt`, `UpdatedAt`, `DeletedAt`, which could be embedded in your models
-//    type User struct {
-//      gorm.Model
-//    }
-type Model struct {
+type base struct {
 	ID        uint       `gorm:"primary_key" json:"id"`
 	CreatedAt time.Time  `json:"-"`
 	UpdatedAt time.Time  `json:"-"`
 	DeletedAt *time.Time `sql:"index" json:"-"`
 }
 
+//DB gorm database object
 var DB *gorm.DB
 
 func init() {
@@ -31,5 +27,5 @@ func init() {
 		fmt.Println(err)
 		panic("failed to connect database")
 	}
-	DB.Set("gorm:table_options", "CHARSET=utf8mb4").AutoMigrate(&Product{}, &Vote{}, &VoteOption{})
+	DB.Set("gorm:table_options", "CHARSET=utf8mb4").AutoMigrate(&Vote{}, &VoteOption{})
 }

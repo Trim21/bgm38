@@ -5,6 +5,7 @@ import (
 	"github.com/go-redis/redis"
 )
 
+//Redis redis client
 var Redis = redis.NewClient(&redis.Options{
 	Addr:     config.RedisAddr,
 	Password: config.RedisPassword, // no password set
