@@ -1,40 +1,37 @@
-GENERATED  := client.exe
-BINDATA := pkg/server/bindata/tmpl_bindata.go pkg/server/bindata/gzipped_static_bindata.go
-STATIC_FILES := $(shell find ./bindata/ -type f | grep gzipped | grep min | sed 's/ /\\ /g')
-TMPL_FILES := $(shell find ./bindata/ -type f | grep -v gzipped | sed 's/ /\\ /g')
+BINDATA := pkg/server/bindata/templates.go
+TMPL_FILES := $(shell find ./templates/ -type f | grep -v pkg/server/bindata/templates.go | sed 's/ /\\ /g')
 GO_FILES := $(shell find ./ -type f | grep .go | sed 's/ /\\ /g')
-BINDATA_OPTS := '-ignore="\\.DS_Store" -pkg pkg/bindata'
+
+default: clean build
 
 build: dist/app
 
-dist/app: $(GO_FILES)
-	go build -ldflags "-s -w" --tags jsoniter -o $@
+dist/app: $(GO_FILES) bindata
+	go build -ldflags "-s -w" -o $@
 
-bindata: $(BINDATA)
+bindata: pkg/server/bindata/templates.go
 
-pkg/server/bindata/tmpl_bindata.go: $(TMPL_FILES)
-	go-bindata -o $@ $(BINDATA_OPTS) $(TMPL_FILES)
-
-pkg/server/bindata/gzipped_static_bindata.go: $(STATIC_FILES)
-	bindata -o $@ $(BINDATA_OPTS) $(STATIC_FILES)
+pkg/server/bindata/templates.go:
+	go-bindata -o $@ -pkg bindata templates/...
 
 clean:
 	go clean -i ./... | true
 	rm -f ./dist/*
-	rm -f ./pkg/bindata/*
+	rm -f pkg/server/bindata/templates.go
 
 deps:
-	GO111MODULE=off go get -u github.com/shuLhan/go-bindata/cmd/go-bindata
-	GO111MODULE=off go install github.com/shuLhan/go-bindata/cmd/go-bindata
-	GO111MODULE=off go get -u github.com/kataras/bindata/cmd/bindata
-	GO111MODULE=off go install github.com/kataras/bindata/cmd/bindata
-	GO111MODULE=off go get -u github.com/codegangsta/gin
-	GO111MODULE=off go install github.com/codegangsta/gin
-	GO111MODULE=off go get -u golang.org/x/lint/golint
-	GO111MODULE=off go install golang.org/x/lint/golint
+	go get -u github.com/go-bindata/go-bindata/...
+	go get -u github.com/codegangsta/gin
+	go get -u golang.org/x/lint/golint
 
 dev:
-	DEV=1 gowatch
+	go-bindata -dev -o pkg/server/bindata/templates.go -pkg bindata templates/...
+	gin
+
+install: deps
+	go mod download
 
 lint:
 	golint ./...
+
+.PHONY: clean build bindata lint install

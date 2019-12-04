@@ -12,5 +12,4 @@ FROM alpine:latest
 EXPOSE 8080
 ENV GIN_MODE=release
 COPY --from=builder /usr/src/dist/app /root/app
-ENV GIN_MODE=release
 CMD ["/root/app"]

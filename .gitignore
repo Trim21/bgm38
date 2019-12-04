@@ -2,3 +2,5 @@
 *.exe
 dist
 *.db
+
+pkg/server/bindata/templates.go
