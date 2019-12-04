@@ -30,6 +30,11 @@ deps:
 	GO111MODULE=off go install github.com/kataras/bindata/cmd/bindata
 	GO111MODULE=off go get -u github.com/codegangsta/gin
 	GO111MODULE=off go install github.com/codegangsta/gin
+	GO111MODULE=off go get -u golang.org/x/lint/golint
+	GO111MODULE=off go install golang.org/x/lint/golint
 
 dev:
 	DEV=1 gowatch
+
+lint:
+	golint ./...
