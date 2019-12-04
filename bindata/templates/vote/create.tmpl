@@ -1,0 +1,69 @@
+{{ define "vote/create.tmpl" }}
+    <!doctype html>
+    <html lang="zh-cmn-Hans">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>{{ .Title }}</title>
+
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+              crossorigin="anonymous">
+
+
+    </head>
+    <body>
+    <div class="container">
+
+        <form action="./create" method="post">
+            <div class="form-group">
+                <label for="exampleInputEmail1">标题</label>
+                <label for="title"></label><input class="form-control"
+                                                  id="title" name="title">
+                <small id="titleHelp" class="form-text text-muted">
+                    你也可以留空, 把标题和详情写在帖子里
+                </small>
+            </div>
+            <hr>
+
+
+            <button id="addOptionBtn" type="button" class="btn btn-primary"
+                    onclick="addOption()">
+                添加选项
+            </button>
+            <hr>
+            <button type="submit" class="btn btn-primary">提交</button>
+        </form>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+            crossorigin="anonymous"></script>
+    <script>
+        var optionsCount = 1;
+
+        function addOption() {
+            $(`<div class="form-group">
+                <label for="formGroupInput${optionsCount}">Example ${optionsCount}</label>
+                <input type="text" class="form-control"
+                       id="formGroupInput${optionsCount}"
+                       placeholder="Example input placeholder"
+                       name="options"
+>
+            </div>
+            `).insertBefore("#addOptionBtn");
+            optionsCount += 1;
+            return false
+        }
+
+        addOption();
+    </script>
+    </body>
+    </html>
+{{ end }}

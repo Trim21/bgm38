@@ -3,6 +3,7 @@ package vote
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"io"
 )
 
 type Person struct {
@@ -10,8 +11,7 @@ type Person struct {
 	//Name string `uri:"name" binding:"required"`
 }
 
-const f = `
-<?xml version="1.0" standalone="yes"?>
+const f = `<?xml version="1.0" standalone="yes"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
@@ -27,14 +27,12 @@ func svg(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"msg": err})
 		return
 	}
-	//ctx.JSON(200, gin.H{"id": person.ID})
-	ctx.Render(200, SVG{Data: f})
-	//writeContentType(ctx.Writer, svgContentType)
-	//ctx.Writer.WriteString(f)
+	writeSvg(ctx, f)
+}
 
-	//ctx.HTML(200, "vote/index.tmpl", map[string]string{
-	//	"Title":   "hello Vote Function",
-	//	"Message": "hello world",
-	//})
-
+func writeSvg(ctx *gin.Context, data string) {
+	ctx.Header("Content-Type", "image/svg+xml; charset=utf-8")
+	ctx.Status(200)
+	_, _ = io.WriteString(ctx.Writer, data)
+	return
 }
