@@ -1,8 +1,7 @@
 package bgmTv
 
 import (
-	"github.com/magiconair/properties/assert"
-	//"gotest.tools/assert"
+	"gotest.tools/assert"
 
 	"testing"
 	"time"
