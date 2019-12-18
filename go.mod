@@ -12,7 +12,7 @@ require (
 	github.com/jordic/goics v0.0.0-20181215212140-feb996c8e01f
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
-	github.com/magiconair/properties v1.8.0
+	github.com/magiconair/properties v1.8.1
 	github.com/onsi/ginkgo v1.10.3 // indirect
 	github.com/onsi/gomega v1.7.1 // indirect
 	github.com/silenceper/gowatch v0.0.0-20191122025114-d9a4b93d0ed4 // indirect
