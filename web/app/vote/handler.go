@@ -1,7 +1,7 @@
 package vote
 
 import (
-	"bgm38/pkg/server/model"
+	"bgm38/web/app/model"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"strconv"

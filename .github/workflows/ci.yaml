@@ -1,4 +1,4 @@
-name: Lint And Build
+name: ci
 on: [push, pull_request]
 
 jobs:
@@ -6,19 +6,24 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go
-        uses: actions/setup-go@v1
-        with:
-          go-version: 1.13
-
       - name: Check out code
         uses: actions/checkout@v1
 
+      - uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+            ${{ runner.os }}-go-
+
+      - run: echo "::add-path::$(go env GOPATH)/bin"
+
+      - name: Install
+        run: make install
+
       - name: Lint Go Code
-        run: |
-          export PATH=$PATH:$(go env GOPATH)/bin # temporary fix. See https://github.com/actions/setup-go/issues/14
-          go get -u golang.org/x/lint/golint 
-          make lint
+        run: make lint
 
 #  test:
 #    name: Test
@@ -63,12 +68,10 @@ jobs:
             ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
             ${{ runner.os }}-go-
 
+      - run: echo "::add-path::$(go env GOPATH)/bin"
+
       - name: Install
-        run: |
-          export PATH=$PATH:$(go env GOPATH)/bin # temporary fix. See https://github.com/actions/setup-go/issues/14
-          make install
+        run: make install
 
       - name: Build
-        run: |
-          export PATH=$PATH:$(go env GOPATH)/bin # temporary fix. See https://github.com/actions/setup-go/issues/14
-          make
+        run: make

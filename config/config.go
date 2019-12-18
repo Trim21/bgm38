@@ -4,6 +4,9 @@ import (
 	"bgm38/pkg/utils"
 )
 
+//Version App build version
+var Version string
+
 //RedisAddr redis ip:port
 var RedisAddr = utils.GetEnv("REDIS_HOST", "127.0.0.1") + ":6379"
 

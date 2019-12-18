@@ -1,16 +1,17 @@
-package server
+package app
 
 import (
-	"bgm38/pkg/server/auth"
-	"bgm38/pkg/server/bindata"
-	"bgm38/pkg/server/vote"
+	"bgm38/config"
 	"bgm38/pkg/utils"
+	"bgm38/web/app/auth"
+	"bgm38/web/app/bindata"
+	"bgm38/web/app/vote"
 	"github.com/gin-gonic/gin"
 	"html/template"
 	"strings"
 )
 
-//Serve start http server on env `PORT` or 8080
+//Serve start http web on env `PORT` or 8080
 func Serve() error {
 	app := newApp()
 	return app.Run(":" + utils.GetEnv("PORT", "8080"))
@@ -18,6 +19,7 @@ func Serve() error {
 
 func newApp() *gin.Engine {
 	app := gin.Default()
+	app.Use(versionMiddleware)
 	t, err := loadTemplate()
 	if err != nil {
 		panic(err)
@@ -41,4 +43,9 @@ func loadTemplate() (*template.Template, error) {
 		}
 	}
 	return t, nil
+}
+
+func versionMiddleware(c *gin.Context) {
+	c.Header("x-web-version", config.Version)
+	c.Next()
 }

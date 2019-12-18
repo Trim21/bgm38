@@ -1,6 +1,7 @@
 .idea
 *.exe
+*.exe~
 dist
 *.db
 
-pkg/server/bindata/templates.go
+server/bindata/templates.go

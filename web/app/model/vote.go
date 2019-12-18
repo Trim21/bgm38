@@ -25,8 +25,7 @@ type VoteFull struct {
 func GetVoteFull(id uint) (VoteFull, error) {
 	var options []VoteOption
 	var vote Vote
-
-	if err := DB.First(&vote, id).Error; err != nil {
+	if err := DB.First(&vote, "ID = ?", id).Error; err != nil {
 		return VoteFull{}, err
 	}
 

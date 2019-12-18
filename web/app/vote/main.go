@@ -12,8 +12,5 @@ func Part(app *gin.Engine) {
 func indexPart(app *gin.Engine) {
 	var router = app.Group("/vote")
 	router.GET("/", index)
-	router.GET("/create", createUI)
-	router.POST("/create", create)
-	router.GET("/json", json)
 	router.GET("/svg/:id", svg)
 }

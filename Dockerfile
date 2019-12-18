@@ -1,5 +1,5 @@
 FROM golang:1.13 AS builder
-ENV GOPROXY=https://goproxy.cn\
+ENV GOPROXY=https://goproxy.cn \
     CGO_ENABLED=0
 WORKDIR /usr/src/
 COPY go.mod ./
