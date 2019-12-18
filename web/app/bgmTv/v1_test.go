@@ -1,8 +1,7 @@
 package bgmTv
 
 import (
-	"gotest.tools/assert"
-
+	"gotest.tools/v3/assert"
 	"testing"
 	"time"
 )
