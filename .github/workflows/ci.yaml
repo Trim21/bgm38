@@ -1,5 +1,14 @@
 name: ci
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - '*'
+      - '**'
+      - '!renovate/**'
+  pull_request:
+    branches:
+      - '*'
+      - '**'
 
 jobs:
   lint:
