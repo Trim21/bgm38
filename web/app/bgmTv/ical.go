@@ -1,4 +1,4 @@
-package vote
+package bgmTv
 
 import (
 	"github.com/gin-gonic/gin"
@@ -10,7 +10,7 @@ func Part(app *gin.Engine) {
 }
 
 func indexPart(app *gin.Engine) {
-	var router = app.Group("/vote")
+	var router = app.Group("/bgm.tv")
 	router.GET("/", index)
-	router.GET("/svg/:id", svg)
+	router.GET("/calendar/:user_id", userCalendar)
 }

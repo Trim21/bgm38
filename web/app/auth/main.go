@@ -7,6 +7,6 @@ import (
 //Part bind auth part to gin app
 func Part(app *gin.Engine) {
 	var router = app.Group("/auth")
-	router.GET("/v1/callback", callback)
-	router.GET("/v1/redirect", redirect)
+	router.GET("/v1/bgmTv.tv/callback", callback)
+	router.GET("/v1/bgmTv.tv/redirect", redirect)
 }

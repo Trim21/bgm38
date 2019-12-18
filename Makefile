@@ -10,7 +10,7 @@ release: clean build
 build: dist/app
 
 dist/app: $(GO_FILES) bindata
-	go build -ldflags "-s -w -X bgm38/config.Version=$(GIT_VERSION)" -o $@ bgm38/cmd
+	go build -ldflags "-s -w -X bgm38/config.Version=$(GIT_VERSION)" -o $@
 
 bindata: web/app/bindata/templates.go
 

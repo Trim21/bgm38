@@ -12,4 +12,7 @@ FROM alpine:latest
 EXPOSE 8080
 ENV GIN_MODE=release
 COPY --from=builder /usr/src/dist/app /root/app
-CMD ["/root/app"]
+
+ENTRYPOINT ["/root/app"]
+
+CMD ["serve"]

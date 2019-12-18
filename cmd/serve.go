@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"bgm38/web/app"

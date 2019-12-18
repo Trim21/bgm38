@@ -20,11 +20,11 @@ func redirect(ctx *gin.Context) {
 }
 
 func getCallbackURL() string {
-	return fmt.Sprintf("%s://%s/auth/v1/callback", config.PROTOCOL, config.VirtualHost)
+	return fmt.Sprintf("%s://%s/auth/v1/bgmTv.tv/callback", config.PROTOCOL, config.VirtualHost)
 }
 
 func getOauthURL(callback string) string {
-	u, err := url.Parse(`https://bgm.tv/oauth/authorize`)
+	u, err := url.Parse(`https://bgmTv.tv/oauth/authorize`)
 	if err != nil {
 		log.Fatal(err)
 	}

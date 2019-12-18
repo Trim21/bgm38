@@ -4,8 +4,8 @@ import (
 	"bgm38/config"
 	"bgm38/pkg/utils"
 	"bgm38/web/app/auth"
+	"bgm38/web/app/bgmTv"
 	"bgm38/web/app/bindata"
-	"bgm38/web/app/vote"
 	"github.com/gin-gonic/gin"
 	"html/template"
 	"strings"
@@ -25,8 +25,8 @@ func newApp() *gin.Engine {
 		panic(err)
 	}
 	app.SetHTMLTemplate(t)
-	vote.Part(app)
 	auth.Part(app)
+	bgmTv.Part(app)
 	return app
 }
 

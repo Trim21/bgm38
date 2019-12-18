@@ -8,6 +8,4 @@ build_args:
   - -ldflags
   - '"-X bgm38/config.Version=DEV"'
 
-build_pkg: "bgm38/cmd"
-
 disable_run: false
