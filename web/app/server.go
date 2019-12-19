@@ -1,6 +1,6 @@
 package app
 
-//go:generate go-bindata -o ./bindata/templates.go -fs -prefix "../templates" -pkg bindata ../templates
+//go:generate go-bindata -o ./bindata/templates.go -fs -prefix "../templates" -pkg bindata ../templates/...
 
 import (
 	"html/template"
@@ -22,7 +22,6 @@ import (
 
 // Serve start http web on env `PORT` or 8080
 func Serve() error {
-
 	app := newApp()
 	if gin.IsDebugging() {
 		logrus.SetLevel(logrus.DebugLevel)
