@@ -1,7 +1,7 @@
 package bgmtv
 
 import (
-	"gotest.tools/v3/assert"
+	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
 )

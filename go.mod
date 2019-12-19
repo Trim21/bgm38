@@ -7,6 +7,7 @@ require (
 	github.com/go-bindata/go-bindata v3.1.2+incompatible
 	github.com/go-redis/redis v6.15.6+incompatible
 	github.com/go-resty/resty/v2 v2.1.0
+	github.com/google/go-cmp v0.3.0 // indirect
 	github.com/howeyc/fsnotify v0.9.0 // indirect
 	github.com/jinzhu/gorm v1.9.11
 	github.com/jordic/goics v0.0.0-20181215212140-feb996c8e01f
@@ -18,8 +19,8 @@ require (
 	github.com/silenceper/log v0.0.0-20171204144354-e5ac7fa8a76a // indirect
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.5
+	github.com/stretchr/testify v1.4.0
 	golang.org/x/crypto v0.0.0-20191202143827-86a70503ff7e // indirect
 	golang.org/x/sys v0.0.0-20191204072324-ce4227a45e2e // indirect
 	gopkg.in/yaml.v1 v1.0.0-20140924161607-9f9df34309c0 // indirect
-	gotest.tools/v3 v3.0.0
 )

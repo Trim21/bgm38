@@ -7,6 +7,10 @@ import (
 
 func IsBrowser(ctx *gin.Context) bool {
 	userAgent := strings.ToLower(ctx.GetHeader("user-agent"))
+	if strings.Contains(userAgent, "spider") ||
+		strings.Contains(userAgent, "bot") {
+		return false
+	}
 	if strings.Contains(userAgent, "mozilla") ||
 		strings.Contains(userAgent, "chrome") ||
 		strings.Contains(userAgent, "safari") {
