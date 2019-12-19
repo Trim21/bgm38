@@ -3,6 +3,7 @@ module bgm38
 go 1.13
 
 require (
+	github.com/gin-contrib/cors v1.3.0
 	github.com/gin-gonic/gin v1.5.0
 	github.com/go-bindata/go-bindata v3.1.2+incompatible
 	github.com/go-redis/redis v6.15.6+incompatible
@@ -12,7 +13,6 @@ require (
 	github.com/jinzhu/gorm v1.9.11
 	github.com/jordic/goics v0.0.0-20181215212140-feb996c8e01f
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
-	github.com/kr/pretty v0.1.0 // indirect
 	github.com/onsi/ginkgo v1.10.3 // indirect
 	github.com/onsi/gomega v1.7.1 // indirect
 	github.com/silenceper/gowatch v0.0.0-20191122025114-d9a4b93d0ed4
