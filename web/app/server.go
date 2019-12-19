@@ -7,6 +7,7 @@ import (
 	"bgm38/web/app/bgmtv"
 	"bgm38/web/app/bindata"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"html/template"
 	"strings"
 )
@@ -14,6 +15,9 @@ import (
 //Serve start http web on env `PORT` or 8080
 func Serve() error {
 	app := newApp()
+	if gin.IsDebugging() {
+		logrus.SetLevel(logrus.DebugLevel)
+	}
 	return app.Run(":" + utils.GetEnv("PORT", "8080"))
 }
 

@@ -2,6 +2,7 @@ package bgmtv
 
 import (
 	"bgm38/pkg/model"
+	"bgm38/web/app/utils"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -19,9 +20,6 @@ func index(ctx *gin.Context) {
 var client = resty.New()
 var cstZone = time.FixedZone("CST", 8*3600)
 
-func init() {
-	logrus.SetLevel(logrus.DebugLevel)
-}
 func userCalendar(ctx *gin.Context) {
 
 	userID := ctx.Param("user_id")
@@ -53,9 +51,8 @@ func userCalendar(ctx *gin.Context) {
 	cal.AddProperty("prodid", "-//trim21//www.trim21.cn//")
 	cal.AddProperty("CALSCAL", "GREGORIAN")
 	cal.AddProperty("PRODID;X-RICAL-TZSOURCE=TZINFO", "-//tmpo.io")
-
 	cal.AddProperty("version", "2.0")
-	cal.AddProperty("name", "Followed Bangumi Calendar")
+	cal.AddProperty("name", "Bgm.tv Followed Bangumi Calendar")
 	cal.AddProperty("description", "Followed Bangumi Calendar")
 	cal.AddProperty("X-WR-CALNAM", "Followed Bangumi Calendar")
 	cal.AddProperty("X-WR-CALDESC", "Followed Bangumi Calendar")
@@ -77,10 +74,14 @@ func userCalendar(ctx *gin.Context) {
 	}
 
 	ctx.Status(http.StatusOK)
-	ctx.Header("Content-type", "text/calendar")
-	ctx.Header("charset", "utf-8")
-	ctx.Header("Content-Disposition", "inline")
-	ctx.Header("filename", "calendar.ics")
+
+	if !utils.IsBrowser(ctx) {
+		ctx.Header("charset", "utf-8")
+		ctx.Header("Content-type", "text/calendar")
+		ctx.Header("Content-Disposition", "inline")
+		ctx.Header("filename", "calendar.ics")
+	}
+
 	cal.Write(goics.NewICalEncode(ctx.Writer))
 }
 
