@@ -1,5 +1,7 @@
 package app
 
+//go:generate go-bindata -o ./bindata/templates.go -fs -prefix "../templates" -pkg bindata ../templates
+
 import (
 	"html/template"
 	"strings"
@@ -9,8 +11,10 @@ import (
 	"bgm38/pkg/utils"
 	"bgm38/web/app/auth"
 	"bgm38/web/app/bgmtv"
+	"bgm38/web/app/bgmtv/viewip"
 	"bgm38/web/app/bindata"
-	"bgm38/web/app/viewip"
+	"bgm38/web/app/res"
+	"github.com/ekyoung/gin-nice-recovery"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -18,6 +22,7 @@ import (
 
 // Serve start http web on env `PORT` or 8080
 func Serve() error {
+
 	app := newApp()
 	if gin.IsDebugging() {
 		logrus.SetLevel(logrus.DebugLevel)
@@ -26,7 +31,8 @@ func Serve() error {
 }
 
 func newApp() *gin.Engine {
-	app := gin.Default()
+	app := gin.New()
+	app.Use(gin.Logger(), nice.Recovery(recoveryHandler))
 	app.Use(versionMiddleware)
 	err := setupMiddleware(app)
 	if err != nil {
@@ -37,6 +43,7 @@ func newApp() *gin.Engine {
 		logrus.Fatalln(err)
 	}
 	app.SetHTMLTemplate(t)
+	setupSwagger(app)
 	auth.Part(app)
 	bgmtv.Part(app)
 	viewip.Part(app)
@@ -80,4 +87,12 @@ func setupMiddleware(app *gin.Engine) error {
 	}
 
 	return nil
+}
+
+func recoveryHandler(c *gin.Context, err interface{}) {
+	logrus.Errorln(err)
+	c.JSON(500, res.Error{
+		Message: "A internal error happened",
+		Status:  "error",
+	})
 }
