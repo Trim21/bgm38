@@ -1,0 +1,19 @@
+service:
+  golangci-lint-version: 1.12.x
+
+linters:
+  enable:
+    - deadcode
+    - gocyclo
+    - golint
+    - varcheck
+    - structcheck
+    - maligned
+    - errcheck
+    - dupl
+    - ineffassign
+    - interfacer
+    - unconvert
+    - goconst
+    - gosec
+    - megacheck
