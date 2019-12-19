@@ -27,7 +27,7 @@ dev:
 	gowatch
 
 install:
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.21.0
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.21.0
 	go get github.com/go-bindata/go-bindata/...
 	go get github.com/silenceper/gowatch
 	go mod download
