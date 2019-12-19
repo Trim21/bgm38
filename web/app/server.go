@@ -4,7 +4,7 @@ import (
 	"bgm38/config"
 	"bgm38/pkg/utils"
 	"bgm38/web/app/auth"
-	"bgm38/web/app/bgmTv"
+	"bgm38/web/app/bgmtv"
 	"bgm38/web/app/bindata"
 	"github.com/gin-gonic/gin"
 	"html/template"
@@ -26,7 +26,7 @@ func newApp() *gin.Engine {
 	}
 	app.SetHTMLTemplate(t)
 	auth.Part(app)
-	bgmTv.Part(app)
+	bgmtv.Part(app)
 	return app
 }
 
@@ -37,6 +37,9 @@ func loadTemplate() (*template.Template, error) {
 			continue
 		}
 		file, err := bindata.Asset(name)
+		if err != nil {
+			return nil, err
+		}
 		t, err = t.New(name).Parse(string(file))
 		if err != nil {
 			return nil, err

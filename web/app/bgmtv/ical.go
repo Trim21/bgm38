@@ -1,4 +1,4 @@
-package bgmTv
+package bgmtv
 
 import (
 	"github.com/gin-gonic/gin"

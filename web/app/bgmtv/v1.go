@@ -1,4 +1,4 @@
-package bgmTv
+package bgmtv
 
 import (
 	"bgm38/pkg/model"
@@ -24,15 +24,15 @@ func init() {
 }
 func userCalendar(ctx *gin.Context) {
 
-	userId := ctx.Param("user_id")
-	if userId == "" {
-		ctx.String(401, "should give a userId")
+	userID := ctx.Param("user_id")
+	if userID == "" {
+		ctx.String(401, "should give a userID")
 		return
 	}
 
 	resp, err := client.R().
 		SetQueryParam("cat", "watching").
-		Get(fmt.Sprintf("https://mirror.api.bgm.rin.cat/user/%s/collection", userId))
+		Get(fmt.Sprintf("https://mirror.api.bgm.rin.cat/user/%s/collection", userID))
 	if err != nil {
 		logrus.Debugln(err)
 		ctx.String(502, "gateway error")
@@ -64,14 +64,14 @@ func userCalendar(ctx *gin.Context) {
 		s := goics.NewComponent()
 
 		s.SetType("VEVENT")
-		offset_day := getAirDayOffset(time.Now().In(cstZone).Weekday(), subject.Subject.AirWeekday)
-		dt := time.Now().In(cstZone).Add(time.Duration(offset_day*24) * time.Hour)
+		offsetDay := getAirDayOffset(time.Now().In(cstZone).Weekday(), subject.Subject.AirWeekday)
+		dt := time.Now().In(cstZone).Add(time.Duration(offsetDay*24) * time.Hour)
 		k, v := goics.FormatDateField("DTEND", dt)
 		s.AddProperty(k, v)
 		k, v = goics.FormatDateField("DTSTART", dt)
 		s.AddProperty(k, v)
 
-		s.AddProperty("UID", fmt.Sprintf("%d", subject.SubjectId))
+		s.AddProperty("UID", fmt.Sprintf("%d", subject.SubjectID))
 		s.AddProperty("SUMMARY", subject.Subject.NameCn)
 		cal.AddComponent(s)
 	}

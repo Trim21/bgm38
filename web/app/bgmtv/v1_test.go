@@ -1,4 +1,4 @@
-package bgmTv
+package bgmtv
 
 import (
 	"gotest.tools/v3/assert"

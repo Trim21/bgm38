@@ -18,8 +18,8 @@ type SubjectImage struct {
 
 type UserCollectionSubject struct {
 	Images     SubjectImage      `json:"images"`
-	Id         int               `json:"id"`
-	Url        string            `json:"url"`
+	ID         int               `json:"id"`
+	URL        string            `json:"url"`
 	Type       int               `json:"type"`
 	Summary    string            `json:"summary"`
 	Name       string            `json:"name"`
@@ -33,7 +33,7 @@ type UserCollectionSubject struct {
 
 type UserCollection struct {
 	Name      string                `json:"name"`
-	SubjectId int                   `json:"subject_id"`
+	SubjectID int                   `json:"subject_id"`
 	EpStatus  int                   `json:"ep_status"`
 	VolStatus int                   `json:"vol_status"`
 	LastTouch int                   `json:"lasttouch"`

@@ -27,12 +27,14 @@ dev:
 	gowatch
 
 install:
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.21.0
 	go get github.com/go-bindata/go-bindata/...
 	go get github.com/silenceper/gowatch
-	go get golang.org/x/lint/golint
 	go mod download
 
 lint:
-	golint ./...
+	golangci-lint --enable=deadcode  --enable=gocyclo --enable=golint --enable=varcheck \
+                    --enable=structcheck --enable=maligned --enable=errcheck --enable=dupl --enable=ineffassign \
+                    --enable=interfacer --enable=unconvert --enable=goconst --enable=gosec --enable=megacheck run ./...
 
 .PHONY: clean build bindata lint install

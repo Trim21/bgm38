@@ -13,7 +13,7 @@ var RedisAddr = utils.GetEnv("REDIS_HOST", "127.0.0.1") + ":6379"
 //RedisPassword redis password, empty string if not set
 var RedisPassword = utils.GetEnv("REDIS_PASSWORD", "")
 
-//AppID bgmTv.tv oauth app id
+//AppID bgmtv.tv oauth app id
 var AppID = utils.GetEnv("appid", "")
 
 // PROTOCOL nginx protocol http when dev, https when prod

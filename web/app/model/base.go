@@ -6,15 +6,14 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql" // mysql driver
 
-	"time"
 )
 
-type base struct {
-	ID        uint       `gorm:"primary_key" json:"id"`
-	CreatedAt time.Time  `json:"-"`
-	UpdatedAt time.Time  `json:"-"`
-	DeletedAt *time.Time `sql:"index" json:"-"`
-}
+//type base struct {
+//	ID        uint       `gorm:"primary_key" json:"id"`
+//	CreatedAt time.Time  `json:"-"`
+//	UpdatedAt time.Time  `json:"-"`
+//	DeletedAt *time.Time `sql:"index" json:"-"`
+//}
 
 //DB gorm database object
 var DB *gorm.DB
@@ -27,5 +26,5 @@ func init() {
 		fmt.Println(err)
 		panic("failed to connect database")
 	}
-	DB.Set("gorm:table_options", "CHARSET=utf8mb4").AutoMigrate(&Vote{}, &VoteOption{})
+	//DB.Set("gorm:table_options", "CHARSET=utf8mb4").AutoMigrate(&Vote{}, &VoteOption{})
 }
