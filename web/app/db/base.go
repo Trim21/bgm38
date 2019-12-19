@@ -1,4 +1,4 @@
-package model
+package db
 
 import (
 	"bgm38/config"
@@ -21,10 +21,11 @@ var DB *gorm.DB
 func init() {
 	var err error
 	DB, err = gorm.Open("mysql",
-		fmt.Sprintf("%s@(%s)/bgm38?charset=utf8mb4&parseTime=True&loc=Local", config.MysqlAuth, config.MysqlHost))
+		fmt.Sprintf("%s@(%s)/bgm_ip_viewer?charset=utf8mb4&parseTime=True&loc=Local", config.MysqlAuth, config.MysqlHost))
 	if err != nil {
 		fmt.Println(err)
 		panic("failed to connect database")
 	}
+	DB.SingularTable(true)
 	//DB.Set("gorm:table_options", "CHARSET=utf8mb4").AutoMigrate(&Vote{}, &VoteOption{})
 }

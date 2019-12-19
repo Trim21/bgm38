@@ -6,6 +6,7 @@ import (
 	"bgm38/web/app/auth"
 	"bgm38/web/app/bgmtv"
 	"bgm38/web/app/bindata"
+	"bgm38/web/app/viewip"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"html/template"
@@ -31,6 +32,7 @@ func newApp() *gin.Engine {
 	app.SetHTMLTemplate(t)
 	auth.Part(app)
 	bgmtv.Part(app)
+	viewip.Part(app)
 	return app
 }
 
