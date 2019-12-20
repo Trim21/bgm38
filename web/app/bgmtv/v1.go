@@ -1,16 +1,18 @@
 package bgmtv
 
 import (
-	"bgm38/pkg/model"
-	"bgm38/web/app/utils"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"time"
+
+	"bgm38/pkg/model"
+	"bgm38/web/app/res"
+	"bgm38/web/app/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/go-resty/resty/v2"
 	"github.com/jordic/goics"
 	"github.com/sirupsen/logrus"
-	"net/http"
-	"time"
 )
 
 func index(ctx *gin.Context) {
@@ -20,20 +22,37 @@ func index(ctx *gin.Context) {
 var client = resty.New()
 var cstZone = time.FixedZone("CST", 8*3600)
 
+// @ID watchingCalendarV1
+// @Summary generate a calendar from watching collection
+// @Description 根据在看的番剧生成ics格式日历
+// @Description 如果浏览器访问时会返回纯文本数据
+// @Description 在使用日历app导入时会返回日历数据
+// @Produce  text/calendar
+// @Produce  json
+// @Param user_id path string true "user_id, 可以在个人主页的网址中找到"
+// @Success 200 {string} string "text/calendar"
+// @Failure 422 {object} res.ValidationError
+// @Failure 404 {object} res.Error
+// @Failure 502 {object} res.Error
+// @Router /bgm.tv/v1/calendar/{user_id} [get]
 func userCalendar(ctx *gin.Context) {
 
 	userID := ctx.Param("user_id")
 	if userID == "" {
-		ctx.String(401, "should give a userID")
+		ctx.JSON(422, res.ValidationError{
+			Message:   "need a user_id",
+			FieldName: "user_id",
+		})
 		return
 	}
-
-	resp, err := client.R().
-		SetQueryParam("cat", "watching").
+	resp, err := client.R().SetQueryParam("cat", "watching").
 		Get(fmt.Sprintf("https://mirror.api.bgm.rin.cat/user/%s/collection", userID))
 	if err != nil {
 		logrus.Debugln(err)
-		ctx.String(502, "gateway error")
+		ctx.JSON(502, res.Error{
+			Message: "connect to mirror.api.bgm.rin.cat error",
+			Status:  "error",
+		})
 		return
 	}
 
@@ -42,7 +61,10 @@ func userCalendar(ctx *gin.Context) {
 	err = json.Unmarshal(resp.Body(), &data)
 	if err != nil {
 		logrus.Debugln(err)
-		ctx.String(502, "gateway error")
+		ctx.JSON(404, res.Error{
+			Message: "User doesn't exist",
+			Status:  "error",
+		})
 		return
 	}
 

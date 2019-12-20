@@ -1,40 +1,29 @@
 BINDATA := web/app/bindata/templates.go
-TMPL_FILES := $(shell find ./web/templates/ -type f | sed 's/ /\\ /g')
-GO_FILES := $(shell find ./ -type f | grep .go | sed 's/ /\\ /g')
+TMPL_FILES := $(shell find ./web/templates/ -type f)
+GO_FILES := $(shell find ./ -type f | grep .go | grep -v docs.go)
 GIT_VERSION := $(shell git describe --abbrev=0 --tags)-$(shell git rev-parse HEAD|cut -c1-8)
+WEB := $(shell find ./web/app -type f|grep .go |grep -v app/docs/bindata.go | grep -v bindata.go)
 
-default: clean build
+default: build
 
 release: clean build
 
 build: dist/app
 
-dist/app: $(GO_FILES) bindata
+dist/app: $(GO_FILES)
+	go generate ./...
 	go build -ldflags "-s -w -X bgm38/config.Version=$(GIT_VERSION)" -o $@
-
-bindata: web/app/bindata/templates.go
-
-web/app/bindata/templates.go:
-	go-bindata -o $@ -pkg bindata web/templates/...
 
 clean:
 	go clean -i ./... | true
 	rm -f ./dist/*
 	rm -f web/app/bindata/templates.go
-
-dev:
-	go-bindata -dev -o web/app/bindata/templates.go -pkg bindata web/templates/...
-	gowatch
+	rm -rf web/app/docs/
 
 install:
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.21.0
+	go get github.com/swaggo/swag/cmd/swag
 	go get github.com/go-bindata/go-bindata/...
 	go get github.com/silenceper/gowatch
 	go mod download
 
-lint:
-	golangci-lint --enable=deadcode  --enable=gocyclo --enable=golint --enable=varcheck \
-                    --enable=structcheck --enable=maligned --enable=errcheck --enable=dupl --enable=ineffassign \
-                    --enable=interfacer --enable=unconvert --enable=goconst --enable=gosec --enable=megacheck run ./...
-
-.PHONY: clean build bindata lint install
+.PHONY: clean build install

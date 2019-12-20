@@ -1,5 +1,10 @@
 service:
   golangci-lint-version: 1.12.x
+  analyzed-paths:
+    - ./...
+  prepare:
+    - make install
+    - go generate
 
 linters:
   enable:

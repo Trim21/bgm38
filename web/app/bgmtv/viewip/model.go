@@ -23,3 +23,15 @@ type subjectMap struct {
 	Nodes []node `json:"nodes"`
 	Edges []edge `json:"edges"`
 }
+
+type subjectMapRes struct {
+	Data    subjectMap `json:"data"`
+	Message string     `json:"message"`
+	Status  int        `json:"status"`
+}
+
+// Response data in json
+// swagger:response subjectMapJsonResponse
+type jsonResponse struct {
+	Body subjectMapRes
+}
