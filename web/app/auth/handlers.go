@@ -1,22 +1,24 @@
 package auth
 
 import (
-	"bgm38/config"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
 	"net/url"
+
+	"bgm38/config"
+	"github.com/kataras/iris/v12"
+	"github.com/sirupsen/logrus"
 )
 
-func callback(ctx *gin.Context) {
-	ctx.String(200, "place holder")
+func callback(ctx iris.Context) {
+	ctx.StatusCode(200)
+	ctx.Text("place holder")
 }
 
 var callbackURL = getCallbackURL()
 var oauthURL = getOauthURL(callbackURL)
 
-func redirect(ctx *gin.Context) {
-	ctx.Redirect(307, oauthURL)
+func redirect(ctx iris.Context) {
+	ctx.Redirect(oauthURL, 307)
 }
 
 func getCallbackURL() string {
@@ -26,7 +28,7 @@ func getCallbackURL() string {
 func getOauthURL(callback string) string {
 	u, err := url.Parse(`https://bgmtv.tv/oauth/authorize`)
 	if err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 	q := u.Query()
 	q.Set("q", "golang")

@@ -1,28 +1,21 @@
 package utils_test
 
 import (
-	"bgm38/web/app/utils"
-	"bytes"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/assert"
-	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"bgm38/web/app/utils"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestIsBrowser(t *testing.T) {
-	buf := new(bytes.Buffer)
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
-	c.Request, _ = http.NewRequest("POST", "/", buf)
 	for _, header := range []string{
 		"Mozilla/5.0 (Windows NT 6.1; rv:12.0) Gecko/20120403211507 Firefox/12.0",
 		"Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; WOW64; Trident/7.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E)",
 		"Mozilla/5.0 (Linux; Android 7.0; MI 5s Plus Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.145 Mobile Safari/537.36 EdgA/41.0.0.1273",
 		"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/601.5.17 (KHTML, like Gecko)",
 	} {
-		c.Request.Header.Set("user-agent", header)
-		assert.True(t, utils.IsBrowser(c), fmt.Sprintf("user-agent %s should be consider as browser", header))
+		assert.True(t, utils.IsUABrowser(header), fmt.Sprintf("user-agent %s should be consider as browser", header))
 
 	}
 
@@ -36,8 +29,7 @@ func TestIsBrowser(t *testing.T) {
 		"Go-http-client/1.1",
 		"okhttp/3.10.0",
 	} {
-		c.Request.Header.Set("user-agent", header)
-		assert.False(t, utils.IsBrowser(c), fmt.Sprintf("user-agent %s should not be consider as browser", header))
+		assert.False(t, utils.IsUABrowser(header), fmt.Sprintf("user-agent %s should not be consider as browser", header))
 
 	}
 

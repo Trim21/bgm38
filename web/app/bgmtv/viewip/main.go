@@ -1,17 +1,13 @@
 package viewip
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/hero"
 )
 
 // Part bind vote routers to gin app
-func Part(app *gin.Engine) {
-	indexPart(app)
-}
-
-func indexPart(app *gin.Engine) {
-	var router = app.Group("/bgm.tv")
-	router.GET("/v0/meta/subject/:subject_id", getSubjectFullInfo)
-	router.GET("/v2/view_ip/subject/:subject_id", viewIP)
-
+func Part(app iris.Party) {
+	var router = app.Party("/view_ip")
+	router.Get("/meta/v0/subject/{subject_id:int}", hero.Handler(getSubjectFullInfo))
+	router.Get("/v2/subject/{subject_id:int}", hero.Handler(viewIP))
 }

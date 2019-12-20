@@ -1,12 +1,11 @@
 package utils
 
 import (
-	"github.com/gin-gonic/gin"
 	"strings"
 )
 
-func IsBrowser(ctx *gin.Context) bool {
-	userAgent := strings.ToLower(ctx.GetHeader("user-agent"))
+func IsUABrowser(userAgent string) bool {
+	userAgent = strings.ToLower(userAgent)
 	if strings.Contains(userAgent, "spider") ||
 		strings.Contains(userAgent, "bot") {
 		return false

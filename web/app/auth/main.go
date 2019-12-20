@@ -1,13 +1,13 @@
 package auth
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/kataras/iris/v12"
 )
 
 // Part bind auth part to gin app
-func Part(app *gin.Engine) {
-	var router = app.Group("/auth")
-	router.GET("/v1/bgm.tv/callback", callback)
-	router.GET("/v1/bgm.tv/redirect", redirect)
+func Part(app iris.Application) {
+	var router = app.Party("/auth")
+	router.Get("/v1/bgm.tv/callback", callback)
+	router.Get("/v1/bgm.tv/redirect", redirect)
 
 }

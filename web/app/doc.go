@@ -22,25 +22,24 @@ package app
 import (
 	"bgm38/config"
 	"bgm38/web/app/docs"
-	"github.com/gin-gonic/gin"
+	"github.com/iris-contrib/swagger/v12"
+	"github.com/iris-contrib/swagger/v12/swaggerFiles"
+	"github.com/kataras/iris/v12"
 	"github.com/sirupsen/logrus"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func setupSwagger(r *gin.Engine) {
+func setupSwagger(app *iris.Application) {
 	logrus.Debugln(docs.AssetNames())
 	logrus.Debugln("setup swagger")
-	if gin.IsDebugging() {
-		docs.SwaggerInfo.Schemes = []string{"http"}
-		docs.SwaggerInfo.Host = "localhost:8080"
-	}
 	docs.SwaggerInfo.Version = config.Version
-	url := ginSwagger.URL("/swagger/doc.json")
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
-	r.GET("/swagger", func(context *gin.Context) {
-		context.Header("content-type", "text/html")
-		context.String(200, `<!DOCTYPE html>
+
+	app.Get("/swagger/{any:path}", swagger.CustomWrapHandler(&swagger.Config{
+		URL: "/swagger/doc.json", // The url pointing to API definition
+	}, swaggerFiles.Handler))
+
+	app.Get("/swagger", func(context iris.Context) {
+		context.StatusCode(200)
+		context.HTML(`<!DOCTYPE html>
 <html>
 <head>
 <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui.css">

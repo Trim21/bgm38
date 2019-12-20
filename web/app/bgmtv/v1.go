@@ -9,15 +9,11 @@ import (
 	"bgm38/pkg/model"
 	"bgm38/web/app/res"
 	"bgm38/web/app/utils"
-	"github.com/gin-gonic/gin"
 	"github.com/go-resty/resty/v2"
 	"github.com/jordic/goics"
+	"github.com/kataras/iris/v12"
 	"github.com/sirupsen/logrus"
 )
-
-func index(ctx *gin.Context) {
-	ctx.String(200, "place holder")
-}
 
 var client = resty.New()
 var cstZone = time.FixedZone("CST", 8*3600)
@@ -35,24 +31,31 @@ var cstZone = time.FixedZone("CST", 8*3600)
 // @Failure 404 {object} res.Error
 // @Failure 502 {object} res.Error
 // @Router /bgm.tv/v1/calendar/{user_id} [get]
-func userCalendar(ctx *gin.Context) {
+func userCalendar(ctx iris.Context, userID string) {
 
-	userID := ctx.Param("user_id")
 	if userID == "" {
-		ctx.JSON(422, res.ValidationError{
+		ctx.StatusCode(422)
+		_, err := ctx.JSON(res.ValidationError{
 			Message:   "need a user_id",
 			FieldName: "user_id",
 		})
+		if err != nil {
+			logrus.Errorln(err)
+		}
 		return
 	}
 	resp, err := client.R().SetQueryParam("cat", "watching").
 		Get(fmt.Sprintf("https://mirror.api.bgm.rin.cat/user/%s/collection", userID))
 	if err != nil {
 		logrus.Debugln(err)
-		ctx.JSON(502, res.Error{
+		ctx.StatusCode(502)
+		_, err = ctx.JSON(res.Error{
 			Message: "connect to mirror.api.bgm.rin.cat error",
 			Status:  "error",
 		})
+		if err != nil {
+			logrus.Errorln(err)
+		}
 		return
 	}
 
@@ -61,10 +64,14 @@ func userCalendar(ctx *gin.Context) {
 	err = json.Unmarshal(resp.Body(), &data)
 	if err != nil {
 		logrus.Debugln(err)
-		ctx.JSON(404, res.Error{
+		ctx.StatusCode(404)
+		_, err = ctx.JSON(res.Error{
 			Message: "User doesn't exist",
 			Status:  "error",
 		})
+		if err != nil {
+			logrus.Errorln(err)
+		}
 		return
 	}
 
@@ -95,16 +102,16 @@ func userCalendar(ctx *gin.Context) {
 		cal.AddComponent(s)
 	}
 
-	ctx.Status(http.StatusOK)
+	ctx.StatusCode(http.StatusOK)
 
-	if !utils.IsBrowser(ctx) {
+	if !utils.IsUABrowser(ctx.GetHeader("user-agent")) {
 		ctx.Header("charset", "utf-8")
 		ctx.Header("Content-type", "text/calendar")
 		ctx.Header("Content-Disposition", "inline")
 		ctx.Header("filename", "calendar.ics")
 	}
 
-	cal.Write(goics.NewICalEncode(ctx.Writer))
+	cal.Write(goics.NewICalEncode(ctx.ResponseWriter()))
 }
 
 func getAirDayOffset(w time.Weekday, airWeekday int) int {
