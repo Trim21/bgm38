@@ -18,7 +18,7 @@ import (
 //DB gorm database object
 var DB *gorm.DB
 
-func init() {
+func InitDB() {
 	var err error
 	DB, err = gorm.Open("mysql",
 		fmt.Sprintf("%s@(%s)/bgm_ip_viewer?charset=utf8mb4&parseTime=True&loc=Local", config.MysqlAuth, config.MysqlHost))

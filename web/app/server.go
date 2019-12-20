@@ -3,12 +3,14 @@ package app
 import (
 	"bgm38/pkg/utils"
 	"bgm38/web/app/bgmtv"
+	"bgm38/web/app/db"
 	"bgm38/web/app/res"
 	"github.com/kataras/iris/v12"
 	"github.com/sirupsen/logrus"
 )
 
 func Serve() error {
+	db.InitDB()
 	app := iris.Default()
 	app.Logger().SetLevel("debug")
 	bgmtv.Part(app)
