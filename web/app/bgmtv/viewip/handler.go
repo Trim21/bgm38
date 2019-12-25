@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"bgm38/pkg/db"
 	"bgm38/web/app/res"
-	"bgm38/web/app/db"
 	"github.com/jinzhu/gorm"
 	"github.com/kataras/iris/v12"
 	"github.com/sirupsen/logrus"
@@ -23,7 +23,7 @@ import (
 // @Router /bgm.tv/v2/view_ip/subject/{subject_id} [get]
 func viewIP(ctx iris.Context, subjectID int) {
 	var s db.Subject
-	err := db.DB.Select("id, map").Where("id = ?", subjectID).Find(&s).Error
+	err := db.Mysql.Select("id, map").Where("id = ?", subjectID).Find(&s).Error
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -64,8 +64,8 @@ func viewIP(ctx iris.Context, subjectID int) {
 		return
 	}
 	var subjects []db.Subject
-	db.DB.Where("map = ?", mapID).Find(&relations)
-	db.DB.Where("map = ?", mapID).Find(&subjects)
+	db.Mysql.Where("map = ?", mapID).Find(&relations)
+	db.Mysql.Where("map = ?", mapID).Find(&subjects)
 	ctx.StatusCode(200)
 	_, err = ctx.JSON(subjectMapRes{
 		Data:    *formatData(subjects, relations),
@@ -87,7 +87,7 @@ type subject struct {
 
 func getSubjectFullInfo(c iris.Context, subjectID int) {
 	var s db.Subject
-	err := db.DB.Where("id = ?", subjectID).Find(&s).Error
+	err := db.Mysql.Where("id = ?", subjectID).Find(&s).Error
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -102,7 +102,7 @@ func getSubjectFullInfo(c iris.Context, subjectID int) {
 	}
 
 	var tags []db.Tag
-	db.DB.Where("subject_id = ?", subjectID).Order("count desc").Find(&tags)
+	db.Mysql.Where("subject_id = ?", subjectID).Order("count desc").Find(&tags)
 
 	var info map[string][]string
 	_ = json.Unmarshal([]byte(s.Info), &info)
