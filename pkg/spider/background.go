@@ -89,7 +89,7 @@ func parser(resQueue chan response) {
 		getRelation(doc, subjectID)
 		getEpList(doc, subjectID)
 		getCollectorCount(doc, &subject)
-		subject.Image = getImageUrl(doc)
+		subject.Image = getImageURL(doc)
 		subject.Score = getScore(doc)
 		subject.Info = getInfo(doc)
 		subject.SubjectType = getSubjectType(doc)

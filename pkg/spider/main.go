@@ -49,8 +49,7 @@ type response struct {
 	res *resty.Response
 }
 
-func getImageUrl(docs *html.Node) string {
-
+func getImageURL(docs *html.Node) string {
 	cover := htmlquery.SelectAttr(htmlquery.FindOne(docs, `//*[@id="bangumiInfo"]/div/div/a/img`), "src")
 	if cover == "" {
 		return "lain.bgm.tv/img/no_icon_subject.png"
