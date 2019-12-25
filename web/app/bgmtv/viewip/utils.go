@@ -3,7 +3,7 @@ package viewip
 import (
 	"encoding/json"
 
-	"bgm38/web/app/db"
+	"bgm38/pkg/db"
 )
 
 func formatData(subjects []db.Subject, relations []db.Relation) *subjectMap {

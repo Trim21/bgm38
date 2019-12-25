@@ -2,8 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
+
+	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
@@ -14,9 +15,9 @@ var rootCmd = &cobra.Command{
                 Complete documentation is available at http://hugo.spf13.com`,
 	SilenceUsage:  true,
 	SilenceErrors: true,
-	//RunE: func(cmd *cobra.Command, args []string) error {
+	// RunE: func(cmd *cobra.Command, args []string) error {
 	//	return nil
-	//},
+	// },
 }
 
 func Execute() {
