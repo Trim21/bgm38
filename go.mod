@@ -21,7 +21,7 @@ require (
 	github.com/jinzhu/gorm v1.9.11
 	github.com/jordic/goics v0.0.0-20181215212140-feb996c8e01f
 	github.com/json-iterator/go v1.1.7 // indirect
-	github.com/kataras/iris/v12 v12.1.2
+	github.com/kataras/iris/v12 v12.1.3
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/mailru/easyjson v0.7.0 // indirect
 	github.com/mattn/go-colorable v0.1.4 // indirect
