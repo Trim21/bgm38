@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"bgm38/config"
 	"bgm38/pkg/db"
 	"github.com/antchfx/htmlquery"
 	"github.com/go-resty/resty/v2"
@@ -25,13 +26,13 @@ func dispatcher(urlToFetch chan string) {
 
 	logrus.Debugln("start spider dispatcher")
 	for ; ; {
-		res, err := db.Redis.BRPop(time.Minute, redisKey).Result()
+		res, err := db.Redis.BRPop(time.Minute, config.RedisSpiderURLKey).Result()
 		if err != nil {
 			logrus.Errorln(err)
 			continue
 		}
 		for _, s := range res {
-			if s == redisKey {
+			if s == config.RedisSpiderURLKey {
 				continue
 			}
 			count++

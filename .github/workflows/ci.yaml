@@ -86,3 +86,17 @@ jobs:
 
       - name: Build
         run: make
+        env:
+          CGO_ENABLE: '0'
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: build docker
+        run: |
+          docker build --build-arg "DAO_COMMIT_SHA=$(git rev-parse HEAD|cut -c1-8)" \
+            --build-arg "DAO_COMMIT_TAG=$(git describe --abbrev=0 --tags)" \
+            .

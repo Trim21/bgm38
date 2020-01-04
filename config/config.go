@@ -1,6 +1,9 @@
 package config
 
 import (
+	"fmt"
+	"os"
+
 	"bgm38/pkg/utils"
 )
 
@@ -27,3 +30,14 @@ var MysqlHost = utils.GetEnv("MYSQL_HOST", "192.168.1.4")
 
 // MysqlAuth mysql authentication, in format `username:password`
 var MysqlAuth = utils.GetEnv("MYSQL_AUTH", "root:password")
+
+// RedisSpiderURLKey redis list to read url
+var RedisSpiderURLKey = utils.GetEnv("REDIS_SPIDER_DISPATCH_KEY", "bgm_tv_spider:start_urls")
+
+func init() {
+	if tag, ok := os.LookupEnv("COMMIT_TAG"); ok {
+		if sha, ok := os.LookupEnv("COMMIT_SHA"); ok {
+			Version = fmt.Sprintf("%s-%.7s", tag, sha)
+		}
+	}
+}
