@@ -2,6 +2,7 @@ package spider
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 	"time"
 
@@ -12,6 +13,16 @@ import (
 )
 
 func dispatcher(urlToFetch chan string) {
+	count := 0
+	go func() {
+		t := time.NewTicker(time.Duration(time.Second * 10))
+		defer t.Stop()
+		for {
+			<-t.C
+			fmt.Printf("[%s] dispatch %d items...\n", time.Now().Format("2006-01-02 15:04:05"), count)
+		}
+	}()
+
 	logrus.Debugln("start spider dispatcher")
 	for ; ; {
 		res, err := db.Redis.BRPop(time.Minute, redisKey).Result()
@@ -23,6 +34,7 @@ func dispatcher(urlToFetch chan string) {
 			if s == redisKey {
 				continue
 			}
+			count++
 			urlToFetch <- s
 		}
 	}
@@ -55,44 +67,51 @@ func downloader(urlToFetch chan string, resQueue chan response) {
 
 func parser(resQueue chan response) {
 	for res := range resQueue {
+		func() {
+			defer func() {
+				if r := recover(); r != nil {
+					fmt.Println("panic occured: ", r)
+				}
+			}()
 
-		subjectID, err := getSubjectID(res.url)
-		if err != nil {
-			logrus.Errorln(err)
-			continue
-		}
-		if subjectID == 0 {
-			logrus.Fatalln(res.url)
-		}
-		doc, err := htmlquery.Parse(bytes.NewReader(res.res.Body()))
-		if err != nil {
-			logrus.Errorln(err)
-			continue
-		}
-		bodyString := string(res.res.Body())
-		if strings.Contains("出错了", bodyString) {
-			continue
-		}
-		var subject db.Subject
-		if strings.Contains("出错了", bodyString) {
-			subject.Locked = 1
-		}
+			subjectID, err := getSubjectID(res.url)
+			if err != nil {
+				logrus.Errorln(err)
+				return
+			}
+			if subjectID == 0 {
+				logrus.Fatalln(res.url)
+			}
+			doc, err := htmlquery.Parse(bytes.NewReader(res.res.Body()))
+			if err != nil {
+				logrus.Errorln(err)
+				return
+			}
+			bodyString := string(res.res.Body())
+			if strings.Contains("出错了", bodyString) {
+				return
+			}
+			var subject db.Subject
+			if strings.Contains("出错了", bodyString) {
+				subject.Locked = 1
+			}
 
-		title := htmlquery.FindOne(doc, `//*[@id="headerSubject"]/h1/a`)
-		if title == nil {
-			continue
-		}
-		subject.ID = subjectID
-		subject.NameCn = htmlquery.SelectAttr(title, "title")
-		subject.Name = htmlquery.InnerText(title)
-		getTagFromDoc(doc, subjectID)
-		getRelation(doc, subjectID)
-		getEpList(doc, subjectID)
-		getCollectorCount(doc, &subject)
-		subject.Image = getImageURL(doc)
-		subject.Score = getScore(doc)
-		subject.Info = getInfo(doc)
-		subject.SubjectType = getSubjectType(doc)
-		uploadSubject(subject)
+			title := htmlquery.FindOne(doc, `//*[@id="headerSubject"]/h1/a`)
+			if title == nil {
+				return
+			}
+			subject.ID = subjectID
+			subject.NameCn = htmlquery.SelectAttr(title, "title")
+			subject.Name = htmlquery.InnerText(title)
+			getTagFromDoc(doc, subjectID)
+			getRelation(doc, subjectID)
+			getEpList(doc, subjectID)
+			getCollectorCount(doc, &subject)
+			subject.Image = getImageURL(doc)
+			subject.Score = getScore(doc)
+			subject.Info = getInfo(doc)
+			subject.SubjectType = getSubjectType(doc)
+			uploadSubject(subject)
+		}()
 	}
 }
