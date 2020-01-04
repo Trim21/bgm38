@@ -1,5 +1,17 @@
 {
   "extends": [
     "github>Trim21/renovate-config"
+  ],
+  "postUpdateOptions": [
+    "gomodTidy"
+  ],
+  "packageRules": [
+    {
+      "groupName": "deps",
+      "managers": [
+        "gomod"
+      ],
+      "semanticCommitScope": "deps"
+    }
   ]
 }
