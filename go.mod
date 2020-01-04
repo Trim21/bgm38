@@ -7,7 +7,7 @@ require (
 	github.com/antchfx/htmlquery v1.2.1
 	github.com/antchfx/xpath v1.1.2 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
-	github.com/getsentry/sentry-go v0.3.1
+	github.com/getsentry/sentry-go v0.4.0
 	github.com/go-bindata/go-bindata v3.1.2+incompatible
 	github.com/go-openapi/jsonreference v0.19.3 // indirect
 	github.com/go-openapi/spec v0.19.5 // indirect
@@ -16,12 +16,11 @@ require (
 	github.com/go-resty/resty/v2 v2.1.0
 	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
 	github.com/golang/protobuf v1.3.2 // indirect
-	github.com/google/go-cmp v0.3.1 // indirect
 	github.com/iris-contrib/swagger/v12 v12.0.0
 	github.com/jinzhu/gorm v1.9.11
 	github.com/jordic/goics v0.0.0-20181215212140-feb996c8e01f
 	github.com/json-iterator/go v1.1.7 // indirect
-	github.com/kataras/iris/v12 v12.1.2
+	github.com/kataras/iris/v12 v12.1.4
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/mailru/easyjson v0.7.0 // indirect
 	github.com/mattn/go-colorable v0.1.4 // indirect
