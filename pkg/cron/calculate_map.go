@@ -6,6 +6,13 @@ import (
 	"bgm38/pkg/db"
 )
 
+const (
+	subjectTable  = "subject"
+	relationTable = "relation"
+	typeMusic     = "Music"
+	chunkSize     = 5000
+)
+
 var maxMapID = 0
 var blankList = []string{"角色出演", "片头曲", "片尾曲", "其他", "画集", "原声集"}
 
@@ -47,75 +54,69 @@ func preRemove(subjectStart int, subjectEnd int) {
 		123217: 4294,
 	})
 
-	// id_to_remove = []
-	// Subject.update(locked = 1).where(Subject.subject_type == 'Music').execute()
-	// for s
-	// 	in
-	// Subject.
-	// select (Subject.id).where(Subject.locked == 1):
-	// 	id_to_remove.append(s.id)
-	// 	Relation.update(
-	// 		removed = 1
-	// 	).where(Relation.source.in_(id_to_remove) |
-	// 		Relation.target.in_(id_to_remove)).execute()
-	//
-	// 	for chunk
-	// 		in
-	// 	chunk_iter_list(list(range(subject_start, subject_end))):
-	// 	db_data = list(
-	// 		Subject.
-	// 	select (
-	// 		Subject.id,
-	// 		Subject.subject_type,
-	// 		Subject.locked,
-	// 	).where(
-	// 			Subject.id.in_(chunk) & (Subject.subject_type != 'Music') &
-	// 				(Subject.locked == 0)
-	// 		)
-	// 	)
-	// 		for s
-	// 			in
-	// 		db_data:
-	// 		assert
-	// 		s.subject_type != 'Music'
-	// 		assert
-	// 		s.locked == 0
-	// 		non_exists_ids = list(set(chunk) -
-	// 		{
-	// 			x.id
-	// 			for x
-	// 				in
-	// 			db_data
-	// 		})
-	// 		Relation.update(removed = 1).where(
-	// 			Relation.source.in_(non_exists_ids) | Relation.target.in_(non_exists_ids)
-	// 		).execute()
-	//
-	// 		for i
-	// 		in range
-	// 		(subject_start, subject_end, CHUNK_SIZE):
-	// 		relation_id_need_to_remove = set()
-	// 	source_to_target:
-	// 		Dict
-	// 		[int, Dict] = defaultdict(dict)
-	// 		sources = Relation.select ().where((((Relation.source >= i) &
-	// 		(Relation.source < i + CHUNK_SIZE)) |
-	// 		((Relation.target >= i) &
-	// 		(Relation.target < i + CHUNK_SIZE))) &
-	// 		(Relation.removed == 0))
-	//
-	// 		sources = list(sources)
-	//
-	// 		for edge in sources:
-	// 		source_to_target[edge.source][edge.target] = True
-	//
-	// 		for edge in sources:
-	// 		if not source_to_target[edge.target].get(edge.source):
-	// 		relation_id_need_to_remove.add(edge.id)
-	//
-	// 		for chunk in chunk_iter_list(list(relation_id_need_to_remove)):
-	// 		Relation.update(removed = 1).where(Relation.id.in_(chunk)).execute()
-	// 		print('finish pre remove')
-	//
-	//
+	var idToRemove = make(map[int]bool)
+	db.Mysql.Table(subjectTable).Update(`locked`, 1).Where(`subject_type = ?`, typeMusic)
+	var subjects []db.Subject
+	db.Mysql.Where(`locked = ?`, 1).Find(&subjects)
+	for _, s := range subjects {
+		idToRemove[s.ID] = true
+
+	}
+
+	var idToRM []int
+	for key := range idToRemove {
+		idToRM = append(idToRM, key)
+	}
+
+	db.Mysql.Table(relationTable).Update(`removed`, 1).Where(`source in ? or target in ?`, idToRM, idToRM)
+
+	for i := subjectStart; i < subjectEnd; i += chunkSize {
+		relationIDNeedToRemove := make(map[string]bool)
+		sourceToTarget := make(map[int]map[int]bool)
+		var rels [] db.Relation
+		db.Mysql.Where(`(( source >= ? AND source < ? ) OR ( target >= ? AND target < ? ) ) AND removed = ?`,
+			i, i+chunkSize, i, i+chunkSize, 0).Find(&rels)
+
+		for _, rel := range rels {
+			sourceToTarget[rel.Source][rel.Target] = true
+		}
+
+		for _, rel := range rels {
+			if subMap, ok := sourceToTarget[rel.Target]; ok {
+				if _, ok := subMap[rel.Source]; ok {
+					continue
+				}
+			}
+			relationIDNeedToRemove[rel.ID] = true
+		}
+	}
+}
+
+func chunkIter(s []int, chunkSize int, f func([]int)) {
+	l := len(s)
+	for i := 0; i < l; i = i + chunkSize {
+		f(s[i:min(i+chunkSize, l)])
+	}
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func pyRange(start, end, step int) []int {
+	s := make([]int, 0, (end-start)/step+3)
+	for i := start; i < end; i += step {
+		s = append(s, i)
+	}
+	return s
 }
