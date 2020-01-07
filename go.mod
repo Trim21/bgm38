@@ -6,10 +6,8 @@ require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/antchfx/htmlquery v1.2.1
 	github.com/antchfx/xpath v1.1.2 // indirect
-	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/getsentry/sentry-go v0.4.0
 	github.com/go-bindata/go-bindata v3.1.2+incompatible
-	github.com/go-openapi/jsonreference v0.19.3 // indirect
 	github.com/go-openapi/spec v0.19.5 // indirect
 	github.com/go-openapi/swag v0.19.6 // indirect
 	github.com/go-redis/redis v6.15.6+incompatible
@@ -27,8 +25,7 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.5
 	github.com/stretchr/testify v1.4.0
-	github.com/swaggo/swag v1.6.3
-	github.com/urfave/cli v1.22.2 // indirect
+	github.com/swaggo/swag v1.6.4
 	github.com/valyala/fasthttp v1.7.0 // indirect
 	golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553
 	golang.org/x/sys v0.0.0-20191204072324-ce4227a45e2e // indirect
