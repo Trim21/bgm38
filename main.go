@@ -16,14 +16,6 @@ func main() {
 	if utils.GetEnv("DEBUG", "0") != "0" {
 		fmt.Println("set logger to debug level")
 		logrus.SetLevel(logrus.DebugLevel)
-		logrus.SetReportCaller(true)
-		logrus.SetFormatter(&logrus.TextFormatter{
-			CallerPrettyfier: func(f *runtime.Frame) (string, string) {
-				filename := path.Base(f.File)
-				return fmt.Sprintf("%s", f.Function), fmt.Sprintf("%s:%d", filename, f.Line)
-			},
-		})
-		logrus.Debugln("233")
 	} else {
 		err := sentry.Init(sentry.ClientOptions{
 			Dsn: "___DSN___",
@@ -33,6 +25,15 @@ func main() {
 			fmt.Printf("Sentry initialization failed: %v\n", err)
 		}
 	}
+
+	logrus.SetReportCaller(true)
+	logrus.SetFormatter(&logrus.TextFormatter{
+		CallerPrettyfier: func(f *runtime.Frame) (string, string) {
+			filename := path.Base(f.File)
+			return fmt.Sprintf("%s", f.Function), fmt.Sprintf("%s:%d", filename, f.Line)
+		},
+	})
+
 	cron.Init()
 
 	cmd.Execute()

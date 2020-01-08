@@ -26,10 +26,16 @@ func removeRelation(source int, target int) {
 }
 
 func reCalculateMap() {
-	var subjectIDStart = 1
-	var subjectIDEnd = 300000
-	preRemove(subjectIDStart, subjectIDEnd)
-	firstRun(subjectIDStart, subjectIDEnd)
+	db.InitDB()
+	var maxSubject = db.Subject{}
+	var minSubject = db.Subject{}
+
+	db.Mysql.Order(`id desc`).First(&maxSubject)
+	db.Mysql.Order(`id`).First(&minSubject)
+	db.Mysql.Table(subjectTable).Where("1 = ?", 1).Update(`locked`, 0)
+	db.Mysql.Table(relationTable).Where("1 = ?", 1).Update(`removed`, 0)
+	preRemove(minSubject.ID, maxSubject.ID)
+	firstRun(minSubject.ID, maxSubject.ID)
 }
 
 func removeNodes(nodeIDs ...int) {
@@ -275,14 +281,5 @@ func pyRange(start, end, step int) []int {
 }
 
 func Init() {
-	db.InitDB()
-	var maxSubject = db.Subject{}
-	var minSubject = db.Subject{}
-
-	db.Mysql.Order(`id desc`).First(&maxSubject)
-	db.Mysql.Order(`id`).First(&minSubject)
-	db.Mysql.Table(subjectTable).Where("1 = ?", 1).Update(`locked`, 0)
-	db.Mysql.Table(relationTable).Where("1 = ?", 1).Update(`removed`, 0)
-	preRemove(minSubject.ID, maxSubject.ID)
-	firstRun(minSubject.ID, maxSubject.ID)
+	reCalculateMap()
 }
