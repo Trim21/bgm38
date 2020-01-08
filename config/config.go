@@ -12,10 +12,10 @@ import (
 var Version = "development"
 
 // RedisAddr redis ip:port
-var RedisAddr = utils.GetEnv("REDIS_HOST", "127.0.0.1") + ":6379"
+var RedisAddr = utils.GetEnv("REDIS_HOST", "192.168.1.3") + ":6379"
 
 // RedisPassword redis password, empty string if not set
-var RedisPassword = utils.GetEnv("REDIS_PASSWORD", "")
+var RedisPassword = utils.GetEnv("REDIS_PASSWORD", "mypassword")
 
 // AppID bgmtv.tv oauth app id
 var AppID = utils.GetEnv("appid", "")
@@ -27,7 +27,7 @@ var PROTOCOL = utils.GetEnv("PROTOCOL", "http")
 var VirtualHost = utils.GetEnv("VirtualHost", "127.0.0.1")
 
 // MysqlHost mysql host, ip only
-var MysqlHost = utils.GetEnv("MYSQL_HOST", "192.168.1.4")
+var MysqlHost = utils.GetEnv("MYSQL_HOST", "192.168.1.3")
 
 // MysqlAuth mysql authentication, in format `username:password`
 var MysqlAuth = utils.GetEnv("MYSQL_AUTH", "root:password")

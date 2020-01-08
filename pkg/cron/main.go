@@ -39,6 +39,12 @@ func Start() error {
 		return err
 	}
 
+	_, err = c.AddFunc("0 0 3 3 * *", reCalculateMap)
+	if err != nil {
+		logrus.Errorln(err)
+		return err
+	}
+
 	fmt.Println("start cron")
 	c.Start()
 	ch := make(chan bool)
