@@ -1,5 +1,6 @@
 FROM golang:1.13 as generator
 ENV CGO_ENABLED=0
+ENV GOPROXY=https://goproxy.cn
 WORKDIR /src/app
 COPY go.mod go.sum Makefile /src/app/
 RUN make install
