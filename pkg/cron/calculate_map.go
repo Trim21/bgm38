@@ -159,7 +159,7 @@ func getRelationsFromDB(tx *gorm.DB, subjectStart, subjectEnd int) (map[int]map[
 				continue
 			}
 			edge.Map = 0
-			edgeCount += 1
+			edgeCount++
 			if relationFromId[edge.Source] == nil {
 				relationFromId[edge.Source] = make(map[string]*db.Relation)
 			}
@@ -223,13 +223,13 @@ func firstRun(tx *gorm.DB, subjectStart int, subjectEnd int) error {
 
 	logrus.Infof("total subject %d", len(subjects))
 
-	relationFromId, edgeCount, err := getRelationsFromDB(tx, subjectStart, subjectEnd)
+	relationFromID, edgeCount, err := getRelationsFromDB(tx, subjectStart, subjectEnd)
 
 	if err != nil {
 		return err
 	}
 
-	if m, ok := relationFromId[8108]; !ok {
+	if m, ok := relationFromID[8108]; !ok {
 		logrus.Fatalln("err")
 	} else {
 		for id, edge := range m {
@@ -240,7 +240,7 @@ func firstRun(tx *gorm.DB, subjectStart int, subjectEnd int) error {
 	}
 
 	logrus.Infof("total %d edges", edgeCount)
-	logrus.Debugf("id 8 get %d edges", len(relationFromId[8]))
+	logrus.Debugf("id 8 get %d edges", len(relationFromID[8]))
 
 	count := 0
 	var dealWithNode func(int)
@@ -249,7 +249,7 @@ func firstRun(tx *gorm.DB, subjectStart int, subjectEnd int) error {
 			return
 		}
 		count++
-		var edges = relationFromId[sourceID]
+		var edges = relationFromID[sourceID]
 		var mapID = 0
 		for _, edge := range edges {
 			if edge.Map != 0 {
@@ -301,7 +301,7 @@ func firstRun(tx *gorm.DB, subjectStart int, subjectEnd int) error {
 		subjectMaps[subject.Map] = append(subjectMaps[subject.Map], subject.ID)
 	}
 
-	for _, edges := range relationFromId {
+	for _, edges := range relationFromID {
 		for _, edge := range edges {
 			relationMaps[edge.Map] = append(relationMaps[edge.Map], edge.ID)
 		}
