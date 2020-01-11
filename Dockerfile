@@ -11,6 +11,8 @@ RUN make release
 ##########################
 
 FROM alpine:latest
+RUN apk add --no-cache tzdata
+
 EXPOSE 8080
 
 ARG DAO_COMMIT_SHA
