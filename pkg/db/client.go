@@ -2,7 +2,7 @@ package db
 
 import (
 	"bgm38/config"
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v7"
 )
 
 // Redis redis client

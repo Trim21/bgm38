@@ -10,10 +10,9 @@ require (
 	github.com/go-bindata/go-bindata v3.1.2+incompatible
 	github.com/go-openapi/spec v0.19.5 // indirect
 	github.com/go-openapi/swag v0.19.6 // indirect
-	github.com/go-redis/redis v6.15.6+incompatible
+	github.com/go-redis/redis/v7 v7.0.0-beta.5
 	github.com/go-resty/resty/v2 v2.1.0
 	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
-	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/iris-contrib/swagger/v12 v12.0.0
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
 	github.com/jinzhu/gorm v1.9.12
@@ -21,7 +20,6 @@ require (
 	github.com/json-iterator/go v1.1.7 // indirect
 	github.com/kataras/iris/v12 v12.1.4
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
-	github.com/mailru/easyjson v0.7.0 // indirect
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/robfig/cron/v3 v3.0.0
 	github.com/sirupsen/logrus v1.4.2
