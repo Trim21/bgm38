@@ -15,6 +15,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
 	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/iris-contrib/swagger/v12 v12.0.0
+	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
 	github.com/jinzhu/gorm v1.9.12
 	github.com/jordic/goics v0.0.0-20181215212140-feb996c8e01f
 	github.com/json-iterator/go v1.1.7 // indirect

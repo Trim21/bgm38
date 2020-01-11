@@ -28,6 +28,10 @@ func main() {
 
 	logrus.SetReportCaller(true)
 	logrus.SetFormatter(&logrus.TextFormatter{
+		FullTimestamp:    false,
+		DisableTimestamp: true,
+		DisableColors:    false,
+		TimestampFormat:  "",
 		CallerPrettyfier: func(f *runtime.Frame) (string, string) {
 			filename := path.Base(f.File)
 			return fmt.Sprintf("%s", f.Function), fmt.Sprintf("%s:%d", filename, f.Line)
