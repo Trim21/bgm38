@@ -282,16 +282,12 @@ func firstRun(tx *gorm.DB, subjectStart int, subjectEnd int) error {
 		}
 	}
 
-	logrus.Debugln("now iter %d subjects", len(subjects))
+	logrus.Debugf("now iter %d subjects", len(subjects))
 
 	for id := range subjects {
 		dealWithNode(id)
 	}
-	for key, subject := range subjects {
-		if key != subject.ID {
-			logrus.Fatalf("%s %s", key, subject.ID)
-		}
-	}
+
 	logrus.Debugf("called %d times", count)
 	logrus.Debugf("done %d ids", len(doneIDs))
 
