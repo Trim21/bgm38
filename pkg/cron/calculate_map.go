@@ -143,7 +143,7 @@ func preRemove(tx *gorm.DB, subjectStart int, subjectEnd int) {
 func getRelationsFromDB(tx *gorm.DB, subjectStart, subjectEnd int) (map[int]map[string]*db.Relation, int, error) {
 
 	edgeCount := 0
-	var relationFromId = make(map[int]map[string]*db.Relation)
+	var relationFromID = make(map[int]map[string]*db.Relation)
 	for i := subjectStart; i < subjectEnd; i += chunkSize {
 		var edges = make([]db.Relation, 0, 5000)
 
@@ -160,12 +160,12 @@ func getRelationsFromDB(tx *gorm.DB, subjectStart, subjectEnd int) (map[int]map[
 			}
 			edge.Map = 0
 			edgeCount++
-			if relationFromId[edge.Source] == nil {
-				relationFromId[edge.Source] = make(map[string]*db.Relation)
+			if relationFromID[edge.Source] == nil {
+				relationFromID[edge.Source] = make(map[string]*db.Relation)
 			}
 
-			if relationFromId[edge.Target] == nil {
-				relationFromId[edge.Target] = make(map[string]*db.Relation)
+			if relationFromID[edge.Target] == nil {
+				relationFromID[edge.Target] = make(map[string]*db.Relation)
 			}
 
 			var edgeCopy = db.Relation{}
@@ -175,12 +175,12 @@ func getRelationsFromDB(tx *gorm.DB, subjectStart, subjectEnd int) (map[int]map[
 				return nil, 0, err
 			}
 
-			relationFromId[edge.Source][edge.ID] = &edgeCopy
-			relationFromId[edge.Target][edge.ID] = &edgeCopy
+			relationFromID[edge.Source][edge.ID] = &edgeCopy
+			relationFromID[edge.Target][edge.ID] = &edgeCopy
 		}
 	}
 
-	return relationFromId, edgeCount, nil
+	return relationFromID, edgeCount, nil
 }
 func getSubjectsFromDB(tx *gorm.DB, subjectStart int, subjectEnd int) (map[int]*db.Subject, error) {
 	var subjects = make(map[int]*db.Subject)
