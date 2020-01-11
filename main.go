@@ -6,7 +6,6 @@ import (
 	"runtime"
 
 	"bgm38/cmd"
-	"bgm38/pkg/cron"
 	"bgm38/pkg/utils"
 	"github.com/getsentry/sentry-go"
 	"github.com/sirupsen/logrus"
@@ -37,8 +36,6 @@ func main() {
 			return fmt.Sprintf("%s", f.Function), fmt.Sprintf("%s:%d", filename, f.Line)
 		},
 	})
-
-	cron.Init()
 
 	cmd.Execute()
 }

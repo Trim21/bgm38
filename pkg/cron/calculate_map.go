@@ -23,7 +23,6 @@ var blankList = []string{"角色出演", "片头曲", "片尾曲", "其他", "�
 
 func reCalculateMap() {
 	var err error
-	db.InitDB()
 	var maxSubject db.Subject
 	var minSubject db.Subject
 	db.Mysql.Order(`id desc`).First(&maxSubject)
@@ -365,8 +364,4 @@ func min(a, b int) int {
 		return a
 	}
 	return b
-}
-
-func Init() {
-	reCalculateMap()
 }
