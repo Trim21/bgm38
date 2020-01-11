@@ -12,25 +12,30 @@ import (
 )
 
 func main() {
-	if utils.GetEnv("DEBUG", "0") == "1" {
+	if utils.GetEnv("DEBUG", "0") != "0" {
+		fmt.Println("set logger to debug level")
 		logrus.SetLevel(logrus.DebugLevel)
-		logrus.SetReportCaller(true)
-		logrus.SetFormatter(&logrus.TextFormatter{
-			CallerPrettyfier: func(f *runtime.Frame) (string, string) {
-				filename := path.Base(f.File)
-				return fmt.Sprintf("%s()", f.Function), fmt.Sprintf("%s:%d", filename, f.Line)
-			},
+	} else {
+		err := sentry.Init(sentry.ClientOptions{
+			Dsn: "___DSN___",
 		})
 
+		if err != nil {
+			fmt.Printf("Sentry initialization failed: %v\n", err)
+		}
 	}
 
-	err := sentry.Init(sentry.ClientOptions{
-		Dsn: "___DSN___",
+	logrus.SetReportCaller(true)
+	logrus.SetFormatter(&logrus.TextFormatter{
+		FullTimestamp:    false,
+		DisableTimestamp: true,
+		DisableColors:    false,
+		TimestampFormat:  "",
+		CallerPrettyfier: func(f *runtime.Frame) (string, string) {
+			filename := path.Base(f.File)
+			return fmt.Sprintf("%s", f.Function), fmt.Sprintf("%s:%d", filename, f.Line)
+		},
 	})
-
-	if err != nil {
-		fmt.Printf("Sentry initialization failed: %v\n", err)
-	}
 
 	cmd.Execute()
 }
