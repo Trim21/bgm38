@@ -18,4 +18,3 @@ func genFullURL() {
 	}
 	db.Redis.LPush(config.RedisSpiderURLKey, urls...)
 }
-

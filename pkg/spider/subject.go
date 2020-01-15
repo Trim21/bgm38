@@ -59,7 +59,14 @@ func getInfo(doc *html.Node) string {
 		}
 
 		for _, node := range htmlquery.Find(el, "text()") {
-			value = append(value, htmlquery.InnerText(node))
+			text := htmlquery.InnerText(node)
+			if text == "、" {
+				continue
+			} else if strings.HasSuffix(text, "、") {
+				value = append(value, strings.TrimRight(text, "、"))
+			} else {
+				value = append(value, text)
+			}
 		}
 
 		info[key] = value

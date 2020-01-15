@@ -50,6 +50,12 @@ func getRelation(doc *html.Node, subjectID int) {
 }
 
 func uploadRelations(relations []db.Relation) {
+	length := len(relations)
+	if length > 3000 {
+		uploadRelations(relations[0:3000])
+		uploadRelations(relations[3001:length])
+		return
+	}
 	var s []string
 	var args []interface{}
 	for _, r := range relations {
