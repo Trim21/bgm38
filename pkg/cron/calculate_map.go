@@ -5,7 +5,6 @@ import (
 	"sync"
 
 	"bgm38/pkg/db"
-	"github.com/jinzhu/copier"
 	"github.com/jinzhu/gorm"
 	"github.com/sirupsen/logrus"
 )
@@ -144,7 +143,7 @@ func getRelationsFromDB(tx *gorm.DB, subjectStart, subjectEnd int) (map[int]map[
 	edgeCount := 0
 	var relationFromID = make(map[int]map[string]*db.Relation)
 	for i := subjectStart; i < subjectEnd; i += chunkSize {
-		var edges = make([]db.Relation, 0, 5000)
+		var edges = make([]*db.Relation, 0, 5000)
 
 		err := tx.Table(relationTable).
 			Where(`(source >= ?) AND (source < ?) AND (removed = ?)`, i, i+chunkSize, 0).
@@ -167,15 +166,8 @@ func getRelationsFromDB(tx *gorm.DB, subjectStart, subjectEnd int) (map[int]map[
 				relationFromID[edge.Target] = make(map[string]*db.Relation)
 			}
 
-			var edgeCopy = db.Relation{}
-
-			err := copier.Copy(&edgeCopy, &edge)
-			if err != nil {
-				return nil, 0, err
-			}
-
-			relationFromID[edge.Source][edge.ID] = &edgeCopy
-			relationFromID[edge.Target][edge.ID] = &edgeCopy
+			relationFromID[edge.Source][edge.ID] = edge
+			relationFromID[edge.Target][edge.ID] = edge
 		}
 	}
 
@@ -184,7 +176,7 @@ func getRelationsFromDB(tx *gorm.DB, subjectStart, subjectEnd int) (map[int]map[
 func getSubjectsFromDB(tx *gorm.DB, subjectStart int, subjectEnd int) (map[int]*db.Subject, error) {
 	var subjects = make(map[int]*db.Subject)
 	for i := subjectStart; i < subjectEnd; i += chunkSize {
-		var s = make([]db.Subject, 0, 5000)
+		var s = make([]*db.Subject, 0, 5000)
 
 		err := tx.Where(`id >= ? AND id < ? AND `+
 			`locked = ? AND subject_type != ?`, i, i+chunkSize, 0, typeMusic).
@@ -199,13 +191,8 @@ func getSubjectsFromDB(tx *gorm.DB, subjectStart int, subjectEnd int) (map[int]*
 				continue
 			}
 			subject.Map = 0
-			subjectCopy := db.Subject{}
-			err := copier.Copy(&subjectCopy, &subject)
-			if err != nil {
-				return nil, err
-			}
 
-			subjects[subject.ID] = &subjectCopy
+			subjects[subject.ID] = subject
 		}
 		s = nil
 	}
@@ -219,7 +206,12 @@ func firstRun(tx *gorm.DB, subjectStart int, subjectEnd int) error {
 	if err != nil {
 		return err
 	}
+	for key, value := range subjects {
+		if key != value.ID {
+			panic(fmt.Sprintf("value of key %d is not %v", key, value))
+		}
 
+	}
 	logrus.Infof("total subject %d", len(subjects))
 
 	relationFromID, edgeCount, err := getRelationsFromDB(tx, subjectStart, subjectEnd)
