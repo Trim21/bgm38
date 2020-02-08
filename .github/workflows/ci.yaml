@@ -5,34 +5,15 @@ on:
       - '*'
       - '**'
       - '!renovate/**'
+  create:
+    tags:
+      - v*
   pull_request:
     branches:
       - '*'
       - '**'
 
 jobs:
-#  lint:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Check out code
-#        uses: actions/checkout@v1
-#
-#      - uses: actions/cache@v1
-#        with:
-#          path: ~/go/pkg/mod
-#          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-#          restore-keys: |
-#            ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-#            ${{ runner.os }}-go-
-#
-#      - run: echo "::add-path::$(go env GOPATH)/bin"
-#
-#      - name: Install
-#        run: make install
-#
-#      - name: Lint Go Code
-#        run: make lint
-
   test:
     runs-on: ubuntu-latest
     steps:
@@ -127,7 +108,7 @@ jobs:
           CGO_ENABLE: '0'
 
       - name: Build Docker
-        run: docker build -t trim21/pol:$SLUG -t trim21/pol:$REF .
+        run: docker build -t trim21/bgm38:$SLUG -t trim21/bgm38:$REF .
 
       - name: Docker Login
         run: docker login --username trim21 --password $DOCKER_PASS
@@ -136,5 +117,5 @@ jobs:
 
       - name: Publish Docker
         run: |
-          docker push trim21/pol:$REF
-          docker push trim21/pol:$SLUG
+          docker push trim21/bgm38:$REF
+          docker push trim21/bgm38:$SLUG
