@@ -21,6 +21,21 @@ func (l lo) Error(err error, msg string, keysAndValues ...interface{}) {
 	logrus.Errorln(x...)
 }
 
+func Run(name string) error {
+	db.InitDB()
+	switch name {
+	case "reCalculateMap":
+		reCalculateMap()
+	case "genWikiURL":
+		genWikiURL()
+	case "genFullURL":
+		genFullURL()
+	default:
+		return fmt.Errorf("cron name not exist")
+	}
+	return nil
+}
+
 func Start() error {
 	db.InitDB()
 	var err error
@@ -29,7 +44,7 @@ func Start() error {
 	c := cron.New(cron.WithLocation(config.TimeZone), cron.WithSeconds(), cron.WithLogger(logger), cron.WithChain(
 		cron.Recover(logger), // or use cron.DefaultLogger
 	))
-	_, err = c.AddFunc("0 0 3 * * *", genWikiURL)
+	_, err = c.AddFunc("0 0 3 * * *", genFullURL)
 	if err != nil {
 		logrus.Errorln(err)
 		return err
