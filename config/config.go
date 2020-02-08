@@ -1,8 +1,6 @@
 package config
 
 import (
-	"fmt"
-	"os"
 	"time"
 
 	"bgm38/pkg/utils"
@@ -36,11 +34,3 @@ var MysqlAuth = utils.GetEnv("MYSQL_AUTH", "root:password")
 var RedisSpiderURLKey = utils.GetEnv("REDIS_SPIDER_DISPATCH_KEY", "bgm_tv_spider:start_urls")
 
 var TimeZone, _ = time.LoadLocation("Asia/Shanghai")
-
-func init() {
-	if tag, ok := os.LookupEnv("COMMIT_TAG"); ok {
-		if sha, ok := os.LookupEnv("COMMIT_SHA"); ok {
-			Version = fmt.Sprintf("%s-%.7s", tag, sha)
-		}
-	}
-}
