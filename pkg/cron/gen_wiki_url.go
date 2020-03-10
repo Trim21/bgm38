@@ -2,6 +2,8 @@ package cron
 
 import (
 	"bytes"
+	"fmt"
+	"net/url"
 	"time"
 
 	"bgm38/config"
@@ -14,8 +16,8 @@ var client = resty.New()
 
 func genWikiURL() {
 	var urls = make(map[string]bool)
-
-	res, err := client.R().Get("https://mirror.bgm.rin.cat/wiki")
+	pageUrl, _ := url.Parse("https://mirror.bgm.rin.cat/wiki")
+	res, err := client.R().Get(pageUrl.String())
 	if err != nil {
 		time.Sleep(5 * time.Second)
 		genWikiURL()
@@ -39,7 +41,9 @@ func genWikiURL() {
 	for key, value := range urls {
 		if value {
 			if key != "" {
-				db.Redis.LPush(config.RedisSpiderURLKey, key)
+				u, _ := url.Parse(key)
+				fmt.Println(pageUrl.ResolveReference(u).String())
+				db.Redis.LPush(config.RedisSpiderURLKey, pageUrl.ResolveReference(u).String())
 			}
 		}
 	}
