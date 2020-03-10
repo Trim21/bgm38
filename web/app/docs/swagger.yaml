@@ -39,6 +39,10 @@ definitions:
         description: = 'lain.bgm.tv/img/no_icon_subject.png'
         type: string
       info:
+        additionalProperties:
+          items:
+            type: string
+          type: array
         type: object
       map:
         type: integer

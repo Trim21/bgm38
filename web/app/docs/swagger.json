@@ -171,7 +171,13 @@
                     "type": "string"
                 },
                 "info": {
-                    "type": "object"
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
                 },
                 "map": {
                     "type": "integer"
