@@ -21,7 +21,7 @@ clean:
 
 install:
 	go get github.com/swaggo/swag/cmd/swag
-	go get github.com/go-bindata/go-bindata/...
+	go get github.com/go-bindata/go-bindata/v3/...
 	go mod download
 
 .PHONY: clean build install
