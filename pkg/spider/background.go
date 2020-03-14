@@ -50,7 +50,7 @@ func downloader(urlToFetch chan string, resQueue chan response) {
 		req := client.R()
 		res, err := req.Get(url)
 		if err != nil {
-			urlToFetch <- url
+			logrus.Errorln(err)
 			continue
 		}
 		if res.StatusCode() > 300 || bytes.Contains([]byte("502 Bad Gateway"), res.Body()) {
