@@ -34,7 +34,7 @@ jobs:
             ${{ runner.os }}-go-
 
       - name: "Docker Build"
-        run: docker-compose -f .github/workflows/ci.yaml --log-level INFO up -d
+        run: docker-compose -f .github/docker-compose.yaml --log-level INFO up -d
 
       - run: echo "::add-path::$(go env GOPATH)/bin"
 
