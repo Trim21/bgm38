@@ -33,8 +33,9 @@ func getRedisClient() *redis.Client {
 }
 
 func TestRedisHook_Fire(t *testing.T) {
+	logrus.SetReportCaller(true)
 	client := getRedisClient()
-	_, err := client.Del(redisKey).Result()
+	err := client.Del(redisKey).Err()
 	assert.Nil(t, err)
 	logrus.AddHook(getHook())
 	logrus.Info("test")

@@ -15,18 +15,13 @@ type RedisHook struct {
 
 // Fire is called when a log event is fired.
 func (hook *RedisHook) Fire(entry *logrus.Entry) error {
-	var msg, err = fromEntry(entry)
-	if err != nil {
-		fmt.Printf("error when build logredis to %s", err.Error())
-		return err
-	}
-	b, err := msg.MarshalMsg(nil)
+	b, err := fromEntry(entry).MarshalMsg(nil)
 	if err != nil {
 		fmt.Printf("error when dump msg to bytes %s", err.Error())
 		return err
 	}
 
-	_, err = hook.redisClient.RPush(hook.RedisKey, b).Result()
+	err = hook.redisClient.RPush(hook.RedisKey, b).Err()
 	if err != nil {
 		fmt.Printf("error when log to redis %s", err.Error())
 		return err
