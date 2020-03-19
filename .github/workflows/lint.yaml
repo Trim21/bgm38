@@ -27,5 +27,8 @@ jobs:
       - name: Install
         run: make install
 
+      - name: Install golangci-lint
+        run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.24.0
+
       - name: lint
-        run: docker run --rm -v $(pwd):/app -w /app golangci/golangci-lint:v1.24.0 golangci-lint run -v
+        run: golangci-lint run -v
