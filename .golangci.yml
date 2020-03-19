@@ -1,5 +1,4 @@
 service:
-  golangci-lint-version: 1.12.x
   analyzed-paths:
     - ./...
   prepare:
