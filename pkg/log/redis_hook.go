@@ -22,11 +22,15 @@ func (hook *RedisHook) Fire(entry *logrus.Entry) error {
 	}
 	b, err := msg.MarshalMsg(nil)
 	if err != nil {
-		fmt.Printf("error when log to redis %s", err.Error())
+		fmt.Printf("error when dump msg to bytes %s", err.Error())
 		return err
 	}
 
-	hook.redisClient.RPush(hook.RedisKey, b)
+	_, err = hook.redisClient.RPush(hook.RedisKey, b).Result()
+	if err != nil {
+		fmt.Printf("error when log to redis %s", err.Error())
+		return err
+	}
 	return nil
 }
 

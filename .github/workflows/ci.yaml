@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: Set up Go
         uses: actions/setup-go@v1
@@ -33,6 +33,9 @@ jobs:
             ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
             ${{ runner.os }}-go-
 
+      - name: "Docker Build"
+        run: docker-compose -f .github/workflows/ci.yaml --log-level INFO up -d
+
       - run: echo "::add-path::$(go env GOPATH)/bin"
 
       - name: Install
@@ -40,6 +43,9 @@ jobs:
 
       - name: Test Go Code
         run: go test ./...
+        env:
+          REDIS_HOST: 127.0.0.1
+          MYSQL_HOST: 127.0.0.1
 
   build:
     runs-on: ubuntu-latest
