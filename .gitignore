@@ -10,3 +10,4 @@ tmp
 *_gen_test.go
 web/app/docs/swagger.*
 web/app/docs/docs.go
+coverage.txt
