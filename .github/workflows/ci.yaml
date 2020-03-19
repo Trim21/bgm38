@@ -42,7 +42,7 @@ jobs:
         run: make install
 
       - name: Test Go Code
-        run: go test ./... -race -coverprofile=coverage.txt -covermode=atomic
+        run: go test -race -coverpkg=./... -coverprofile=coverage.txt -covermode=atomic ./...
         env:
           REDIS_HOST: 127.0.0.1
           MYSQL_HOST: 127.0.0.1
