@@ -8,3 +8,4 @@ server/bindata/templates.go
 tmp
 *_gen.go
 *_gen_test.go
+web/app/docs
