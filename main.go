@@ -6,7 +6,6 @@ import (
 	"bgm38/cmd"
 	"bgm38/config"
 	"bgm38/pkg/log"
-	_ "bgm38/pkg/log"
 	"bgm38/pkg/utils"
 	"github.com/getsentry/sentry-go"
 	"github.com/go-redis/redis/v7"
