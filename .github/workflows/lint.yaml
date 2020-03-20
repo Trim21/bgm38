@@ -34,7 +34,7 @@ jobs:
 
       - name: run tools
         run: |
-          golangci-lint run --out-format line-number --config=.github/.golangci.yml |\
+          golangci-lint run --out-format line-number --config=".github/.golangci.yml" |\
           reviewdog -f=golangci-lint -name="golangci" -reporter="github-pr-review" -level="info"
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.github_token }}
