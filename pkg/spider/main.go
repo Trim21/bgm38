@@ -16,6 +16,7 @@ const redisKey = "bgm_tv_spider:start_urls"
 func Start() error {
 	fmt.Println("spider start")
 	db.InitDB()
+	prepareStmt()
 	var urlToFetch = make(chan string)
 	var resQueue = make(chan response)
 	var workerCount = 20

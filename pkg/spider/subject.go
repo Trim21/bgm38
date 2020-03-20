@@ -83,9 +83,8 @@ func getSubjectType(doc *html.Node) string {
 
 }
 
-func uploadSubject(subject db.Subject) {
-	op := "ON DUPLICATE KEY UPDATE `name_cn` = VALUES(`name_cn`), `name` = VALUES(`name`), `image` = VALUES(`image`), `tags` = VALUES(`tags`), `locked` = VALUES(`locked`), `info` = VALUES(`info`), `score_details` = VALUES(`score_details`), `score` = VALUES(`score`), `wishes` = VALUES(`wishes`), `done` = VALUES(`done`), `doings` = VALUES(`doings`), `on_hold` = VALUES(`on_hold`), `dropped` = VALUES(`dropped`)"
-	err := db.Mysql.Set("gorm:insert_option", op).Create(&subject).Error
+func uploadSubject(subject *db.Subject) {
+	_, err := subjectUpsertStmt.Exec(subject)
 	if err != nil {
 		logrus.Errorln(err)
 	}

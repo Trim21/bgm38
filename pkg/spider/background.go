@@ -3,6 +3,7 @@ package spider
 import (
 	"bytes"
 	"fmt"
+	"net"
 	"strings"
 	"time"
 
@@ -26,6 +27,7 @@ func dispatcher(urlToFetch chan string) {
 	}()
 
 	logrus.Debugln("start spider dispatcher")
+
 	for ; ; {
 		res, err := db.Redis.BRPop(time.Minute, config.RedisSpiderURLKey).Result()
 		if err != nil && err != redis.Nil {
@@ -50,7 +52,19 @@ func downloader(urlToFetch chan string, resQueue chan response) {
 		req := client.R()
 		res, err := req.Get(url)
 		if err != nil {
-			logrus.Errorln(err)
+
+			if nerr, ok := err.(net.Error); ok {
+				if nerr.Timeout() {
+					go func() {
+						logrus.Debugln("re-send request", url)
+						time.Sleep(5 * time.Second)
+						urlToFetch <- url
+					}()
+					continue
+				}
+			}
+
+			logrus.Errorln("request error", err.Error())
 			continue
 		}
 		if res.StatusCode() > 300 || bytes.Contains([]byte("502 Bad Gateway"), res.Body()) {
@@ -105,15 +119,15 @@ func parser(resQueue chan response) {
 			subject.ID = subjectID
 			subject.NameCn = htmlquery.SelectAttr(title, "title")
 			subject.Name = htmlquery.InnerText(title)
-			getTagFromDoc(doc, subjectID)
-			getRelation(doc, subjectID)
-			getEpList(doc, subjectID)
+			parseTagFromDoc(doc, subjectID)
+			parseRelation(doc, subjectID)
+			parseEpList(doc, subjectID)
 			getCollectorCount(doc, &subject)
 			subject.Image = getImageURL(doc)
 			subject.Score = getScore(doc)
 			subject.Info = getInfo(doc)
 			subject.SubjectType = getSubjectType(doc)
-			uploadSubject(subject)
+			uploadSubject(&subject)
 		}()
 	}
 }
