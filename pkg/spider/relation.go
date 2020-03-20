@@ -11,9 +11,9 @@ import (
 	"golang.org/x/net/html"
 )
 
-func getRelation(doc *html.Node, subjectID int) {
+func parseRelation(doc *html.Node, subjectID int) {
 	section := htmlquery.Find(doc, `//div[@class="subject_section"][//h2[@class="subtitle" and contains(text(), "关联条目")]]/div[@class="content_inner"]/ul/li`)
-	var relations []db.Relation
+	var relations []*db.Relation
 
 	var chunkList = make([][]*html.Node, 0)
 
@@ -35,7 +35,7 @@ func getRelation(doc *html.Node, subjectID int) {
 					continue
 				}
 				relations = append(relations,
-					db.Relation{
+					&db.Relation{
 						ID:       fmt.Sprintf("%d-%d", subjectID, target),
 						Relation: rel,
 						Source:   subjectID,
@@ -49,23 +49,13 @@ func getRelation(doc *html.Node, subjectID int) {
 	}
 }
 
-func uploadRelations(relations []db.Relation) {
-	length := len(relations)
-	if length > 30 {
-		uploadRelations(relations[0:3000])
-		uploadRelations(relations[3001:length])
-		return
-	}
-	var s []string
-	var args []interface{}
-	for _, r := range relations {
-		s = append(s, "(?, ?, ?, ?)")
-		args = append(args, r.ID, r.Relation, r.Source, r.Target)
-	}
-	sql := fmt.Sprintf("INSERT INTO `relation` (`id`, `relation`, `source`, `target`) VALUES %s ON DUPLICATE KEY UPDATE `relation` = VALUES(`relation`)", strings.Join(s, " , "))
-	err := db.Mysql.Exec(sql, args...).Error
-	if err != nil {
-		logrus.Errorln(err, sql, args)
+func uploadRelations(relations []*db.Relation) {
+	var err error
+	for _, relation := range relations {
+		_, err = relationUpsertStmt.Exec(relation)
+		if err != nil {
+			logrus.Errorln("upsert into table `relation`", relation, err)
+		}
 	}
 
 }

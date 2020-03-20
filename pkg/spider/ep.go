@@ -1,7 +1,6 @@
 package spider
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -11,8 +10,8 @@ import (
 	"golang.org/x/net/html"
 )
 
-func getEpList(doc *html.Node, subjectID int) {
-	var eps []db.Ep
+func parseEpList(doc *html.Node, subjectID int) {
+	var eps []*db.Ep
 	for _, ep := range htmlquery.Find(doc, `//*[@id="subject_detail"]//ul[@class="prg_list"]/li/a`) {
 		href := htmlquery.SelectAttr(ep, "href")
 		if href == "" {
@@ -25,7 +24,7 @@ func getEpList(doc *html.Node, subjectID int) {
 			continue
 		}
 		eps = append(eps,
-			db.Ep{
+			&db.Ep{
 				EpID:      epID,
 				SubjectID: subjectID,
 				Name:      htmlquery.SelectAttr(ep, "title"),
@@ -45,16 +44,11 @@ func formatEp(ep *html.Node) string {
 	return epText
 }
 
-func uploadEps(eps []db.Ep) {
-	var s []string
-	var args []interface{}
+func uploadEps(eps []*db.Ep) {
 	for _, ep := range eps {
-		s = append(s, "(?, ?, ?, ?)")
-		args = append(args, ep.EpID, ep.SubjectID, ep.Name, ep.Episode)
-	}
-	sql := fmt.Sprintf("INSERT INTO `ep` (`ep_id`, `subject_id`, `name`, `episode`) VALUES %s ON DUPLICATE KEY UPDATE `name` = VALUES(`name`), `episode` = VALUES(`episode`)", strings.Join(s, ","))
-	err := db.Mysql.Exec(sql, args...).Error
-	if err != nil {
-		logrus.Errorln(err, sql, args)
+		_, err := epUpsertStmt.Exec(ep)
+		if err != nil {
+			logrus.Errorln("upsert ep error", ep, err)
+		}
 	}
 }

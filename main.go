@@ -24,18 +24,22 @@ func main() {
 			fmt.Printf("Sentry initialization failed: %v\n", err)
 		}
 	}
-
-	logrus.SetReportCaller(true)
 	logrus.SetFormatter(&logrus.TextFormatter{
-		FullTimestamp:    false,
-		DisableTimestamp: true,
-		DisableColors:    false,
-		TimestampFormat:  "",
+		ForceColors:               true,
+		DisableColors:             false,
+		EnvironmentOverrideColors: false,
+		DisableTimestamp:          false,
+		FullTimestamp:             false,
+		TimestampFormat:           "",
+		DisableSorting:            false,
+		SortingFunc:               nil,
+		DisableLevelTruncation:    false,
+		QuoteEmptyFields:          false,
+		FieldMap:                  nil,
 		CallerPrettyfier: func(f *runtime.Frame) (string, string) {
 			filename := path.Base(f.File)
 			return fmt.Sprintf("%s", f.Function), fmt.Sprintf("%s:%d", filename, f.Line)
 		},
 	})
-
 	cmd.Execute()
 }
