@@ -12,9 +12,11 @@ require (
 	github.com/go-openapi/swag v0.19.6 // indirect
 	github.com/go-redis/redis/v7 v7.2.0
 	github.com/go-resty/resty/v2 v2.2.0
+	github.com/go-sql-driver/mysql v1.4.1
 	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
 	github.com/iris-contrib/swagger/v12 v12.0.0
 	github.com/jinzhu/gorm v1.9.12
+	github.com/jmoiron/sqlx v1.2.1-0.20191203222853-2ba0fc60eb4a
 	github.com/jordic/goics v0.0.0-20181215212140-feb996c8e01f
 	github.com/kataras/iris/v12 v12.1.8
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect

@@ -2,10 +2,10 @@ package db
 
 //
 type Ep struct {
-	EpID      int    `gorm:"primary_key" json:"-"`
-	SubjectID int    `json:"subject_id"`
-	Name      string `json:"name"`
-	Episode   string `json:"episode"`
+	EpID      int    `gorm:"primary_key" json:"-" db:"ep_id"`
+	SubjectID int    `json:"subject_id" db:"subject_id"`
+	Name      string `json:"name" db:"name"`
+	Episode   string `json:"episode" db:"episode"`
 }
 
 //
