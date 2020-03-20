@@ -8,6 +8,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql" // mysql driver
 	"github.com/jmoiron/sqlx"
+	"github.com/sirupsen/logrus"
 )
 
 // type base struct {
@@ -34,5 +35,7 @@ func InitDB() {
 	// Mysql.Set("gorm:table_options", "CHARSET=utf8mb4").AutoMigrate(&Vote{}, &VoteOption{})
 
 	MysqlX, err = sqlx.Connect("mysql", dsn)
-
+	if err != nil {
+		logrus.Fatalln(err)
+	}
 }
