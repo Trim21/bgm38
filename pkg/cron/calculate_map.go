@@ -37,7 +37,8 @@ func reCalculateMap() {
 	}
 
 	if _, err := tx.Exec(`UPDATE relation SET removed = 0 WHERE true`); err != nil {
-
+		logrus.Errorln(err)
+		return
 	}
 	preRemove(tx, minSubject.ID, maxSubject.ID)
 	err = tx.Commit()
@@ -135,7 +136,7 @@ func preRemove(tx *sqlx.Tx, subjectStart int, subjectEnd int) {
 	if err != nil {
 		logrus.Errorln(err)
 	}
-	for i := subjectStart; i < subjectEnd; i += chunkSize {
+	for i := subjectStart; i <= subjectEnd; i += chunkSize {
 		relationIDNeedToRemove := make(map[string]bool)
 		sourceToTarget := make(map[int]map[int]bool)
 		var relations []db.Relation
@@ -325,7 +326,7 @@ func firstRun(tx *sqlx.Tx, subjectStart int, subjectEnd int) error {
 	logrus.Infof("got %d map", len(subjectMaps))
 	for key, ids := range subjectMaps {
 		logrus.Debugln(key)
-		err := chunkIterInt(ids, func(s []int) error {
+		err = chunkIterInt(ids, func(s []int) error {
 			return execIn(tx, `update subject set map=? where id in (?)`, key, s)
 		})
 		if err != nil {
@@ -336,8 +337,7 @@ func firstRun(tx *sqlx.Tx, subjectStart int, subjectEnd int) error {
 	for key, ids := range relationMaps {
 		logrus.Debugln(key)
 		err := chunkIterStr(ids, func(s []string) error {
-			err := execIn(tx, `update relation set map = ? where id IN (?)`, key, s)
-			return err
+			return execIn(tx, `update relation set map = ? where id IN (?)`, key, s)
 		})
 		if err != nil {
 			return err
@@ -346,14 +346,12 @@ func firstRun(tx *sqlx.Tx, subjectStart int, subjectEnd int) error {
 
 	_, err = tx.Exec(`update subject set locked=? where map=?`, 1, 0)
 	if err != nil {
-		logrus.Errorln(err)
-		err = nil
+		return err
 	}
 
 	_, err = tx.Exec(`update relation set removed=? where map=?`, 1, 0)
 	if err != nil {
-		logrus.Errorln(err)
-		err = nil
+		return err
 	}
 	logrus.Infoln("finish save to db")
 	return nil
