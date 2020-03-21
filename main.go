@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"path"
-	"runtime"
 
 	"bgm38/cmd"
 	"bgm38/pkg/utils"
@@ -24,22 +22,6 @@ func main() {
 			fmt.Printf("Sentry initialization failed: %v\n", err)
 		}
 	}
-	logrus.SetFormatter(&logrus.TextFormatter{
-		ForceColors:               true,
-		DisableColors:             false,
-		EnvironmentOverrideColors: false,
-		DisableTimestamp:          false,
-		FullTimestamp:             false,
-		TimestampFormat:           "",
-		DisableSorting:            false,
-		SortingFunc:               nil,
-		DisableLevelTruncation:    false,
-		QuoteEmptyFields:          false,
-		FieldMap:                  nil,
-		CallerPrettyfier: func(f *runtime.Frame) (string, string) {
-			filename := path.Base(f.File)
-			return fmt.Sprintf("%s", f.Function), fmt.Sprintf("%s:%d", filename, f.Line)
-		},
-	})
+	logrus.SetFormatter(&logrus.TextFormatter{})
 	cmd.Execute()
 }

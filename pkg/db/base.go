@@ -33,9 +33,9 @@ func InitDB() {
 	}
 	Mysql.SingularTable(true)
 	// Mysql.Set("gorm:table_options", "CHARSET=utf8mb4").AutoMigrate(&Vote{}, &VoteOption{})
-
 	MysqlX, err = sqlx.Connect("mysql", dsn)
 	if err != nil {
 		logrus.Fatalln(err)
 	}
+
 }
