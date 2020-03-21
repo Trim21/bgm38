@@ -50,6 +50,20 @@ func getCollectorCount(doc *html.Node, subject *db.Subject) {
 	}
 }
 
+func getScoreDetails(doc *html.Node) string {
+	var detail = make(map[string]string)
+	detail["total"] = htmlquery.InnerText(htmlquery.FindOne(doc, `//*[@id="ChartWarpper"]/div/small/span/text()`))
+	for _, li := range htmlquery.Find(doc, `//*[@id="ChartWarpper"]/ul[@class="horizontalChart"]/li`) {
+		s := htmlquery.InnerText(htmlquery.FindOne(doc, `.//span[@class="count"]/text()`))
+		detail[htmlquery.InnerText(htmlquery.FindOne(li, `.//span[@class="label"]/text()`))] = s[1 : len(s)-1]
+	}
+	data, err := json.Marshal(detail)
+	if err != nil {
+		return "{}"
+	}
+	return string(data)
+}
+
 func getInfo(doc *html.Node) string {
 	var info = make(map[string][]string)
 
