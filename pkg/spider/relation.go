@@ -13,7 +13,9 @@ import (
 )
 
 func parseRelation(doc *html.Node, subjectID int) {
-	section := htmlquery.Find(doc, `//div[@class="subject_section"][//h2[@class="subtitle" and contains(text(), "关联条目")]]/div[@class="content_inner"]/ul/li`)
+	section := htmlquery.Find(doc, `//div[@class="subject_section"]`+
+		`[//h2[@class="subtitle" and contains(text(), "关联条目")]]`+
+		`/div[@class="content_inner"]/ul/li`)
 	var relations []*db.Relation
 
 	var chunkList = make([][]*html.Node, 0)

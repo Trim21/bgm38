@@ -17,8 +17,8 @@ var client = resty.New()
 
 func genWikiURL() {
 	var urls = make(map[string]bool)
-	pageUrl, _ := url.Parse("https://mirror.bgm.rin.cat/wiki")
-	res, err := client.R().Get(pageUrl.String())
+	pageURL, _ := url.Parse("https://mirror.bgm.rin.cat/wiki")
+	res, err := client.R().Get(pageURL.String())
 	if err != nil {
 		time.Sleep(5 * time.Second)
 		genWikiURL()
@@ -43,8 +43,8 @@ func genWikiURL() {
 		if value {
 			if key != "" {
 				u, _ := url.Parse(key)
-				fmt.Println(pageUrl.ResolveReference(u).String())
-				db.Redis.LPush(config.RedisSpiderURLKey, pageUrl.ResolveReference(u).String())
+				fmt.Println(pageURL.ResolveReference(u).String())
+				db.Redis.LPush(config.RedisSpiderURLKey, pageURL.ResolveReference(u).String())
 			}
 		}
 	}

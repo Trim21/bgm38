@@ -6,10 +6,6 @@ import (
 	"bgm38/pkg/spider"
 )
 
-func init() {
-	rootCmd.AddCommand(spiderCmd)
-}
-
 var spiderCmd = &cobra.Command{
 	Use:   "crawl",
 	Short: "run bgm38 spider",
