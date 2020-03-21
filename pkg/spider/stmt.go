@@ -13,7 +13,6 @@ var subjectUpsertStmt *sqlx.NamedStmt
 var epUpsertStmt *sqlx.NamedStmt
 
 func prepareStmt() {
-
 	var err error
 
 	if relationUpsertStmt == nil {
@@ -30,7 +29,10 @@ func prepareStmt() {
 		}
 	}
 	if subjectUpsertStmt == nil {
-		raw := `INSERT INTO subject (id, name, image, subject_type, name_cn, tags, info, score_details, score, wishes, done, doings, on_hold, dropped, map, locked) VALUES (:id,:name,:image,:subject_type,:name_cn,:tags,:info,:score_details,:score,:wishes,:done,:doings,:on_hold,:dropped,:map,:locked) ON DUPLICATE KEY UPDATE  name = :name, image = :image, subject_type = :subject_type, name_cn = :name_cn, tags = :tags, info = :info, score_details = :score_details, score = :score, wishes = :wishes, done = :done, doings = :doings, on_hold = :on_hold, dropped = :dropped, locked = :locked`
+		raw := `INSERT INTO subject (id, name, image, subject_type, name_cn, tags, info, score_details, score, wishes, done, doings, on_hold, dropped, map, locked)` +
+			` VALUES (:id,:name,:image,:subject_type,:name_cn,:tags,:info,:score_details,:score,:wishes,:done,:doings,:on_hold,:dropped,:map,:locked) ` +
+			`ON DUPLICATE KEY UPDATE  name = :name, image = :image, subject_type = :subject_type, name_cn = :name_cn, tags = :tags, info = :info, ` +
+			`score_details = :score_details, score = :score, wishes = :wishes, done = :done, doings = :doings, on_hold = :on_hold, dropped = :dropped, locked = :locked`
 		subjectUpsertStmt, err = db.MysqlX.PrepareNamed(raw)
 		if err != nil {
 			logrus.Fatalln("prepare statements error for tag upsert", err)

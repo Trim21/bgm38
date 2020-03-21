@@ -39,8 +39,8 @@ linters:
     - gocognit
     - godox
     - maligned
-    - prealloc
     - goimports
+    #    - prealloc
     #    - whitespace
     #    - gochecknoglobals
     #    - gomnd

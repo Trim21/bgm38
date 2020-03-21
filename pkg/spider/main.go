@@ -12,8 +12,6 @@ import (
 	"bgm38/pkg/db"
 )
 
-const redisKey = "bgm_tv_spider:start_urls"
-
 func Start() error {
 	fmt.Println("spider start")
 	db.InitDB()

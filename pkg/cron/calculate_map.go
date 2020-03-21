@@ -94,17 +94,12 @@ WHERE (target = ? AND source = ?) OR (target = ? AND source = ?)`, id1, id2, id2
 }
 
 func preRemove(tx *sqlx.Tx, subjectStart int, subjectEnd int) {
+	var err error
 	println("pre remove")
 
 	removeNodes(tx, 91493, 102098, 228714, 231982, 932, 84944, 78546)
 
-	query, args, err := sqlx.In(`update relation set removed=1 where relation in (?)`, blockList)
-	if err != nil {
-		logrus.Errorln(err)
-		panic(err)
-	}
-	query = tx.Rebind(query)
-	tx.MustExec(query, args...)
+	check(execIn(tx, `update relation set removed=1 where relation in (?)`, blockList))
 
 	relationsNeedToRemove(tx, map[int]int{
 		91493:  8,

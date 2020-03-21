@@ -6,10 +6,6 @@ import (
 	"bgm38/pkg/cron"
 )
 
-func init() {
-	rootCmd.AddCommand(cronCmd)
-}
-
 var cronCmd = &cobra.Command{
 	Use:   "cron",
 	Short: "run bgm38 cron jobs",
