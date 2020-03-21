@@ -1,7 +1,6 @@
 package cron
 
 import (
-	"fmt"
 	"sync"
 
 	"github.com/jmoiron/sqlx"
@@ -12,7 +11,7 @@ import (
 
 const (
 	typeMusic = "Music"
-	chunkSize = 5000
+	chunkSize = 3000
 )
 
 var m = sync.Mutex{}
@@ -94,13 +93,9 @@ WHERE (target = ? AND source = ?) OR (target = ? AND source = ?)`, id1, id2, id2
 }
 
 func preRemove(tx *sqlx.Tx, subjectStart int, subjectEnd int) {
-	var err error
-	println("pre remove")
-
+	logrus.Infoln("pre remove")
 	removeNodes(tx, 91493, 102098, 228714, 231982, 932, 84944, 78546)
-
 	check(execIn(tx, `update relation set removed=1 where relation in (?)`, blockList))
-
 	relationsNeedToRemove(tx, map[int]int{
 		91493:  8,
 		8108:   35866,
@@ -108,43 +103,34 @@ func preRemove(tx *sqlx.Tx, subjectStart int, subjectEnd int) {
 		123207: 27466,
 		123217: 4294,
 	})
-
 	tx.MustExec(`update subject set locked=1 where subject_type=?`, typeMusic)
-	var idToRemove = make(map[int]bool)
+
 	var subjects []db.Subject
-	err = tx.Select(&subjects, `SELECT * FROM subject WHERE locked = ?`, 1)
-	check(err)
-
+	var idToRm = make([]int, 0, len(subjects))
+	check(tx.Select(&subjects, `SELECT * FROM subject WHERE locked = ?`, 1))
 	for _, s := range subjects {
-		idToRemove[s.ID] = true
+		idToRm = append(idToRm, s.ID)
 	}
 
-	var idToRM []int
-	for key := range idToRemove {
-		idToRM = append(idToRM, key)
-	}
-
-	err = chunkIterInt(idToRM, func(s []int) error {
+	check(chunkIterInt(idToRm, func(s []int) error {
 		return execIn(tx, `UPDATE relation SET removed=1 where source IN (?) OR target IN (?)`, s, s)
-	})
+	}))
 
-	if err != nil {
-		logrus.Errorln(err)
-	}
 	for i := subjectStart; i <= subjectEnd; i += chunkSize {
 		relationIDNeedToRemove := make(map[string]bool)
 		sourceToTarget := make(map[int]map[int]bool)
-		var relations []db.Relation
-		err := tx.Select(&relations, `SELECT * FROM relation WHERE (( source >= ? AND source < ? ) OR ( target >= ? AND target < ? ) ) AND removed = ?`,
+		var relations = make([]db.Relation, 0, chunkSize)
+		err := tx.Select(&relations, `SELECT * FROM relation `+
+			`WHERE (( source >= ? AND source < ? ) OR ( target >= ? AND target < ? ) ) AND removed = ?`,
 			i, i+chunkSize, i, i+chunkSize, 0)
 		check(err)
+
 		for _, rel := range relations {
 			if sourceToTarget[rel.Source] == nil {
 				sourceToTarget[rel.Source] = make(map[int]bool)
 			}
 			sourceToTarget[rel.Source][rel.Target] = true
 		}
-
 		for _, rel := range relations {
 			if subMap, ok := sourceToTarget[rel.Target]; ok {
 				if _, ok := subMap[rel.Source]; ok {
@@ -159,10 +145,10 @@ func preRemove(tx *sqlx.Tx, subjectStart int, subjectEnd int) {
 			ids = append(ids, key)
 		}
 		if len(ids) != 0 {
-			_ = execIn(tx, `update relation set removed = 1 where id IN (?)`, ids)
+			check(execIn(tx, `update relation set removed = 1 where id IN (?)`, ids))
 		}
 	}
-	println("finish pre remove")
+	logrus.Infoln("finish pre remove")
 }
 
 func getRelationsFromDB(tx *sqlx.Tx, subjectStart, subjectEnd int) (map[int]map[string]*db.Relation, int, error) {
@@ -172,7 +158,8 @@ func getRelationsFromDB(tx *sqlx.Tx, subjectStart, subjectEnd int) (map[int]map[
 	for i := subjectStart; i < subjectEnd; i += chunkSize {
 		var edges = make([]*db.Relation, 0, 5000)
 
-		err := tx.Select(&edges, `select * from relation where (source >= ?) AND (source < ?) AND (removed = ?)`, i, i+chunkSize, 0)
+		err := tx.Select(&edges, `select * from relation 
+where (source >= ?) AND (source < ?) AND (removed = ?)`, i, i+chunkSize, 0)
 
 		if err != nil {
 			return nil, 0, err
@@ -204,7 +191,9 @@ func getSubjectsFromDB(tx *sqlx.Tx, subjectStart int, subjectEnd int) (map[int]*
 	for i := subjectStart; i < subjectEnd; i += chunkSize {
 		var s = make([]*db.Subject, 0, 5000)
 
-		err := tx.Select(&s, `select * from subject where id >= ? AND id < ? AND locked = ? AND subject_type != ?`, i, i+chunkSize, 0, typeMusic)
+		err := tx.Select(&s, `select * from subject
+where id >= ? AND id < ? AND locked = ? AND subject_type != ?`,
+			i, i+chunkSize, 0, typeMusic)
 		if err != nil {
 			return nil, err
 		}
@@ -223,88 +212,79 @@ func getSubjectsFromDB(tx *sqlx.Tx, subjectStart int, subjectEnd int) (map[int]*
 	return subjects, nil
 }
 
+type nodeDealer struct {
+	doneIDs        map[int]bool
+	count          int
+	relationFromID map[int]map[string]*db.Relation
+	subjects       map[int]*db.Subject
+}
+
+func (d *nodeDealer) dealWithNode(sourceID int) {
+	if _, ok := d.doneIDs[sourceID]; ok {
+		return
+	}
+	d.count++
+	var edges = d.relationFromID[sourceID]
+	var mapID = 0
+	for _, edge := range edges {
+		if edge.Map != 0 {
+			mapID = edge.Map
+			break
+		}
+		if d.subjects[edge.Target].Map != 0 {
+			mapID = d.subjects[edge.Target].Map
+			break
+		}
+		if d.subjects[edge.Source].Map != 0 {
+			mapID = d.subjects[edge.Source].Map
+			break
+		}
+	}
+
+	if mapID == 0 {
+		m.Lock()
+		maxMapID++
+		mapID = maxMapID
+		m.Unlock()
+	}
+	for k := range edges {
+		edges[k].Map = mapID
+	}
+	d.subjects[sourceID].Map = mapID
+	d.doneIDs[sourceID] = true
+	for _, edge := range edges {
+		d.dealWithNode(edge.Target)
+	}
+
+}
+
 func firstRun(tx *sqlx.Tx, subjectStart int, subjectEnd int) error {
-	logrus.Debugf("build relation map with start id %d and end id %d", subjectStart, subjectEnd)
-	var doneIDs = make(map[int]bool, subjectEnd-subjectStart)
+	logrus.Infof("build relation map with start id %d and end id %d", subjectStart, subjectEnd)
 	subjects, err := getSubjectsFromDB(tx, subjectStart, subjectEnd)
 	if err != nil {
 		return err
 	}
-	for key, value := range subjects {
-		if key != value.ID {
-			panic(fmt.Sprintf("value of key %d is not %v", key, value))
-		}
-
-	}
 	logrus.Infof("total subject %d", len(subjects))
 
 	relationFromID, edgeCount, err := getRelationsFromDB(tx, subjectStart, subjectEnd)
-
 	if err != nil {
 		return err
 	}
-
-	if m, ok := relationFromID[8108]; !ok {
-		logrus.Fatalln("err")
-	} else {
-		for id, edge := range m {
-			if edge.Removed == 1 {
-				fmt.Println(id, edge)
-			}
-		}
-	}
-
 	logrus.Infof("total %d edges", edgeCount)
-	logrus.Debugf("id 8 get %d edges", len(relationFromID[8]))
 
-	count := 0
-	var dealWithNode func(int)
-	dealWithNode = func(sourceID int) {
-		if _, ok := doneIDs[sourceID]; ok {
-			return
-		}
-		count++
-		var edges = relationFromID[sourceID]
-		var mapID = 0
-		for _, edge := range edges {
-			if edge.Map != 0 {
-				mapID = edge.Map
-				break
-			}
-			if subjects[edge.Target].Map != 0 {
-				mapID = subjects[edge.Target].Map
-				break
-			}
-			if subjects[edge.Source].Map != 0 {
-				mapID = subjects[edge.Source].Map
-				break
-			}
-		}
-
-		if mapID == 0 {
-			m.Lock()
-			maxMapID++
-			mapID = maxMapID
-			m.Unlock()
-		}
-		for k := range edges {
-			edges[k].Map = mapID
-		}
-		subjects[sourceID].Map = mapID
-		doneIDs[sourceID] = true
-		for _, edge := range edges {
-			dealWithNode(edge.Target)
-		}
+	var d = &nodeDealer{
+		doneIDs:        make(map[int]bool, subjectEnd-subjectStart),
+		count:          0,
+		relationFromID: relationFromID,
+		subjects:       subjects,
 	}
-
-	logrus.Debugf("now iter %d subjects", len(subjects))
-
+	logrus.Infof("now iter %d subjects", len(subjects))
 	for id := range subjects {
-		dealWithNode(id)
+		d.dealWithNode(id)
 	}
 
-	logrus.Debugf("called %d times", count)
-	logrus.Debugf("done %d ids", len(doneIDs))
+	logrus.Infof("called %d times", d.count)
+	logrus.Infof("done %d ids", len(d.doneIDs))
 
 	var subjectMaps = make(map[int][]int)
 	var relationMaps = make(map[int][]string)
@@ -318,25 +298,12 @@ func firstRun(tx *sqlx.Tx, subjectStart int, subjectEnd int) error {
 		}
 	}
 
-	logrus.Infof("got %d map", len(subjectMaps))
-	for key, ids := range subjectMaps {
-		logrus.Debugln(key)
-		err = chunkIterInt(ids, func(s []int) error {
-			return execIn(tx, `update subject set map=? where id in (?)`, key, s)
-		})
-		if err != nil {
-			return nil
-		}
+	if err := updateSubjectMap(tx, subjectMaps); err != nil {
+		return err
 	}
 
-	for key, ids := range relationMaps {
-		logrus.Debugln(key)
-		err := chunkIterStr(ids, func(s []string) error {
-			return execIn(tx, `update relation set map = ? where id IN (?)`, key, s)
-		})
-		if err != nil {
-			return err
-		}
+	if err := updateRelationMap(tx, relationMaps); err != nil {
+		return err
 	}
 
 	_, err = tx.Exec(`update subject set locked=? where map=?`, 1, 0)
@@ -349,6 +316,32 @@ func firstRun(tx *sqlx.Tx, subjectStart int, subjectEnd int) error {
 		return err
 	}
 	logrus.Infoln("finish save to db")
+	return nil
+}
+
+func updateSubjectMap(tx *sqlx.Tx, subjectMaps map[int][]int) error {
+	var err error
+	logrus.Infof("got %d map", len(subjectMaps))
+	for key, ids := range subjectMaps {
+		err = chunkIterInt(ids, func(s []int) error {
+			return execIn(tx, `update subject set map=? where id in (?)`, key, s)
+		})
+		if err != nil {
+			return nil
+		}
+	}
+	return nil
+}
+
+func updateRelationMap(tx *sqlx.Tx, relationMaps map[int][]string) error {
+	for key, ids := range relationMaps {
+		err := chunkIterStr(ids, func(s []string) error {
+			return execIn(tx, `update relation set map = ? where id IN (?)`, key, s)
+		})
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -390,8 +383,8 @@ func check(err error) {
 	}
 }
 
-func execIn(tx *sqlx.Tx, query string, args ...interface{}) error {
-	q, a, err := sqlx.In(query, args...)
+func execIn(tx *sqlx.Tx, sql string, args ...interface{}) error {
+	q, a, err := sqlx.In(sql, args...)
 	if err != nil {
 		return err
 	}

@@ -27,7 +27,6 @@ linters:
     - misspell
     - nakedret
     - rowserrcheck
-    - scopelint
     - staticcheck
     - structcheck
     - stylecheck
@@ -41,6 +40,7 @@ linters:
     - maligned
     - goimports
     #    - prealloc
+    #    - scopelint
     #    - whitespace
     #    - gochecknoglobals
     #    - gomnd
