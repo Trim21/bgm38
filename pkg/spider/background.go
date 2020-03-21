@@ -19,7 +19,7 @@ import (
 func dispatcher(urlToFetch chan string) {
 	count := 0
 	go func() {
-		t := time.NewTicker(time.Minute * 10)
+		t := time.NewTicker(time.Minute * 1)
 		defer t.Stop()
 		for {
 			<-t.C
@@ -28,8 +28,12 @@ func dispatcher(urlToFetch chan string) {
 	}()
 
 	logrus.Debugln("start spider dispatcher")
+	for i := 310000; i > 0; i-- {
+		urlToFetch <- fmt.Sprintf("https://mirror.bgm.rin.cat/subject/%d", i)
+		count++
+	}
 
-	for ; ; {
+	for {
 		res, err := db.Redis.BRPop(time.Minute, config.RedisSpiderURLKey).Result()
 		if err != nil && err != redis.Nil {
 			logrus.Errorln(err)
@@ -87,7 +91,7 @@ func parser(resQueue chan response) {
 		func() {
 			defer func() {
 				if r := recover(); r != nil {
-					fmt.Println("panic occured: ", r)
+					fmt.Println("panic occurred: ", r)
 				}
 			}()
 

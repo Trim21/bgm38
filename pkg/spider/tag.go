@@ -38,7 +38,6 @@ func parseTagFromDoc(doc *html.Node, subjectID int) {
 	}
 }
 
-
 func uploadTags(tags []*db.Tag) {
 	var err error
 
