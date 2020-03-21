@@ -7,7 +7,7 @@ release: clean build
 
 build: dist/app
 
-generated: $(MSGP_GEN) $(WEB)
+generated: $(MSGP_GEN)
 
 $(MSGP_GEN): %_gen.go: %.go
 	msgp -file $<
