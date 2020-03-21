@@ -1,4 +1,4 @@
-version: '3.4'
+version: "3.4"
 
 x-defaults: &default
   networks:
@@ -13,12 +13,6 @@ services:
     ports:
       - 6379:6379
 
-  mongodb:
-    <<: *default
-    image: mongo:4-xenial
-    ports:
-      - 27017:27017
-
   mysql:
     <<: *default
     image: mysql:5.7
@@ -28,7 +22,7 @@ services:
     environment:
       - MYSQL_DATABASE=bgm_ip_viewer
       - MYSQL_ROOT_PASSWORD=password
-      - 'MYSQL_ROOT_HOST=%'
+      - "MYSQL_ROOT_HOST=%"
 
 networks:
   backends:
