@@ -16,9 +16,7 @@ linters:
     - gocritic
     - gocyclo
     - gofmt
-    - goimports
     - golint
-#    - gomnd
     - goprintffuncname
     - gosec
     - gosimple
@@ -38,9 +36,11 @@ linters:
     - unparam
     - unused
     - varcheck
-#    - whitespace
-#    - gochecknoglobals
     - gocognit
     - godox
     - maligned
     - prealloc
+    #    - goimports
+    #    - whitespace
+    #    - gochecknoglobals
+    #    - gomnd
