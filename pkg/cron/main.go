@@ -3,10 +3,11 @@ package cron
 import (
 	"fmt"
 
-	"bgm38/config"
-	"bgm38/pkg/db"
 	"github.com/robfig/cron/v3"
 	"github.com/sirupsen/logrus"
+
+	"bgm38/config"
+	"bgm38/pkg/db"
 )
 
 type lo struct{}

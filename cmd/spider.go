@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"bgm38/pkg/spider"
 	"github.com/spf13/cobra"
+
+	"bgm38/pkg/spider"
 )
 
 func init() {

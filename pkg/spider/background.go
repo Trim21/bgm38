@@ -7,12 +7,13 @@ import (
 	"strings"
 	"time"
 
-	"bgm38/config"
-	"bgm38/pkg/db"
 	"github.com/antchfx/htmlquery"
 	"github.com/go-redis/redis/v7"
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
+
+	"bgm38/config"
+	"bgm38/pkg/db"
 )
 
 func dispatcher(urlToFetch chan string) {

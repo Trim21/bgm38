@@ -3,8 +3,9 @@ package cmd
 import (
 	"fmt"
 
-	"bgm38/config"
 	"github.com/spf13/cobra"
+
+	"bgm38/config"
 )
 
 func init() {
