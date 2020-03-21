@@ -1,77 +1,101 @@
 package cron
 
 import (
-	"fmt"
 	"sync"
 
-	"github.com/jinzhu/gorm"
+	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 
 	"bgm38/pkg/db"
 )
 
 const (
-	subjectTable  = "subject"
-	relationTable = "relation"
-	typeMusic     = "Music"
-	chunkSize     = 5000
+	typeMusic = "Music"
+	chunkSize = 3000
 )
 
 var m = sync.Mutex{}
 var maxMapID = 0
-var blankList = []string{"角色出演", "片头曲", "片尾曲", "其他", "画集", "原声集"}
+var blockList = []string{"角色出演", "片头曲", "片尾曲", "其他", "画集", "原声集"}
 
 func reCalculateMap() {
 	var err error
 	var maxSubject db.Subject
 	var minSubject db.Subject
-	db.Mysql.Order(`id desc`).First(&maxSubject)
-	db.Mysql.Order(`id`).First(&minSubject)
+	maxMapID = 0
 
-	tx := db.Mysql.Begin()
+	err = db.MysqlX.Get(&maxSubject, `select * from subject order by id desc limit 1`)
+	check(err)
+	err = db.MysqlX.Get(&minSubject, `select * from subject order by id limit 1`)
+	check(err)
 
-	if tx.Table(relationTable).Where("1 = ?", 1).
-		Update(`removed`, 0).Error != nil {
-	}
-	preRemove(tx, minSubject.ID, maxSubject.ID)
-	tx.Commit()
-
-	tx = db.Mysql.Begin()
-	err = firstRun(tx, minSubject.ID, maxSubject.ID)
+	tx, err := db.MysqlX.Beginx()
 	if err != nil {
-		tx.Rollback()
 		logrus.Errorln(err)
 		return
 	}
-	tx.Commit()
+
+	if _, err := tx.Exec(`UPDATE relation SET removed = 0 WHERE true`); err != nil {
+		logrus.Errorln(err)
+		return
+	}
+	preRemove(tx, minSubject.ID, maxSubject.ID)
+	err = tx.Commit()
+	if err != nil {
+		logrus.Errorln(err)
+		return
+	}
+
+	tx, err = db.MysqlX.Beginx()
+	if err != nil {
+		logrus.Errorln(err)
+		return
+	}
+
+	err = firstRun(tx, minSubject.ID, maxSubject.ID)
+	if err != nil {
+		_ = tx.Rollback()
+		logrus.Errorln(err)
+		return
+	}
+	err = tx.Commit()
+	if err != nil {
+		logrus.Errorln(err)
+		return
+	}
+
 }
 
-func removeNodes(tx *gorm.DB, nodeIDs ...int) {
-	tx.Table(subjectTable).Where(`id in (?)`, nodeIDs).
-		Update(`locked`, 1)
-	tx.Table(relationTable).
-		Where(`target in (?) or source in (?)`, nodeIDs, nodeIDs).
-		Update(`removed`, 1)
+func removeNodes(tx *sqlx.Tx, nodeIDs ...int) {
+	query, args, err := sqlx.In(`UPDATE subject SET locked = 1 WHERE id IN (?)`, nodeIDs)
+	if err != nil {
+		logrus.Errorln(err)
+		panic(err)
+	}
+
+	query = tx.Rebind(query)
+	tx.MustExec(query, args...)
+
+	query, args, err = sqlx.In(`UPDATE relation SET removed = 1 WHERE target in (?) or source in (?)`, nodeIDs, nodeIDs)
+	if err != nil {
+		logrus.Errorln(err)
+		panic(err)
+	}
+	query = tx.Rebind(query)
+	tx.MustExec(query, args...)
 }
 
-func relationsNeedToRemove(tx *gorm.DB, m map[int]int) {
+func relationsNeedToRemove(tx *sqlx.Tx, m map[int]int) {
 	for id1, id2 := range m {
-		tx.Table(relationTable).
-			Where(`(target = ? AND source = ?) OR (target = ? AND source = ?)`,
-				id1, id2, id2, id1).
-			Update(`removed`, 1)
-
+		tx.MustExec(`UPDATE relation SET removed = 1 
+WHERE (target = ? AND source = ?) OR (target = ? AND source = ?)`, id1, id2, id2, id1)
 	}
 }
 
-func preRemove(tx *gorm.DB, subjectStart int, subjectEnd int) {
-	println("pre remove")
-
+func preRemove(tx *sqlx.Tx, subjectStart int, subjectEnd int) {
+	logrus.Infoln("pre remove")
 	removeNodes(tx, 91493, 102098, 228714, 231982, 932, 84944, 78546)
-
-	tx.Table(relationTable).
-		Where(`relation in (?)`, blankList).Update(`removed`, 1)
-
+	check(execIn(tx, `update relation set removed=1 where relation in (?)`, blockList))
 	relationsNeedToRemove(tx, map[int]int{
 		91493:  8,
 		8108:   35866,
@@ -79,37 +103,27 @@ func preRemove(tx *gorm.DB, subjectStart int, subjectEnd int) {
 		123207: 27466,
 		123217: 4294,
 	})
+	tx.MustExec(`update subject set locked=1 where subject_type=?`, typeMusic)
 
-	tx.Table(subjectTable).Where(`subject_type = ?`, typeMusic).
-		Update(`locked`, 1)
-	var idToRemove = make(map[int]bool)
 	var subjects []db.Subject
-	tx.Where(`locked = ?`, 1).Find(&subjects)
+	var idToRm = make([]int, 0, len(subjects))
+	check(tx.Select(&subjects, `SELECT * FROM subject WHERE locked = ?`, 1))
 	for _, s := range subjects {
-		idToRemove[s.ID] = true
+		idToRm = append(idToRm, s.ID)
 	}
 
-	var idToRM []int
-	for key := range idToRemove {
-		idToRM = append(idToRM, key)
-	}
+	check(chunkIterInt(idToRm, func(s []int) error {
+		return execIn(tx, `UPDATE relation SET removed=1 where source IN (?) OR target IN (?)`, s, s)
+	}))
 
-	err := chunkIterInt(idToRM, func(s []int) error {
-		return tx.Table(relationTable).
-			Where(`source IN (?) OR target IN (?)`, s, s).
-			Update(`removed`, 1).Error
-	})
-
-	if err != nil {
-		logrus.Errorln(err)
-	}
-	for i := subjectStart; i < subjectEnd; i += chunkSize {
+	for i := subjectStart; i <= subjectEnd; i += chunkSize {
 		relationIDNeedToRemove := make(map[string]bool)
 		sourceToTarget := make(map[int]map[int]bool)
-		var relations [] db.Relation
-		tx.Where(`(( source >= ? AND source < ? ) `+
-			`OR ( target >= ? AND target < ? ) ) AND removed = ?`,
-			i, i+chunkSize, i, i+chunkSize, 0).Find(&relations)
+		var relations = make([]db.Relation, 0, chunkSize)
+		err := tx.Select(&relations, `SELECT * FROM relation `+
+			`WHERE (( source >= ? AND source < ? ) OR ( target >= ? AND target < ? ) ) AND removed = ?`,
+			i, i+chunkSize, i, i+chunkSize, 0)
+		check(err)
 
 		for _, rel := range relations {
 			if sourceToTarget[rel.Source] == nil {
@@ -117,7 +131,6 @@ func preRemove(tx *gorm.DB, subjectStart int, subjectEnd int) {
 			}
 			sourceToTarget[rel.Source][rel.Target] = true
 		}
-
 		for _, rel := range relations {
 			if subMap, ok := sourceToTarget[rel.Target]; ok {
 				if _, ok := subMap[rel.Source]; ok {
@@ -132,23 +145,22 @@ func preRemove(tx *gorm.DB, subjectStart int, subjectEnd int) {
 			ids = append(ids, key)
 		}
 		if len(ids) != 0 {
-			tx.Table(relationTable).Where(`id IN (?)`, ids).
-				Update(`removed`, 1)
+			check(execIn(tx, `update relation set removed = 1 where id IN (?)`, ids))
 		}
 	}
-	println("finish pre remove")
+	logrus.Infoln("finish pre remove")
 }
 
-func getRelationsFromDB(tx *gorm.DB, subjectStart, subjectEnd int) (map[int]map[string]*db.Relation, int, error) {
+func getRelationsFromDB(tx *sqlx.Tx, subjectStart, subjectEnd int) (map[int]map[string]*db.Relation, int, error) {
 
 	edgeCount := 0
 	var relationFromID = make(map[int]map[string]*db.Relation)
 	for i := subjectStart; i < subjectEnd; i += chunkSize {
 		var edges = make([]*db.Relation, 0, 5000)
 
-		err := tx.Table(relationTable).
-			Where(`(source >= ?) AND (source < ?) AND (removed = ?)`, i, i+chunkSize, 0).
-			Find(&edges).Error
+		err := tx.Select(&edges, `select * from relation 
+where (source >= ?) AND (source < ?) AND (removed = ?)`, i, i+chunkSize, 0)
+
 		if err != nil {
 			return nil, 0, err
 		}
@@ -174,14 +186,14 @@ func getRelationsFromDB(tx *gorm.DB, subjectStart, subjectEnd int) (map[int]map[
 
 	return relationFromID, edgeCount, nil
 }
-func getSubjectsFromDB(tx *gorm.DB, subjectStart int, subjectEnd int) (map[int]*db.Subject, error) {
+func getSubjectsFromDB(tx *sqlx.Tx, subjectStart int, subjectEnd int) (map[int]*db.Subject, error) {
 	var subjects = make(map[int]*db.Subject)
 	for i := subjectStart; i < subjectEnd; i += chunkSize {
 		var s = make([]*db.Subject, 0, 5000)
 
-		err := tx.Where(`id >= ? AND id < ? AND `+
-			`locked = ? AND subject_type != ?`, i, i+chunkSize, 0, typeMusic).
-			Find(&s).Error
+		err := tx.Select(&s, `select * from subject
+where id >= ? AND id < ? AND locked = ? AND subject_type != ?`,
+			i, i+chunkSize, 0, typeMusic)
 		if err != nil {
 			return nil, err
 		}
@@ -200,88 +212,79 @@ func getSubjectsFromDB(tx *gorm.DB, subjectStart int, subjectEnd int) (map[int]*
 	return subjects, nil
 }
 
-func firstRun(tx *gorm.DB, subjectStart int, subjectEnd int) error {
-	logrus.Debugf("build relation map with start id %d and end id %d", subjectStart, subjectEnd)
-	var doneIDs = make(map[int]bool, subjectEnd-subjectStart)
+type nodeDealer struct {
+	doneIDs        map[int]bool
+	count          int
+	relationFromID map[int]map[string]*db.Relation
+	subjects       map[int]*db.Subject
+}
+
+func (d *nodeDealer) dealWithNode(sourceID int) {
+	if _, ok := d.doneIDs[sourceID]; ok {
+		return
+	}
+	d.count++
+	var edges = d.relationFromID[sourceID]
+	var mapID = 0
+	for _, edge := range edges {
+		if edge.Map != 0 {
+			mapID = edge.Map
+			break
+		}
+		if d.subjects[edge.Target].Map != 0 {
+			mapID = d.subjects[edge.Target].Map
+			break
+		}
+		if d.subjects[edge.Source].Map != 0 {
+			mapID = d.subjects[edge.Source].Map
+			break
+		}
+	}
+
+	if mapID == 0 {
+		m.Lock()
+		maxMapID++
+		mapID = maxMapID
+		m.Unlock()
+	}
+	for k := range edges {
+		edges[k].Map = mapID
+	}
+	d.subjects[sourceID].Map = mapID
+	d.doneIDs[sourceID] = true
+	for _, edge := range edges {
+		d.dealWithNode(edge.Target)
+	}
+
+}
+
+func firstRun(tx *sqlx.Tx, subjectStart int, subjectEnd int) error {
+	logrus.Infof("build relation map with start id %d and end id %d", subjectStart, subjectEnd)
 	subjects, err := getSubjectsFromDB(tx, subjectStart, subjectEnd)
 	if err != nil {
 		return err
 	}
-	for key, value := range subjects {
-		if key != value.ID {
-			panic(fmt.Sprintf("value of key %d is not %v", key, value))
-		}
-
-	}
 	logrus.Infof("total subject %d", len(subjects))
 
 	relationFromID, edgeCount, err := getRelationsFromDB(tx, subjectStart, subjectEnd)
-
 	if err != nil {
 		return err
 	}
-
-	if m, ok := relationFromID[8108]; !ok {
-		logrus.Fatalln("err")
-	} else {
-		for id, edge := range m {
-			if edge.Removed == 1 {
-				fmt.Println(id, edge)
-			}
-		}
-	}
-
 	logrus.Infof("total %d edges", edgeCount)
-	logrus.Debugf("id 8 get %d edges", len(relationFromID[8]))
 
-	count := 0
-	var dealWithNode func(int)
-	dealWithNode = func(sourceID int) {
-		if _, ok := doneIDs[sourceID]; ok {
-			return
-		}
-		count++
-		var edges = relationFromID[sourceID]
-		var mapID = 0
-		for _, edge := range edges {
-			if edge.Map != 0 {
-				mapID = edge.Map
-				break
-			}
-			if subjects[edge.Target].Map != 0 {
-				mapID = subjects[edge.Target].Map
-				break
-			}
-			if subjects[edge.Source].Map != 0 {
-				mapID = subjects[edge.Source].Map
-				break
-			}
-		}
-
-		if mapID == 0 {
-			m.Lock()
-			maxMapID++
-			mapID = maxMapID
-			m.Unlock()
-		}
-		for k := range edges {
-			edges[k].Map = mapID
-		}
-		subjects[sourceID].Map = mapID
-		doneIDs[sourceID] = true
-		for _, edge := range edges {
-			dealWithNode(edge.Target)
-		}
+	var d = &nodeDealer{
+		doneIDs:        make(map[int]bool, subjectEnd-subjectStart),
+		count:          0,
+		relationFromID: relationFromID,
+		subjects:       subjects,
 	}
-
-	logrus.Debugf("now iter %d subjects", len(subjects))
-
+	logrus.Infof("now iter %d subjects", len(subjects))
 	for id := range subjects {
-		dealWithNode(id)
+		d.dealWithNode(id)
 	}
 
-	logrus.Debugf("called %d times", count)
-	logrus.Debugf("done %d ids", len(doneIDs))
+	logrus.Infof("called %d times", d.count)
+	logrus.Infof("done %d ids", len(d.doneIDs))
 
 	var subjectMaps = make(map[int][]int)
 	var relationMaps = make(map[int][]string)
@@ -295,36 +298,50 @@ func firstRun(tx *gorm.DB, subjectStart int, subjectEnd int) error {
 		}
 	}
 
+	if err := updateSubjectMap(tx, subjectMaps); err != nil {
+		return err
+	}
+
+	if err := updateRelationMap(tx, relationMaps); err != nil {
+		return err
+	}
+
+	_, err = tx.Exec(`update subject set locked=? where map=?`, 1, 0)
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec(`update relation set removed=? where map=?`, 1, 0)
+	if err != nil {
+		return err
+	}
+	logrus.Infoln("finish save to db")
+	return nil
+}
+
+func updateSubjectMap(tx *sqlx.Tx, subjectMaps map[int][]int) error {
+	var err error
 	logrus.Infof("got %d map", len(subjectMaps))
 	for key, ids := range subjectMaps {
-		logrus.Debugln(key)
-		err := chunkIterInt(ids, func(s []int) error {
-			return tx.Table(subjectTable).Where(`id IN (?)`, s).
-				Update(`map`, key).Error
+		err = chunkIterInt(ids, func(s []int) error {
+			return execIn(tx, `update subject set map=? where id in (?)`, key, s)
 		})
 		if err != nil {
 			return nil
 		}
 	}
+	return nil
+}
 
+func updateRelationMap(tx *sqlx.Tx, relationMaps map[int][]string) error {
 	for key, ids := range relationMaps {
-		logrus.Debugln(key)
 		err := chunkIterStr(ids, func(s []string) error {
-			return tx.Table(relationTable).Where(`id IN (?)`, s).
-				Update(`map`, key).Error
+			return execIn(tx, `update relation set map = ? where id IN (?)`, key, s)
 		})
 		if err != nil {
 			return err
 		}
 	}
-
-	tx.Table(subjectTable).Where(`locked = ?`, 1).
-		Update(`map`, 0)
-
-	tx.Table(relationTable).Where(`removed = ?`, 1).
-		Update(`map`, 0)
-
-	logrus.Infoln("finish save to db")
 	return nil
 }
 
@@ -357,4 +374,21 @@ func min(a, b int) int {
 		return a
 	}
 	return b
+}
+
+func check(err error) {
+	if err != nil {
+		logrus.Errorln(err)
+		panic(err)
+	}
+}
+
+func execIn(tx *sqlx.Tx, sql string, args ...interface{}) error {
+	q, a, err := sqlx.In(sql, args...)
+	if err != nil {
+		return err
+	}
+	q = tx.Rebind(q)
+	_, err = tx.Exec(q, a...)
+	return err
 }

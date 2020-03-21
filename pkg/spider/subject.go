@@ -23,7 +23,8 @@ var collector = map[string]string{
 
 func getCollectorCount(doc *html.Node, subject *db.Subject) {
 	for key, value := range collector {
-		el := htmlquery.FindOne(doc, fmt.Sprintf(`//*[@id="subjectPanelCollect"]/span[@class="tip_i"]/a[@href="/subject/%d/%s"]/text()`, subject.ID, value))
+		el := htmlquery.FindOne(doc, fmt.Sprintf(`//*[@id="subjectPanelCollect"]`+
+			`/span[@class="tip_i"]/a[@href="/subject/%d/%s"]/text()`, subject.ID, value))
 		if el == nil {
 			continue
 		}
@@ -60,12 +61,12 @@ func getInfo(doc *html.Node) string {
 		}
 
 		for _, node := range htmlquery.Find(el, "text()") {
-			text := htmlquery.InnerText(node)
-			if text == "、" {
+			switch text := htmlquery.InnerText(node); {
+			case text == "、":
 				continue
-			} else if strings.HasSuffix(text, "、") {
+			case strings.HasSuffix(text, "、"):
 				value = append(value, strings.TrimRight(text, "、"))
-			} else {
+			default:
 				value = append(value, text)
 			}
 		}
@@ -78,7 +79,9 @@ func getInfo(doc *html.Node) string {
 }
 
 func getSubjectType(doc *html.Node) string {
-	subjectType := htmlquery.InnerText(htmlquery.FindOne(doc, `//*[@id="panelInterestWrapper"]//div[contains(@class,"global_score")]/div/small[contains(@class, "grey")]/text()`))
+	subjectType := htmlquery.InnerText(htmlquery.FindOne(doc,
+		`//*[@id="panelInterestWrapper"]//div[contains(@class,"global_score")]`+
+			`/div/small[contains(@class, "grey")]/text()`))
 	sl := strings.Split(subjectType, " ")
 	return sl[1]
 
