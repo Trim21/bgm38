@@ -3,8 +3,9 @@ package log
 import (
 	"os"
 
-	"bgm38/config"
 	"github.com/sirupsen/logrus"
+
+	"bgm38/config"
 )
 
 var pid = os.Getpid()

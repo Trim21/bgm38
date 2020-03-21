@@ -6,10 +6,11 @@ import (
 	"net/url"
 	"time"
 
-	"bgm38/config"
-	"bgm38/pkg/db"
 	"github.com/antchfx/htmlquery"
 	"github.com/go-resty/resty/v2"
+
+	"bgm38/config"
+	"bgm38/pkg/db"
 )
 
 var client = resty.New()

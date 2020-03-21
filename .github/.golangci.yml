@@ -40,7 +40,7 @@ linters:
     - godox
     - maligned
     - prealloc
-    #    - goimports
+    - goimports
     #    - whitespace
     #    - gochecknoglobals
     #    - gomnd
