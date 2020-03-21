@@ -1,0 +1,28 @@
+version: "3.4"
+
+x-defaults: &default
+  networks:
+    - backends
+  restart: always
+
+services:
+  redis:
+    <<: *default
+    image: redis:2.8
+    command: redis-server --requirepass mypassword
+    ports:
+      - 6379:6379
+
+  mysql:
+    <<: *default
+    image: mysql:5.7
+    ports:
+      - 3306:3306
+    command: mysqld --character-set-server=utf8mb4
+    environment:
+      - MYSQL_DATABASE=bgm_ip_viewer
+      - MYSQL_ROOT_PASSWORD=password
+      - "MYSQL_ROOT_HOST=%"
+
+networks:
+  backends:

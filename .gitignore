@@ -6,3 +6,8 @@ dist
 
 server/bindata/templates.go
 tmp
+*_gen.go
+*_gen_test.go
+web/app/docs/swagger.*
+web/app/docs/docs.go
+coverage.txt
