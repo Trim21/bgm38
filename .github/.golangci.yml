@@ -1,23 +1,46 @@
 service:
   analyzed-paths:
     - ./...
-  prepare:
-    - make install
-    - go generate
 
 linters:
   enable:
+    - bodyclose
     - deadcode
-    - gocyclo
-    - golint
-    - varcheck
-    - structcheck
-    - maligned
-    - errcheck
+    - depguard
+    - dogsled
     - dupl
+    - errcheck
+    - funlen
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - golint
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
     - ineffassign
     - interfacer
+    - lll
+    - misspell
+    - nakedret
+    - rowserrcheck
+    - scopelint
+    - staticcheck
+    - structcheck
+    - stylecheck
+    - typecheck
     - unconvert
-    - goconst
-    - gosec
-    - megacheck
+    - unparam
+    - unused
+    - varcheck
+    - gocognit
+    - godox
+    - maligned
+    - prealloc
+    #    - goimports
+    #    - whitespace
+    #    - gochecknoglobals
+    #    - gomnd
