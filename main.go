@@ -3,13 +3,14 @@ package main
 import (
 	"fmt"
 
+	"github.com/getsentry/sentry-go"
+	"github.com/go-redis/redis/v7"
+	"github.com/sirupsen/logrus"
+
 	"bgm38/cmd"
 	"bgm38/config"
 	"bgm38/pkg/log"
 	"bgm38/pkg/utils"
-	"github.com/getsentry/sentry-go"
-	"github.com/go-redis/redis/v7"
-	"github.com/sirupsen/logrus"
 )
 
 func main() {

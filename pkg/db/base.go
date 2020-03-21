@@ -3,12 +3,13 @@ package db
 import (
 	"fmt"
 
-	"bgm38/config"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql" // mysql driver
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
+
+	"bgm38/config"
 )
 
 // type base struct {

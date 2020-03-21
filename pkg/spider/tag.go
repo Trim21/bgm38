@@ -3,10 +3,11 @@ package spider
 import (
 	"strconv"
 
-	"bgm38/pkg/db"
 	"github.com/antchfx/htmlquery"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/net/html"
+
+	"bgm38/pkg/db"
 )
 
 func parseTagFromDoc(doc *html.Node, subjectID int) {

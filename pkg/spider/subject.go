@@ -6,10 +6,11 @@ import (
 	"strconv"
 	"strings"
 
-	"bgm38/pkg/db"
 	"github.com/antchfx/htmlquery"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/net/html"
+
+	"bgm38/pkg/db"
 )
 
 var collector = map[string]string{

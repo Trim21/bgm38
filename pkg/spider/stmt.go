@@ -1,9 +1,10 @@
 package spider
 
 import (
-	"bgm38/pkg/db"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
+
+	"bgm38/pkg/db"
 )
 
 var relationUpsertStmt *sqlx.NamedStmt
