@@ -15,9 +15,6 @@ $(MSGP_GEN): %_gen.go: %.go
 dist/app: generated
 	go build -ldflags "-s -w -X bgm38/config.Version=$(SLUG)" -o $@
 
-$(WEB): $(WEB_SRC)
-	swag init --generalInfo ./web/app/doc.go -o ./web/app/docs
-
 clean:
 	go clean -i ./... | true
 	rm -f ./dist/*
