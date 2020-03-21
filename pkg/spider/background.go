@@ -131,6 +131,7 @@ func parser(resQueue chan response) {
 			subject.Image = getImageURL(doc)
 			subject.Score = getScore(doc)
 			subject.Info = getInfo(doc)
+			subject.ScoreDetails = getScoreDetails(doc)
 			subject.SubjectType = getSubjectType(doc)
 			uploadSubject(&subject)
 		}()
