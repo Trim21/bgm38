@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"sync"
 
-	"bgm38/pkg/db"
 	"github.com/jinzhu/gorm"
 	"github.com/sirupsen/logrus"
+
+	"bgm38/pkg/db"
 )
 
 const (

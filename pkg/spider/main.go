@@ -5,10 +5,11 @@ import (
 	"strconv"
 	"strings"
 
-	"bgm38/pkg/db"
 	"github.com/antchfx/htmlquery"
 	"github.com/go-resty/resty/v2"
 	"golang.org/x/net/html"
+
+	"bgm38/pkg/db"
 )
 
 const redisKey = "bgm_tv_spider:start_urls"

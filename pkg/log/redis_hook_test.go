@@ -4,10 +4,11 @@ import (
 	"testing"
 	"time"
 
-	"bgm38/config"
 	"github.com/go-redis/redis/v7"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
+
+	"bgm38/config"
 )
 
 const redisKey = "bgm38 log"
