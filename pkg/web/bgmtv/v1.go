@@ -20,7 +20,8 @@ import (
 	"bgm38/pkg/web/utils/header"
 )
 
-var client = resty.New()
+// Client exported for test
+var Client = resty.New()
 var cstZone = time.FixedZone("CST", 8*3600)
 
 // @ID watchingCalendarV1
@@ -45,7 +46,7 @@ func userCalendar(ctx *fiber.Ctx) error {
 			Status:  "error",
 		})
 	}
-	resp, err := client.R().SetQueryParam("cat", "watching").
+	resp, err := Client.R().SetQueryParam("cat", "watching").
 		Get(fmt.Sprintf("https://mirror.api.bgm.rin.cat/user/%s/collection", userID))
 	var netErr net.Error
 	if err != nil {
