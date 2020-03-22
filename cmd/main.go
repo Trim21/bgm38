@@ -21,9 +21,12 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
-	rootCmd.AddCommand(versionCmd)
-	rootCmd.AddCommand(spiderCmd)
-	rootCmd.AddCommand(cronCmd)
+	rootCmd.AddCommand(
+		versionCmd,
+		serverCmd,
+		spiderCmd,
+		cronCmd,
+	)
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)

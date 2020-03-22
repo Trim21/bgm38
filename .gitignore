@@ -11,3 +11,6 @@ tmp
 web/app/docs/swagger.*
 web/app/docs/docs.go
 coverage.txt
+
+pkg/web/docs/docs.go
+pkg/web/docs/swagger.*

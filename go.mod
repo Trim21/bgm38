@@ -3,22 +3,36 @@ module bgm38
 go 1.14
 
 require (
+	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/antchfx/htmlquery v1.2.2
 	github.com/antchfx/xpath v1.1.4 // indirect
 	github.com/getsentry/sentry-go v0.5.1
+	github.com/go-openapi/spec v0.19.7 // indirect
+	github.com/go-openapi/swag v0.19.8 // indirect
 	github.com/go-redis/redis/v7 v7.2.0
 	github.com/go-resty/resty/v2 v2.2.0
 	github.com/go-sql-driver/mysql v1.5.0
+	github.com/gofiber/fiber v1.8.33
+	github.com/gofiber/recover v0.0.1
+	github.com/gofiber/requestid v0.0.1
 	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
+	github.com/jarcoal/httpmock v1.0.5
 	github.com/jmoiron/sqlx v1.2.0
+	github.com/jordic/goics v0.0.0-20181215212140-feb996c8e01f
 	github.com/lib/pq v1.1.1 // indirect
+	github.com/mailru/easyjson v0.7.1
 	github.com/mattn/go-sqlite3 v2.0.1+incompatible // indirect
 	github.com/philhofer/fwd v1.0.0 // indirect
 	github.com/robfig/cron/v3 v3.0.1
+	github.com/savsgio/gotils v0.0.0-20200308224205-e330c862e34f // indirect
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.6
 	github.com/stretchr/testify v1.4.0
+	github.com/swaggo/swag v1.6.5
 	github.com/tinylib/msgp v1.1.2
 	github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31 // indirect
+	github.com/urfave/cli v1.22.3 // indirect
 	golang.org/x/net v0.0.0-20200320220750-118fecf932d8
+	golang.org/x/tools v0.0.0-20200321224714-0d839f3cf2ed // indirect
+	gopkg.in/yaml.v2 v2.2.8 // indirect
 )
