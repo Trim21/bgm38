@@ -52,6 +52,7 @@ func TestUserWatchingCalendar(t *testing.T) {
 	app := web.CreateApp()
 	req, _ := http.NewRequest("GET", baseURL+"/bgm_tv/v1/calendar/trim21", nil)
 	res, _ := app.Test(req)
+	defer res.Body.Close()
 
 	assert.Equal(t, res.StatusCode, 200, "should resp 200")
 	assert.Contains(t, res.Header.Get("content-type"), "calendar",

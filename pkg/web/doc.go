@@ -22,7 +22,7 @@ import (
 )
 
 func setupSwagger(app *fiber.App) {
-	j := docs.OpenApi()
+	j := docs.OpenAPI()
 	app.Get("/swagger/doc.json", func(ctx *fiber.Ctx) {
 		ctx.Set("Content-Type", "application/json")
 		ctx.Status(200).SendString(j)

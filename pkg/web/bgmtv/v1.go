@@ -77,7 +77,27 @@ func userCalendar(ctx *fiber.Ctx) error {
 			Status:  "error",
 		})
 	}
+	cal := makeCal(userID, data)
+	ctx.Status(http.StatusOK)
 
+	if !header.IsUABrowser(ctx.Get("user-agent")) {
+		ctx.Set("charset", "utf-8")
+		ctx.Set("Content-type", "text/calendar")
+		ctx.Set("Content-Disposition", "inline")
+		ctx.Set("filename", "calendar.ics")
+	}
+	cal.Write(goics.NewICalEncode(ctx.Fasthttp.Response.BodyWriter()))
+	return nil
+}
+
+func getAirDayOffset(w time.Weekday, airWeekday int) int {
+	weekday := int(w)
+	airWeekday %= 7
+
+	return (airWeekday + 7 - weekday) % 7
+}
+
+func makeCal(userID string, data []model.UserCollection) *goics.Component {
 	cal := goics.NewComponent()
 	cal.SetType("VCALENDAR")
 	cal.AddProperty("name", "Bgm.tv Followed Bangumi Calendar")
@@ -100,22 +120,5 @@ func userCalendar(ctx *fiber.Ctx) error {
 		s.AddProperty("SUMMARY", subject.Subject.NameCn)
 		cal.AddComponent(s)
 	}
-
-	ctx.Status(http.StatusOK)
-
-	if !header.IsUABrowser(ctx.Get("user-agent")) {
-		ctx.Set("charset", "utf-8")
-		ctx.Set("Content-type", "text/calendar")
-		ctx.Set("Content-Disposition", "inline")
-		ctx.Set("filename", "calendar.ics")
-	}
-	cal.Write(goics.NewICalEncode(ctx.Fasthttp.Response.BodyWriter()))
-	return nil
-}
-
-func getAirDayOffset(w time.Weekday, airWeekday int) int {
-	weekday := int(w)
-	airWeekday = airWeekday % 7
-
-	return (airWeekday + 7 - weekday) % 7
+	return cal
 }
