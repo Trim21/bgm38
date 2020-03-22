@@ -5,10 +5,9 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/gofiber/fiber"
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"
-
-	"bgm38/pkg/web"
 )
 
 const baseURL = "http://127.0.0.1:3002"
@@ -48,7 +47,8 @@ func TestUserWatchingCalendar(t *testing.T) {
     "vol_status": 0
   }]`))
 
-	app := web.CreateApp()
+	app := fiber.New()
+	Group(app)
 	req, _ := http.NewRequest("GET", baseURL+"/bgm_tv/v1/calendar/trim21", nil)
 	res, _ := app.Test(req)
 	defer res.Body.Close()
