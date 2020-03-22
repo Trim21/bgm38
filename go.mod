@@ -27,7 +27,7 @@ require (
 	github.com/savsgio/gotils v0.0.0-20200308224205-e330c862e34f // indirect
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.6
-	github.com/stretchr/testify v1.4.0
+	github.com/stretchr/testify v1.5.1
 	github.com/swaggo/swag v1.6.5
 	github.com/tinylib/msgp v1.1.2
 	github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31 // indirect
