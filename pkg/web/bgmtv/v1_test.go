@@ -1,4 +1,4 @@
-package web_test
+package bgmtv
 
 import (
 	"io/ioutil"
@@ -9,13 +9,12 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"bgm38/pkg/web"
-	"bgm38/pkg/web/bgmtv"
 )
 
 const baseURL = "http://127.0.0.1:3002"
 
 func TestUserWatchingCalendar(t *testing.T) {
-	httpmock.ActivateNonDefault(bgmtv.Client.GetClient())
+	httpmock.ActivateNonDefault(client.GetClient())
 
 	defer httpmock.DeactivateAndReset()
 	httpmock.RegisterResponder("GET", "https://mirror.api.bgm.rin.cat/user/trim21/collection?cat=watching",
