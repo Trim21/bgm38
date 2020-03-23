@@ -7,7 +7,8 @@ ASSERTS = $(wildcard asserts/**/* asserts/*)
 
 default: build
 
-release: clean build
+release: clean generated
+	go build -tags=asserts -mod=readonly -ldflags "-s -w -X bgm38/config.Version=$(SLUG)" -o dist/app
 
 build: dist/app
 
