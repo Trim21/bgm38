@@ -7,7 +7,7 @@
 // @BasePath /
 
 // @contact.name Trim21
-// @contact.url https://github.com/Trim21
+// @contact.url https://github.com/Trim21/bgm38/issues
 // @contact.email i@trim21.me
 
 // @license.name MIT
