@@ -4,7 +4,6 @@ package md2bbc
 import (
 	"bytes"
 	"fmt"
-	"go/format"
 	"io/ioutil"
 	"strings"
 
@@ -20,19 +19,6 @@ type markdownRenderer struct {
 	lastNormalText     string
 
 	opt Options
-}
-
-func formatCode(lang string, text []byte) (formattedCode []byte, ok bool) {
-	switch lang {
-	case "Go", "go":
-		gofmt, err := format.Source(text)
-		if err != nil {
-			return nil, false
-		}
-		return gofmt, true
-	default:
-		return nil, false
-	}
 }
 
 // Block-level callbacks.
@@ -58,13 +44,7 @@ func (*markdownRenderer) BlockCode(out *bytes.Buffer, text []byte, lang string) 
 		out.WriteString("[code]")
 	}
 	out.WriteString("\n")
-
-	if formattedCode, ok := formatCode(lang, text); ok {
-		out.Write(formattedCode)
-	} else {
-		out.Write(text)
-	}
-
+	out.Write(text)
 	out.WriteString("[/code]\n")
 }
 
@@ -84,13 +64,6 @@ func (*markdownRenderer) BlockQuote(out *bytes.Buffer, text []byte) {
 	out.WriteString("[/quote]\n")
 }
 
-func (*markdownRenderer) BlockHTML(out *bytes.Buffer, text []byte) {
-	doubleSpace(out)
-	out.Write(text)
-	out.WriteByte('\n')
-}
-func (*markdownRenderer) TitleBlock(out *bytes.Buffer, text []byte) {
-}
 func (mr *markdownRenderer) Header(out *bytes.Buffer, text func() bool, level int, id string) {
 	marker := out.Len()
 	doubleSpace(out)
@@ -193,23 +166,17 @@ func (*markdownRenderer) CodeSpan(out *bytes.Buffer, text []byte) {
 	out.WriteString("[/code]")
 }
 func (mr *markdownRenderer) DoubleEmphasis(out *bytes.Buffer, text []byte) {
-	if mr.opt.Terminal {
-		out.WriteString("\x1b[1m") // Bold.
-	}
-	out.WriteString("**")
+	out.WriteString("[b]")
 	out.Write(text)
-	out.WriteString("**")
-	if mr.opt.Terminal {
-		out.WriteString("\x1b[0m") // Reset.
-	}
+	out.WriteString("[/b]")
 }
 func (*markdownRenderer) Emphasis(out *bytes.Buffer, text []byte) {
 	if len(text) == 0 {
 		return
 	}
-	out.WriteByte('*')
+	out.WriteString("[i]")
 	out.Write(text)
-	out.WriteByte('*')
+	out.WriteString("[/i]")
 }
 func (*markdownRenderer) Image(out *bytes.Buffer, link, title, alt []byte) {
 	out.WriteString("[img]")
@@ -233,13 +200,10 @@ func (*markdownRenderer) Link(out *bytes.Buffer, link, title, content []byte) {
 	}
 	out.WriteString("[/url]")
 }
-func (*markdownRenderer) RawHTMLTag(out *bytes.Buffer, tag []byte) {
-	out.Write(tag)
-}
 func (*markdownRenderer) TripleEmphasis(out *bytes.Buffer, text []byte) {
-	out.WriteString("***")
+	out.WriteString("[b][i]")
 	out.Write(text)
-	out.WriteString("***")
+	out.WriteString("[/i][/b]")
 }
 func (*markdownRenderer) StrikeThrough(out *bytes.Buffer, text []byte) {
 	out.WriteString("~~")

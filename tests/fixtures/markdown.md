@@ -53,3 +53,9 @@ Start Server:
 ```bash
 gunicorn -c /etc/gunicorn.py app.fast:app
 ```
+
+**Bold**
+
+*Italics*
+
+***v***
