@@ -35,9 +35,9 @@ quote
 
 todo:
 
--	[ ] qq
--	[ ] youku
--	[ ] acfun
+- [ ] qq
+- [ ] youku
+- [ ] acfun
 
 Start worker:
 
