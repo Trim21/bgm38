@@ -21,6 +21,7 @@ func Start() error {
 
 func CreateApp() *fiber.App {
 	app := fiber.New()
+	app.Settings.StrictRouting = true
 	app.Use(requestid.New())
 
 	app.Use(recover.New(recover.Config{
