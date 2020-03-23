@@ -33,6 +33,6 @@ require (
 	github.com/tinylib/msgp v1.1.2
 	github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31 // indirect
 	golang.org/x/net v0.0.0-20200320220750-118fecf932d8
-	golang.org/x/tools v0.0.0-20200321224714-0d839f3cf2ed // indirect
+	golang.org/x/tools v0.0.0-20200323144430-8dcfad9e016e // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 )

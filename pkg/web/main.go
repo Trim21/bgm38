@@ -1,7 +1,6 @@
 package web
 
 import (
-	"fmt"
 	"io"
 	"mime"
 	"path"
@@ -12,6 +11,7 @@ import (
 	"github.com/markbates/pkger"
 	"github.com/sirupsen/logrus"
 
+	"bgm38/config"
 	"bgm38/pkg/web/bgmtv"
 )
 
@@ -23,10 +23,12 @@ func CreateApp() *fiber.App {
 	app := fiber.New()
 	app.Settings.StrictRouting = true
 	app.Use(requestid.New())
-
+	app.Use(func(c *fiber.Ctx) {
+		c.Set("x-server-version", config.Version)
+		c.Next()
+	})
 	app.Use(recover.New(recover.Config{
 		Handler: func(c *fiber.Ctx, err error) {
-			fmt.Println(err)
 			c.SendString(err.Error())
 			c.SendStatus(500)
 		},
