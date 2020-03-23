@@ -10,7 +10,7 @@
 
 [size=22]convert markdown to bbcode[/size]
 
-https://www.trim21.cn/md2bbc
+[url]https://www.trim21.cn/md2bbc[/url]
 
 由于bbcode不支持行内代码，所以将其转换为粗体
 

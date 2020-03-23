@@ -50,6 +50,7 @@ func (mr *markdownRenderer) Header(out *bytes.Buffer, text func() bool, level in
 
 	if !text() {
 		out.Truncate(marker)
+		fmt.Println("Truncate")
 		return
 	}
 
@@ -129,8 +130,8 @@ func (*markdownRenderer) FootnoteItem(out *bytes.Buffer, name, text []byte, flag
 }
 
 // Span-level callbacks.
-func (*markdownRenderer) AutoLink(out *bytes.Buffer, link []byte, kind int) {
-	out.Write(escape(link))
+func (mr *markdownRenderer) AutoLink(out *bytes.Buffer, link []byte, kind int) {
+	mr.Link(out, link, nil, nil)
 }
 func (*markdownRenderer) CodeSpan(out *bytes.Buffer, text []byte) {
 	out.WriteString("[code]")
