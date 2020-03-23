@@ -12,7 +12,7 @@ require (
 	github.com/go-redis/redis/v7 v7.2.0
 	github.com/go-resty/resty/v2 v2.2.0
 	github.com/go-sql-driver/mysql v1.5.0
-	github.com/gofiber/fiber v1.8.33
+	github.com/gofiber/fiber v1.8.41
 	github.com/gofiber/recover v0.0.1
 	github.com/gofiber/requestid v0.0.1
 	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
@@ -24,14 +24,12 @@ require (
 	github.com/mattn/go-sqlite3 v2.0.1+incompatible // indirect
 	github.com/philhofer/fwd v1.0.0 // indirect
 	github.com/robfig/cron/v3 v3.0.1
-	github.com/savsgio/gotils v0.0.0-20200308224205-e330c862e34f // indirect
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.6
 	github.com/stretchr/testify v1.5.1
 	github.com/swaggo/swag v1.6.5
 	github.com/tinylib/msgp v1.1.2
 	github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31 // indirect
-	github.com/urfave/cli v1.22.3 // indirect
 	golang.org/x/net v0.0.0-20200320220750-118fecf932d8
 	golang.org/x/tools v0.0.0-20200321224714-0d839f3cf2ed // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
