@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>convert Markdown to BBcode</title>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.x/dist/jquery.min.js"></script>
+    <style>
+        .box {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+<h1>paste your markdown here</h1>
+<div class="box">
+
+    <label for="markdown"></label>
+    <textarea class="content" id="markdown" style='width: 50%'
+              rows="10" placeholder="MarkDown Here"></textarea>
+
+    <label for="bbcode"></label>
+    <textarea class="content" id="bbcode" style='width: 50%'
+              rows="10" placeholder="BBCode Result"></textarea>
+</div>
+
+<script>
+    const bbcode = $('#bbcode');
+    $('#markdown').keyup(function (e) {
+        let markdown = $(this).val();
+        $.post("/v1/md2bbc", markdown).then(res => {
+            bbcode.val(res);
+        })
+    })
+</script>
+
+
+</body>
+</html>
