@@ -4,45 +4,23 @@ package md2bbc
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
-	"strings"
 
 	"github.com/russross/blackfriday"
 )
 
 type markdownRenderer struct {
-	blackfriday.Renderer
+	blackfriday.Html
 	normalTextMarker   map[*bytes.Buffer]int
 	orderedListCounter map[int]int
 	paragraph          map[int]bool // Used to keep track of whether a given list item uses a paragraph for large spacing.
 	listDepth          int
 	lastNormalText     string
-
-	opt Options
 }
 
 // Block-level callbacks.
 func (*markdownRenderer) BlockCode(out *bytes.Buffer, text []byte, lang string) {
 	doubleSpace(out)
-
-	// Parse out the language name.
-	count := 0
-	for _, elt := range strings.Fields(lang) {
-		if elt[0] == '.' {
-			elt = elt[1:]
-		}
-		if len(elt) == 0 {
-			continue
-		}
-		out.WriteString("[code]")
-		out.WriteString(elt)
-		count++
-		break
-	}
-
-	if count == 0 {
-		out.WriteString("[code]")
-	}
+	out.WriteString("[code]")
 	out.WriteString("\n")
 	out.Write(text)
 	out.WriteString("[/code]\n")
@@ -68,7 +46,7 @@ func (mr *markdownRenderer) Header(out *bytes.Buffer, text func() bool, level in
 	marker := out.Len()
 	doubleSpace(out)
 
-	fmt.Fprintf(out, "[size=%d]", 26-level*2)
+	out.WriteString(fmt.Sprintf("[size=%d]", 26-level*2))
 
 	if !text() {
 		out.Truncate(marker)
@@ -142,12 +120,6 @@ func (mr *markdownRenderer) Paragraph(out *bytes.Buffer, text func() bool) {
 func (mr *markdownRenderer) Table(out *bytes.Buffer, header, body []byte, columnData []int) {
 	out.WriteString("\n<Not Supported In BBCode.>\n")
 }
-
-func (*markdownRenderer) TableRow(out *bytes.Buffer, text []byte) {}
-
-func (mr *markdownRenderer) TableHeaderCell(out *bytes.Buffer, text []byte, align int) {}
-
-func (mr *markdownRenderer) TableCell(out *bytes.Buffer, text []byte, align int) {}
 
 func (*markdownRenderer) Footnotes(out *bytes.Buffer, text func() bool) {
 	out.WriteString("<Footnotes: Not implemented.>")
@@ -281,12 +253,6 @@ func (mr *markdownRenderer) NormalText(out *bytes.Buffer, text []byte) {
 	}
 }
 
-// Header and footer.
-func (*markdownRenderer) DocumentHeader(out *bytes.Buffer) {}
-func (*markdownRenderer) DocumentFooter(out *bytes.Buffer) {}
-
-func (*markdownRenderer) GetFlags() int { return 0 }
-
 func (mr *markdownRenderer) skipSpaceIfNeededNormalText(out *bytes.Buffer, cleanString string) bool {
 	if cleanString[0] != ' ' {
 		return false
@@ -322,52 +288,11 @@ func doubleSpace(out *bytes.Buffer) {
 
 // NewRenderer returns a Markdown renderer.
 // If opt is nil the defaults are used.
-func NewRenderer(opt *Options) blackfriday.Renderer {
+func NewRenderer() blackfriday.Renderer {
 	mr := &markdownRenderer{
 		normalTextMarker:   make(map[*bytes.Buffer]int),
 		orderedListCounter: make(map[int]int),
 		paragraph:          make(map[int]bool),
 	}
-	if opt != nil {
-		mr.opt = *opt
-	}
 	return mr
-}
-
-// Options specifies options for formatting.
-type Options struct {
-	// Terminal specifies if ANSI escape codes are emitted for styling.
-	Terminal bool
-}
-
-// Process formats Markdown.
-// If opt is nil the defaults are used.
-// Error can only occur when reading input from filename rather than src.
-func Process(filename string, src []byte, opt *Options) ([]byte, error) {
-	// Get source.
-	text, err := readSource(filename, src)
-	if err != nil {
-		return nil, err
-	}
-
-	// extensions for GitHub Flavored Markdown-like parsing.
-	const extensions = blackfriday.EXTENSION_NO_INTRA_EMPHASIS |
-		blackfriday.EXTENSION_TABLES |
-		blackfriday.EXTENSION_FENCED_CODE |
-		blackfriday.EXTENSION_AUTOLINK |
-		blackfriday.EXTENSION_STRIKETHROUGH |
-		blackfriday.EXTENSION_SPACE_HEADERS |
-		blackfriday.EXTENSION_NO_EMPTY_LINE_BEFORE_BLOCK
-
-	output := blackfriday.Markdown(text, NewRenderer(opt), extensions)
-	return output, nil
-}
-
-// If src != nil, readSource returns src.
-// If src == nil, readSource returns the result of reading the file specified by filename.
-func readSource(filename string, src []byte) ([]byte, error) {
-	if src != nil {
-		return src, nil
-	}
-	return ioutil.ReadFile(filename)
 }

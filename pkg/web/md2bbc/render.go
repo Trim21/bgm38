@@ -11,6 +11,6 @@ func Render(text []byte) []byte {
 		blackfriday.EXTENSION_SPACE_HEADERS |
 		blackfriday.EXTENSION_NO_EMPTY_LINE_BEFORE_BLOCK |
 		blackfriday.EXTENSION_HARD_LINE_BREAK
-	r := NewRenderer(nil)
+	r := NewRenderer()
 	return blackfriday.Markdown(text, r, extensions)
 }

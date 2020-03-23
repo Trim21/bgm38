@@ -45,13 +45,13 @@ Start worker:
 te
 [/code]
 
-[code]bash
+[code]
 python -m celery worker -A app.worker -l info -c 5
 [/code]
 
 Start Server:
 
-[code]bash
+[code]
 gunicorn -c /etc/gunicorn.py app.fast:app
 [/code]
 

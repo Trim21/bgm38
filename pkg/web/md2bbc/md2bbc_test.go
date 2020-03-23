@@ -17,3 +17,9 @@ func TestRender(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, string(expected), string(rendered), "md2bbc rendered is not eq to expected")
 }
+
+func TestRender_Spec(t *testing.T) {
+	data, err := ioutil.ReadFile("../../../tests/fixtures/spec.md")
+	assert.Nil(t, err)
+	md2bbc.Render(data)
+}
