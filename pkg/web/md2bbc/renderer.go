@@ -8,9 +8,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/mattn/go-runewidth"
 	"github.com/russross/blackfriday"
-	"github.com/shurcooL/go/indentwriter"
 )
 
 type markdownRenderer struct {
@@ -21,16 +19,7 @@ type markdownRenderer struct {
 	listDepth          int
 	lastNormalText     string
 
-	// TODO: Clean these up.
-	headers      []string
-	columnAligns []int
-	columnWidths []int
-	cells        []string
-
 	opt Options
-
-	// stringWidth is used internally to calculate visual width of a string.
-	stringWidth func(s string) (width int)
 }
 
 func formatCode(lang string, text []byte) (formattedCode []byte, ok bool) {
@@ -128,6 +117,7 @@ func (*markdownRenderer) HRule(out *bytes.Buffer) {
 	doubleSpace(out)
 	out.WriteString("---\n")
 }
+
 func (mr *markdownRenderer) List(out *bytes.Buffer, text func() bool, flags int) {
 	marker := out.Len()
 	doubleSpace(out)
@@ -142,14 +132,17 @@ func (mr *markdownRenderer) List(out *bytes.Buffer, text func() bool, flags int)
 		return
 	}
 }
+
 func (mr *markdownRenderer) ListItem(out *bytes.Buffer, text []byte, flags int) {
 	if flags&blackfriday.LIST_TYPE_ORDERED != 0 {
 		fmt.Fprintf(out, "%d.", mr.orderedListCounter[mr.listDepth])
-		indentwriter.New(out, 1).Write(text)
+		out.WriteByte(' ')
+		out.Write(text)
 		mr.orderedListCounter[mr.listDepth]++
 	} else {
 		out.WriteString("-")
-		indentwriter.New(out, 1).Write(text)
+		out.WriteByte(' ')
+		out.Write(text)
 	}
 	out.WriteString("\n")
 	if mr.paragraph[mr.listDepth] {
@@ -159,6 +152,7 @@ func (mr *markdownRenderer) ListItem(out *bytes.Buffer, text []byte, flags int) 
 		mr.paragraph[mr.listDepth] = false
 	}
 }
+
 func (mr *markdownRenderer) Paragraph(out *bytes.Buffer, text func() bool) {
 	marker := out.Len()
 	doubleSpace(out)
@@ -173,89 +167,14 @@ func (mr *markdownRenderer) Paragraph(out *bytes.Buffer, text func() bool) {
 }
 
 func (mr *markdownRenderer) Table(out *bytes.Buffer, header, body []byte, columnData []int) {
-	doubleSpace(out)
-	for column, cell := range mr.headers {
-		out.WriteByte('|')
-		out.WriteByte(' ')
-		out.WriteString(cell)
-		for i := mr.stringWidth(cell); i < mr.columnWidths[column]; i++ {
-			out.WriteByte(' ')
-		}
-		out.WriteByte(' ')
-	}
-	out.WriteString("|\n")
-	for column, width := range mr.columnWidths {
-		out.WriteByte('|')
-		if mr.columnAligns[column]&blackfriday.TABLE_ALIGNMENT_LEFT != 0 {
-			out.WriteByte(':')
-		} else {
-			out.WriteByte('-')
-		}
-		for ; width > 0; width-- {
-			out.WriteByte('-')
-		}
-		if mr.columnAligns[column]&blackfriday.TABLE_ALIGNMENT_RIGHT != 0 {
-			out.WriteByte(':')
-		} else {
-			out.WriteByte('-')
-		}
-	}
-	out.WriteString("|\n")
-	for i := 0; i < len(mr.cells); {
-		for column := range mr.headers {
-			cell := []byte(mr.cells[i])
-			i++
-			out.WriteByte('|')
-			out.WriteByte(' ')
-			switch mr.columnAligns[column] {
-			default:
-				fallthrough
-			case blackfriday.TABLE_ALIGNMENT_LEFT:
-				out.Write(cell)
-				for i := mr.stringWidth(string(cell)); i < mr.columnWidths[column]; i++ {
-					out.WriteByte(' ')
-				}
-			case blackfriday.TABLE_ALIGNMENT_CENTER:
-				spaces := mr.columnWidths[column] - mr.stringWidth(string(cell))
-				for i := 0; i < spaces/2; i++ {
-					out.WriteByte(' ')
-				}
-				out.Write(cell)
-				for i := 0; i < spaces-(spaces/2); i++ {
-					out.WriteByte(' ')
-				}
-			case blackfriday.TABLE_ALIGNMENT_RIGHT:
-				for i := mr.stringWidth(string(cell)); i < mr.columnWidths[column]; i++ {
-					out.WriteByte(' ')
-				}
-				out.Write(cell)
-			}
-			out.WriteByte(' ')
-		}
-		out.WriteString("|\n")
-	}
+	out.WriteString("\n<Not Supported In BBCode.>\n")
+}
 
-	mr.headers = nil
-	mr.columnAligns = nil
-	mr.columnWidths = nil
-	mr.cells = nil
-}
-func (*markdownRenderer) TableRow(out *bytes.Buffer, text []byte) {
-}
-func (mr *markdownRenderer) TableHeaderCell(out *bytes.Buffer, text []byte, align int) {
-	mr.columnAligns = append(mr.columnAligns, align)
-	columnWidth := mr.stringWidth(string(text))
-	mr.columnWidths = append(mr.columnWidths, columnWidth)
-	mr.headers = append(mr.headers, string(text))
-}
-func (mr *markdownRenderer) TableCell(out *bytes.Buffer, text []byte, align int) {
-	columnWidth := mr.stringWidth(string(text))
-	column := len(mr.cells) % len(mr.headers)
-	if columnWidth > mr.columnWidths[column] {
-		mr.columnWidths[column] = columnWidth
-	}
-	mr.cells = append(mr.cells, string(text))
-}
+func (*markdownRenderer) TableRow(out *bytes.Buffer, text []byte) {}
+
+func (mr *markdownRenderer) TableHeaderCell(out *bytes.Buffer, text []byte, align int) {}
+
+func (mr *markdownRenderer) TableCell(out *bytes.Buffer, text []byte, align int) {}
 
 func (*markdownRenderer) Footnotes(out *bytes.Buffer, text func() bool) {
 	out.WriteString("<Footnotes: Not implemented.>")
@@ -303,7 +222,7 @@ func (*markdownRenderer) LineBreak(out *bytes.Buffer) {
 }
 
 func (*markdownRenderer) Link(out *bytes.Buffer, link, title, content []byte) {
-	if len(content) >= 0 {
+	if len(content) > 0 {
 		out.WriteString("[url=")
 		out.Write(escape(link))
 		out.WriteString("]")
@@ -380,18 +299,20 @@ func (mr *markdownRenderer) NormalText(out *bytes.Buffer, text []byte) {
 		text = append([]byte("\\"), text...)
 	}
 	mr.lastNormalText = normalText
-	if mr.listDepth > 0 && string(text) == "\n" { // TODO: See if this can be cleaned up... It's needed for lists.
+	if mr.listDepth > 0 && string(text) == "\n" {
 		return
 	}
 	cleanString := cleanWithoutTrim(string(text))
 	if cleanString == "" {
 		return
 	}
-	if mr.skipSpaceIfNeededNormalText(out, cleanString) { // Skip first space if last character is already a space (i.e., no need for a 2nd space in a row).
+	if mr.skipSpaceIfNeededNormalText(out, cleanString) {
+		// Skip first space if last character is already a space (i.e., no need for a 2nd space in a row).
 		cleanString = cleanString[1:]
 	}
 	out.WriteString(cleanString)
-	if len(cleanString) >= 1 && cleanString[len(cleanString)-1] == ' ' { // If it ends with a space, make note of that.
+	if len(cleanString) >= 1 && cleanString[len(cleanString)-1] == ' ' {
+		// If it ends with a space, make note of that.
 		mr.normalTextMarker[out] = out.Len()
 	}
 }
@@ -435,15 +356,6 @@ func doubleSpace(out *bytes.Buffer) {
 	}
 }
 
-// terminalStringWidth returns width of s, taking into account possible ANSI escape codes
-// (which don't count towards string width).
-func terminalStringWidth(s string) (width int) {
-	width = runewidth.StringWidth(s)
-	width -= strings.Count(s, "\x1b[1m") * len("[1m") // HACK, TODO: Find a better way of doing this.
-	width -= strings.Count(s, "\x1b[0m") * len("[0m") // HACK, TODO: Find a better way of doing this.
-	return width
-}
-
 // NewRenderer returns a Markdown renderer.
 // If opt is nil the defaults are used.
 func NewRenderer(opt *Options) blackfriday.Renderer {
@@ -451,14 +363,9 @@ func NewRenderer(opt *Options) blackfriday.Renderer {
 		normalTextMarker:   make(map[*bytes.Buffer]int),
 		orderedListCounter: make(map[int]int),
 		paragraph:          make(map[int]bool),
-
-		stringWidth: runewidth.StringWidth,
 	}
 	if opt != nil {
 		mr.opt = *opt
-	}
-	if mr.opt.Terminal {
-		mr.stringWidth = terminalStringWidth
 	}
 	return mr
 }
