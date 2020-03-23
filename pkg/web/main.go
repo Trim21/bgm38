@@ -1,6 +1,8 @@
 package web
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber"
 	"github.com/gofiber/recover"
 	"github.com/gofiber/requestid"
@@ -18,6 +20,7 @@ func CreateApp() *fiber.App {
 
 	app.Use(recover.New(recover.Config{
 		Handler: func(c *fiber.Ctx, err error) {
+			fmt.Println(err)
 			c.SendString(err.Error())
 			c.SendStatus(500)
 		},
@@ -28,7 +31,7 @@ func CreateApp() *fiber.App {
 		c.Send("Hello, World!")
 	})
 	bgmtv.Group(app)
-
+	rootRouter(app)
 	app.Use(func(c *fiber.Ctx) {
 		c.Status(404).SendString(`{}`)
 		// => 404 "Not Found"
