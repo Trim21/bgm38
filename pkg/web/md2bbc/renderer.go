@@ -95,7 +95,7 @@ func (*markdownRenderer) BlockQuote(out *bytes.Buffer, text []byte) {
 	out.WriteString("[/quote]\n")
 }
 
-func (*markdownRenderer) BlockHtml(out *bytes.Buffer, text []byte) {
+func (*markdownRenderer) BlockHTML(out *bytes.Buffer, text []byte) {
 	doubleSpace(out)
 	out.Write(text)
 	out.WriteByte('\n')
@@ -258,10 +258,10 @@ func (mr *markdownRenderer) TableCell(out *bytes.Buffer, text []byte, align int)
 }
 
 func (*markdownRenderer) Footnotes(out *bytes.Buffer, text func() bool) {
-	out.WriteString("<Footnotes: Not implemented.>") // TODO
+	out.WriteString("<Footnotes: Not implemented.>")
 }
 func (*markdownRenderer) FootnoteItem(out *bytes.Buffer, name, text []byte, flags int) {
-	out.WriteString("<FootnoteItem: Not implemented.>") // TODO
+	out.WriteString("<FootnoteItem: Not implemented.>")
 }
 
 // Span-level callbacks.
@@ -314,7 +314,7 @@ func (*markdownRenderer) Link(out *bytes.Buffer, link, title, content []byte) {
 	}
 	out.WriteString("[/url]")
 }
-func (*markdownRenderer) RawHtmlTag(out *bytes.Buffer, tag []byte) {
+func (*markdownRenderer) RawHTMLTag(out *bytes.Buffer, tag []byte) {
 	out.Write(tag)
 }
 func (*markdownRenderer) TripleEmphasis(out *bytes.Buffer, text []byte) {
@@ -328,7 +328,7 @@ func (*markdownRenderer) StrikeThrough(out *bytes.Buffer, text []byte) {
 	out.WriteString("~~")
 }
 func (*markdownRenderer) FootnoteRef(out *bytes.Buffer, ref []byte, id int) {
-	out.WriteString("<FootnoteRef: Not implemented.>") // TODO
+	out.WriteString("<FootnoteRef: Not implemented.>")
 }
 
 // escape replaces instances of backslash with escaped backslash in text.

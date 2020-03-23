@@ -24,7 +24,7 @@ var client = resty.New()
 var cstZone = time.FixedZone("CST", 8*3600)
 
 // @ID watchingCalendarV1
-// @Summary generate a calendar from watching collection
+// @Summary 在看番剧日历
 // @Description 根据在看的番剧生成ics格式日历
 // @Description 如果浏览器访问时会返回纯文本数据
 // @Description 在使用日历app导入时会返回日历数据

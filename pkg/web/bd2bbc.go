@@ -12,7 +12,7 @@ func rootRouter(app *fiber.App) {
 }
 
 // @ID markdownToBBCodeV1
-// @Summary convert markdown to bbcode
+// @Summary 转换markdown为bbcode
 // @Description 转换markdown为bbcode,
 // @Description 有部分bbcode不支持的功能不进行转换
 // @Accept plain

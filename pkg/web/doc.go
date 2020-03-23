@@ -30,31 +30,21 @@ func setupSwagger(app *fiber.App) {
 
 	app.Get("/swagger", func(ctx *fiber.Ctx) {
 		ctx.Set("Content-Type", "text/html")
-		ctx.Status(200).SendString(`<!DOCTYPE html>	
-<html>	
-<head>	
-<link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui.css">	
-<link rel="shortcut icon" href="https://blog.trim21.cn/favicon.ico">	
-<title>Pol server - Swagger UI</title>	
-</head>	
-<body>	
-<div id="swagger-ui">	
-</div>	
-<script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui-bundle.js"></script>	
-<script>	
-const ui = SwaggerUIBundle({	
-	url: '/swagger/doc.json',	
-	dom_id: '#swagger-ui',	
-	presets: [	
-		SwaggerUIBundle.presets.apis,	
-		SwaggerUIBundle.SwaggerUIStandalonePreset	
-	],	
-	layout: "BaseLayout",	
-	deepLinking: true	
-})	
-</script>	
-</body>	
-</html>	
+		ctx.Status(200).SendString(`
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bgm38 Api Server</title>
+    <!-- needed for adaptive design -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+	<link rel="shortcut icon" href="https://blog.trim21.cn/favicon.ico">	
+</head>
+<body>
+<redoc spec-url="/swagger/doc.json" hide-hostname="true" suppress-warnings="true" lazy-rendering></redoc>
+<script src="https://rebilly.github.io/ReDoc/releases/v1.x.x/redoc.min.js"></script>
+</body>
+</html>
 `)
 	})
 }
