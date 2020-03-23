@@ -2,10 +2,15 @@ package web
 
 import (
 	"fmt"
+	"io"
+	"mime"
+	"path"
 
 	"github.com/gofiber/fiber"
 	"github.com/gofiber/recover"
 	"github.com/gofiber/requestid"
+	"github.com/markbates/pkger"
+	"github.com/sirupsen/logrus"
 
 	"bgm38/pkg/web/bgmtv"
 )
@@ -27,6 +32,21 @@ func CreateApp() *fiber.App {
 	}))
 
 	setupSwagger(app)
+	app.Get("/asserts/web/*", func(c *fiber.Ctx) {
+		filepath := c.Params("*")
+		f, err := pkger.Open(path.Join("/asserts/web/", filepath))
+		if err != nil {
+			c.SendStatus(404)
+			return
+		}
+		defer f.Close()
+		mintType := mime.TypeByExtension(path.Ext(filepath))
+		c.Set("content-type", mintType)
+		_, err = io.Copy(c.Fasthttp.Response.BodyWriter(), f)
+		if err != nil {
+			logrus.Errorln(err)
+		}
+	})
 	app.Get("/", func(c *fiber.Ctx) {
 		c.Send("Hello, World!")
 	})

@@ -16,12 +16,27 @@
 package web
 
 import (
+	"io/ioutil"
+
 	"github.com/gofiber/fiber"
+	"github.com/markbates/pkger"
+	"github.com/sirupsen/logrus"
 
 	"bgm38/pkg/web/docs"
 )
 
 func setupSwagger(app *fiber.App) {
+	f, err := pkger.Open("/asserts/web/redoc.html")
+	if err != nil {
+		logrus.Fatalln("missing redoc html")
+	}
+
+	content, err := ioutil.ReadAll(f)
+
+	if err != nil {
+		logrus.Fatalln("can't read redoc html")
+	}
+
 	j := docs.OpenAPI()
 	app.Get("/swagger/doc.json", func(ctx *fiber.Ctx) {
 		ctx.Set("Content-Type", "application/json")
@@ -30,21 +45,6 @@ func setupSwagger(app *fiber.App) {
 
 	app.Get("/swagger", func(ctx *fiber.Ctx) {
 		ctx.Set("Content-Type", "text/html")
-		ctx.Status(200).SendString(`
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Bgm38 Api Server</title>
-    <!-- needed for adaptive design -->
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta charset="utf-8" />
-	<link rel="shortcut icon" href="https://blog.trim21.cn/favicon.ico">	
-</head>
-<body>
-<redoc spec-url="/swagger/doc.json" hide-hostname="true" suppress-warnings="true" lazy-rendering></redoc>
-<script src="https://rebilly.github.io/ReDoc/releases/v1.x.x/redoc.min.js"></script>
-</body>
-</html>
-`)
+		ctx.Status(200).SendBytes(content)
 	})
 }

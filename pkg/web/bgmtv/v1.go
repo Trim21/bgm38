@@ -29,7 +29,6 @@ var cstZone = time.FixedZone("CST", 8*3600)
 // @Description 如果浏览器访问时会返回纯文本数据
 // @Description 在使用日历app导入时会返回日历数据
 // @Produce  text/calendar
-// @Produce  json
 // @Param user_id path string true "user_id, 可以在个人主页的网址中找到"
 // @Success 200 {string} string "text/calendar"
 // @Failure 422 {object} res.Error

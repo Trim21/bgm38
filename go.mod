@@ -21,6 +21,7 @@ require (
 	github.com/jordic/goics v0.0.0-20181215212140-feb996c8e01f
 	github.com/lib/pq v1.1.1 // indirect
 	github.com/mailru/easyjson v0.7.1
+	github.com/markbates/pkger v0.15.0
 	github.com/mattn/go-sqlite3 v2.0.1+incompatible // indirect
 	github.com/philhofer/fwd v1.0.0 // indirect
 	github.com/robfig/cron/v3 v3.0.1

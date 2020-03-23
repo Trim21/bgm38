@@ -6,6 +6,6 @@ type ValidationError struct {
 }
 
 type Error struct {
-	Message string `json:"message" example:"record not found/missing input/got a error in server"`
+	Message string `json:"message" example:"got a error because ..."`
 	Status  string `json:"status" example:"error"`
 }
