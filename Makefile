@@ -3,6 +3,7 @@ MSGP_GEN = pkg/log/model_gen.go
 DOC = pkg/web/docs/swagger.json pkg/web/docs/swagger.yaml pkg/web/docs/docs.go
 SRC = $(filter-out $(DOC) $(MSGP_GEN), $(wildcard *.go))
 SWAGGER_SRC = pkg/web/bd2bbc.go pkg/web/bgmtv/v1.go
+
 default: build
 
 release: clean build
@@ -10,7 +11,6 @@ release: clean build
 build: dist/app
 
 doc: $(DOC)
-
 generated: $(MSGP_GEN) $(DOC)
 
 $(MSGP_GEN): %_gen.go: %.go

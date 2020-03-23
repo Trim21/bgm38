@@ -40,10 +40,12 @@ jobs:
 
       - name: Install
         run: make install
+
       - name: Go Mod Tidy
         run: |
           go mod tidy
           git diff --exit-code
+
       - name: Test Go Code
         run: go test -race -coverpkg=./... -coverprofile=coverage.txt -covermode=atomic ./...
         env:
