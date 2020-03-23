@@ -21,6 +21,7 @@ $(DOC): $(WEB_SRC)
 	swag init --generalInfo ./pkg/web/doc.go -o ./pkg/web/docs
 
 pkg/asserts/pkged.go: $(ASSERTS)
+	rm -f $@
 	pkger -include /asserts -o pkg/asserts
 
 dist/app: generated

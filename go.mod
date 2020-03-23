@@ -3,6 +3,7 @@ module bgm38
 go 1.14
 
 require (
+	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/antchfx/htmlquery v1.2.2
 	github.com/antchfx/xpath v1.1.4 // indirect
 	github.com/getsentry/sentry-go v0.5.1
