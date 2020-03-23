@@ -59,14 +59,14 @@ func (*markdownRenderer) BlockCode(out *bytes.Buffer, text []byte, lang string) 
 		if len(elt) == 0 {
 			continue
 		}
-		out.WriteString("```")
+		out.WriteString("[code]")
 		out.WriteString(elt)
 		count++
 		break
 	}
 
 	if count == 0 {
-		out.WriteString("```")
+		out.WriteString("[code]")
 	}
 	out.WriteString("\n")
 
@@ -76,23 +76,25 @@ func (*markdownRenderer) BlockCode(out *bytes.Buffer, text []byte, lang string) 
 		out.Write(text)
 	}
 
-	out.WriteString("```\n")
+	out.WriteString("[/code]\n")
 }
+
 func (*markdownRenderer) BlockQuote(out *bytes.Buffer, text []byte) {
 	doubleSpace(out)
+	out.WriteString("[quote]\n")
 	lines := bytes.Split(text, []byte("\n"))
 	for i, line := range lines {
 		if i == len(lines)-1 {
 			continue
 		}
-		out.WriteString(">")
 		if len(line) != 0 {
-			out.WriteString(" ")
 			out.Write(line)
 		}
 		out.WriteString("\n")
 	}
+	out.WriteString("[/quote]\n")
 }
+
 func (*markdownRenderer) BlockHtml(out *bytes.Buffer, text []byte) {
 	doubleSpace(out)
 	out.Write(text)
@@ -104,26 +106,24 @@ func (mr *markdownRenderer) Header(out *bytes.Buffer, text func() bool, level in
 	marker := out.Len()
 	doubleSpace(out)
 
-	if level >= 3 {
-		fmt.Fprint(out, strings.Repeat("#", level), " ")
-	}
+	fmt.Fprintf(out, "[size=%d]", 26-level*2)
 
-	textMarker := out.Len()
 	if !text() {
 		out.Truncate(marker)
 		return
 	}
 
-	switch level {
-	case 1:
-		len := mr.stringWidth(out.String()[textMarker:])
-		fmt.Fprint(out, "\n", strings.Repeat("=", len))
-	case 2:
-		len := mr.stringWidth(out.String()[textMarker:])
-		fmt.Fprint(out, "\n", strings.Repeat("-", len))
-	}
-	out.WriteString("\n")
+	// if !text() {
+	// 	out.Truncate(textMarker)
+	// 	return
+	// }
+	// out.Truncate(out.Len() - len([]byte(out.String()[textMarker:])))
+	// out.WriteString("\n")
+	out.WriteString("[/size]\n")
+	// out.WriteString("\n")
+
 }
+
 func (*markdownRenderer) HRule(out *bytes.Buffer) {
 	doubleSpace(out)
 	out.WriteString("---\n")
@@ -269,9 +269,9 @@ func (*markdownRenderer) AutoLink(out *bytes.Buffer, link []byte, kind int) {
 	out.Write(escape(link))
 }
 func (*markdownRenderer) CodeSpan(out *bytes.Buffer, text []byte) {
-	out.WriteByte('`')
+	out.WriteString("[code]")
 	out.Write(text)
-	out.WriteByte('`')
+	out.WriteString("[/code]")
 }
 func (mr *markdownRenderer) DoubleEmphasis(out *bytes.Buffer, text []byte) {
 	if mr.opt.Terminal {
@@ -293,31 +293,26 @@ func (*markdownRenderer) Emphasis(out *bytes.Buffer, text []byte) {
 	out.WriteByte('*')
 }
 func (*markdownRenderer) Image(out *bytes.Buffer, link, title, alt []byte) {
-	out.WriteString("![")
-	out.Write(alt)
-	out.WriteString("](")
+	out.WriteString("[img]")
 	out.Write(escape(link))
-	if len(title) != 0 {
-		out.WriteString(` "`)
-		out.Write(title)
-		out.WriteString(`"`)
-	}
-	out.WriteString(")")
+	out.WriteString("[/img]")
 }
+
 func (*markdownRenderer) LineBreak(out *bytes.Buffer) {
-	out.WriteString("  \n")
+	out.WriteString("\n")
 }
+
 func (*markdownRenderer) Link(out *bytes.Buffer, link, title, content []byte) {
-	out.WriteString("[")
-	out.Write(content)
-	out.WriteString("](")
-	out.Write(escape(link))
-	if len(title) != 0 {
-		out.WriteString(` "`)
-		out.Write(title)
-		out.WriteString(`"`)
+	if len(content) >= 0 {
+		out.WriteString("[url=")
+		out.Write(escape(link))
+		out.WriteString("]")
+		out.Write(content)
+	} else {
+		out.WriteString("[url]")
+		out.Write(escape(link))
 	}
-	out.WriteString(")")
+	out.WriteString("[/url]")
 }
 func (*markdownRenderer) RawHtmlTag(out *bytes.Buffer, tag []byte) {
 	out.Write(tag)

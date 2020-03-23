@@ -1,8 +1,8 @@
 SLUG ?= $(shell git rev-parse --abbrev-ref HEAD)-$(shell git rev-parse HEAD|cut -c1-7)
 MSGP_GEN = pkg/log/model_gen.go
-DOC = pkg/web/docs/swagger.json pkg/web/docs/swagger.yaml pkg/web/docs/doc.go
+DOC = pkg/web/docs/swagger.json pkg/web/docs/swagger.yaml pkg/web/docs/docs.go
 SRC = $(filter-out $(DOC) $(MSGP_GEN), $(wildcard *.go))
-
+SWAGGER_SRC = pkg/web/bd2bbc.go pkg/web/bgmtv/v1.go
 default: build
 
 release: clean build
@@ -16,7 +16,7 @@ generated: $(MSGP_GEN) $(DOC)
 $(MSGP_GEN): %_gen.go: %.go
 	msgp -file $<
 
-$(DOC):
+$(DOC): $(SWAGGER_SRC)
 	swag init --generalInfo ./pkg/web/doc.go -o ./pkg/web/docs
 
 dist/app: generated

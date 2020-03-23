@@ -1,0 +1,56 @@
+[size=24]Pol[/size]
+
+[img]https://badges.gitter.im/pol-chat/community.svg[/img]
+
+基于[url=https://github.com/tiangolo/fastapi]fastapi[/url]的API server
+
+后端使用mysql和redis
+
+文档详情见[url=https://trim21.github.io/pol/]https://trim21.github.io/pol/[/url]
+
+[size=22]convert markdown to bbcode[/size]
+
+https://www.trim21.cn/md2bbc
+
+由于bbcode不支持行内代码，所以将其转换为粗体
+
+[size=22]在看番剧的iCalendar格式日历[/size]
+
+[code]https://www.trim21.cn/api.v1/calendar/bgm.tv/{user_id}[/code]
+
+根据[code]https://api.bgm.tv/user/{user_id}/collection?cat=watching[/code]生成，
+所以不会排除已完结的番剧和未开播的番剧
+
+[quote]
+quote
+quote
+quote
+[/quote]
+
+[size=20]todo[/size]
+
+[size=18]h4[/size]
+
+#####
+
+todo:
+
+-	[ ] qq
+-	[ ] youku
+-	[ ] acfun
+
+Start worker:
+
+[code]
+te
+[/code]
+
+[code]bash
+python -m celery worker -A app.worker -l info -c 5
+[/code]
+
+Start Server:
+
+[code]bash
+gunicorn -c /etc/gunicorn.py app.fast:app
+[/code]
