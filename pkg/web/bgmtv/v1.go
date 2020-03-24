@@ -12,6 +12,7 @@ import (
 	"github.com/gofiber/fiber"
 	"github.com/jordic/goics"
 	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 
 	"bgm38/config"
 	"bgm38/pkg/model"
@@ -35,7 +36,7 @@ var cstZone = time.FixedZone("CST", 8*3600)
 // @Failure 404 {object} res.Error
 // @Failure 502 {object} res.Error
 // @Router /bgm.tv/v1/calendar/{user_id} [get]
-func userCalendar(ctx *fiber.Ctx) error {
+func userCalendar(ctx *fiber.Ctx, logger *zap.Logger) error {
 	userID := ctx.Params("user_id")
 	if userID == "" {
 		ctx.Status(422)

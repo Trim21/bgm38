@@ -32,6 +32,8 @@ require (
 	github.com/swaggo/swag v1.6.5
 	github.com/tinylib/msgp v1.1.2
 	github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31 // indirect
+	github.com/valyala/fasthttp v1.9.0
+	go.uber.org/zap v1.14.1
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e
 	golang.org/x/tools v0.0.0-20200323144430-8dcfad9e016e // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect

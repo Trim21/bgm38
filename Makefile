@@ -12,13 +12,14 @@ release: clean generated
 
 build: dist/app
 
-doc: $(DOC)
-generated: $(MSGP_GEN) $(DOC) pkg/asserts/pkged.go
+
+generated: $(MSGP_GEN) doc pkg/asserts/pkged.go
 
 $(MSGP_GEN): %_gen.go: %.go
 	msgp -file $<
 
 $(DOC): $(WEB_SRC)
+doc: $(DOC)
 	swag init --generalInfo ./pkg/web/doc.go -o ./pkg/web/docs
 
 pkg/asserts/pkged.go: $(ASSERTS)
@@ -42,4 +43,4 @@ deps:
 
 install: deps generated
 
-.PHONY: clean build deps generated install
+.PHONY: clean build deps generated install doc
