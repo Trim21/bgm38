@@ -1,22 +1,8 @@
 package zapx
 
 import (
-	"bytes"
-
 	"github.com/go-redis/redis/v7"
 )
-
-// MultiError multiple error
-type MultiError []error
-
-func (p MultiError) Error() string {
-	var errBuf bytes.Buffer
-	for _, err := range p {
-		errBuf.WriteString(err.Error())
-		errBuf.WriteByte('\n')
-	}
-	return errBuf.String()
-}
 
 type RedisSink struct {
 	redisClient *redis.Client
