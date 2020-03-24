@@ -6,25 +6,6 @@ import (
 	"github.com/go-redis/redis/v7"
 )
 
-var (
-	redisSinkInsts = map[string]RedisSink{}
-)
-
-const (
-	redisPubSubType      = "channel"
-	redisDefaultType     = "list"
-	redisClusterNodesKey = "nodes"
-	redisDefaultPwd      = ""
-	redisDefaultKey      = "just_a_test_key"
-	kafkaDefaultTopic    = "just_a_test_topic"
-	kafkaAsyncKey        = "isAsync"
-
-	cachedLogLineEnding = ","
-	cachedLogMessageKey = ""
-	cachedLogSinkURL    = "stderr"
-	globalKeyPrefix     = "__"
-)
-
 // MultiError multiple error
 type MultiError []error
 
@@ -40,7 +21,6 @@ func (p MultiError) Error() string {
 type RedisSink struct {
 	redisClient *redis.Client
 	key         string
-	typee       string
 	isCluster   bool
 }
 
@@ -66,7 +46,6 @@ func NewRedisSink(options *redis.Options, redisKey string) *RedisSink {
 	return &RedisSink{
 		redisClient: redisClient,
 		key:         redisKey,
-		typee:       redisDefaultType,
 		isCluster:   false,
 	}
 
