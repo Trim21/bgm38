@@ -8,15 +8,15 @@ import (
 )
 
 func HeaderFields(ctx *fiber.Ctx) zap.Field {
-	return zap.Object("headers", &status{ctx.Fasthttp.Request.Header})
+	return zap.Object("headers", &status{h: &ctx.Fasthttp.Request.Header})
 }
 
 type status struct {
-	fasthttp.RequestHeader
+	h *fasthttp.RequestHeader
 }
 
 func (s *status) MarshalLogObject(enc zapcore.ObjectEncoder) error {
-	s.VisitAll(func(key, value []byte) {
+	s.h.VisitAll(func(key, value []byte) {
 		enc.AddByteString(string(key), value)
 	})
 	return nil

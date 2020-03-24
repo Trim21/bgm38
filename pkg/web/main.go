@@ -24,6 +24,43 @@ func Start() error {
 func CreateApp() *fiber.App {
 	app := fiber.New()
 	app.Settings.StrictRouting = true
+	setupMiddleware(app)
+	setupSwaggerRouter(app)
+	app.Get("/asserts/web/*", func(c *fiber.Ctx) {
+		filepath := c.Params("*")
+		f, err := pkger.Open(path.Join("/asserts/web/", filepath))
+		if err != nil {
+			c.SendStatus(404)
+			return
+		}
+		defer f.Close()
+		c.Type(path.Ext(filepath))
+		_, err = io.Copy(c.Fasthttp.Response.BodyWriter(), f)
+		if err != nil {
+			logrus.Errorln(err)
+		}
+	})
+	app.Get("/", func(c *fiber.Ctx) {
+		c.Send("Hello, World!")
+	})
+
+	app.Get("/test", handler.LogError(func(c *fiber.Ctx, logger *zap.Logger) error {
+		logger.Info("hello", zap.Int("key", 8))
+		c.Send("Hello, World!")
+		return nil
+	}))
+
+	bgmtv.Group(app)
+	rootRouter(app)
+	app.Use(func(c *fiber.Ctx) {
+		c.Status(404).SendString(`{}`)
+		// => 404 "Not Found"
+	})
+
+	return app
+}
+
+func setupMiddleware(app *fiber.App) {
 	app.Use(requestid.New())
 	app.Use(func(c *fiber.Ctx) {
 		c.Set("x-server-version", config.Version)
@@ -62,38 +99,4 @@ func CreateApp() *fiber.App {
 	app.Use(recover.New(recover.Config{
 		Handler: logHandler,
 	}))
-
-	setupSwagger(app)
-	app.Get("/asserts/web/*", func(c *fiber.Ctx) {
-		filepath := c.Params("*")
-		f, err := pkger.Open(path.Join("/asserts/web/", filepath))
-		if err != nil {
-			c.SendStatus(404)
-			return
-		}
-		defer f.Close()
-		c.Type(path.Ext(filepath))
-		_, err = io.Copy(c.Fasthttp.Response.BodyWriter(), f)
-		if err != nil {
-			logrus.Errorln(err)
-		}
-	})
-	app.Get("/", func(c *fiber.Ctx) {
-		c.Send("Hello, World!")
-	})
-
-	app.Get("/test", handler.LogError(func(c *fiber.Ctx, logger *zap.Logger) error {
-		logger.Info("hello", zap.Int("key", 8))
-		c.Send("Hello, World!")
-		return nil
-	}))
-
-	bgmtv.Group(app)
-	rootRouter(app)
-	app.Use(func(c *fiber.Ctx) {
-		c.Status(404).SendString(`{}`)
-		// => 404 "Not Found"
-	})
-
-	return app
 }

@@ -25,7 +25,7 @@ import (
 	"bgm38/pkg/web/docs"
 )
 
-func setupSwagger(app *fiber.App) {
+func setupSwaggerRouter(app *fiber.App) {
 	f, err := pkger.Open("/asserts/web/redoc.html")
 	if err != nil {
 		logrus.Fatalln("missing redoc html")
