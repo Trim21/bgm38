@@ -100,7 +100,8 @@ func makeCal(userID string, data []model.UserCollection) *goics.Component {
 	cal.SetType("VCALENDAR")
 	cal.AddProperty("name", "Bgm.tv Followed Bangumi Calendar")
 	cal.AddProperty("description", utils.StrConcat(userID, " Followed Bangumi Calendar"))
-	cal.AddProperty("PRODID", utils.StrConcat("-//trim21//www.trim21.cn//", config.Version, "//"))
+	cal.AddProperty("PRODID", utils.StrConcat("-//trim21//api.bgm38.com//", config.Version, "//"))
+	cal.AddProperty("X-WR-CALNAME", "bgm.tv")
 	cal.AddProperty("version", "2.0")
 
 	for _, subject := range data {
