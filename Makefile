@@ -1,3 +1,5 @@
+COMMAND := go build -mod=readonly -ldflags "-s -w -X bgm38/config.Version=$(SLUG)" -o dist/app
+
 SLUG ?= $(shell git rev-parse --abbrev-ref HEAD)-$(shell git rev-parse HEAD|cut -c1-7)
 MSGP_GEN = pkg/log/model_gen.go
 DOC = pkg/web/docs/docs.go pkg/web/docs/swagger.json pkg/web/docs/swagger.yaml
@@ -8,9 +10,12 @@ ASSERTS = $(wildcard asserts/**/* asserts/*)
 default: build
 
 release: clean generated
-	go build -tags=asserts -mod=readonly -ldflags "-s -w -X bgm38/config.Version=$(SLUG)" -o dist/app
+	$(COMMAND) -tags=asserts
 
 build: dist/app
+
+dist/app: generated
+	$(COMMAND)
 
 generated: $(MSGP_GEN) $(DOC) pkg/asserts/pkged.go
 
@@ -23,9 +28,6 @@ $(DOC): $(WEB_SRC)
 pkg/asserts/pkged.go: $(ASSERTS)
 	rm -f $@
 	pkger -include /asserts -o pkg/asserts
-
-dist/app: generated
-	go build -mod=readonly -ldflags "-s -w -X bgm38/config.Version=$(SLUG)" -o $@
 
 clean:
 	go clean -i ./... | true
