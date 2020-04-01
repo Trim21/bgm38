@@ -1,8 +1,8 @@
 SLUG ?= $(shell git rev-parse --abbrev-ref HEAD)-$(shell git rev-parse HEAD|cut -c1-7)
 MSGP_GEN = pkg/log/model_gen.go
 DOC = pkg/web/docs/swagger.json pkg/web/docs/swagger.yaml pkg/web/docs/docs.go
-SRC = $(filter-out $(DOC) $(MSGP_GEN), $(shell find . -type f -name '*.go'))
-WEB_SRC = $(filter-out $(DOC) $(MSGP_GEN), $(shell find ./pkg/web/ -type f -name '*.go'))
+SRC = $(filter-out $(DOC) $(MSGP_GEN), $(shell find -type f -name "*.go"))
+WEB_SRC = $(filter-out $(DOC) $(MSGP_GEN), $(shell find pkg/web/ -type f -name "*.go"))
 ASSERTS = $(wildcard asserts/**/* asserts/*)
 
 default: build
