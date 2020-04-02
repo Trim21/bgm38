@@ -9,23 +9,30 @@ import (
 	"github.com/gofiber/recover"
 	"github.com/gofiber/requestid"
 	"github.com/markbates/pkger"
-	"github.com/sirupsen/logrus"
 	"go.uber.org/zap"
 
 	"bgm38/config"
+	"bgm38/pkg/utils"
+	"bgm38/pkg/utils/log"
 	"bgm38/pkg/web/bgmtv"
 	"bgm38/pkg/web/utils/handler"
 )
 
 func Start() error {
-	return CreateApp().Listen(3000)
+	var port = utils.GetEnv("PORT", "3000")
+	log.GetLogger().Info("start listen on http://127.0.0.1:" + port)
+	return CreateApp().Listen(port)
 }
 
 func CreateApp() *fiber.App {
+
 	app := fiber.New()
 	app.Settings.StrictRouting = true
 	setupMiddleware(app)
 	setupSwaggerRouter(app)
+	app.Get("/", func(c *fiber.Ctx) {
+		c.Redirect("https://api.bgm38.com/swagger")
+	})
 	app.Get("/asserts/web/*", func(c *fiber.Ctx) {
 		filepath := c.Params("*")
 		f, err := pkger.Open(path.Join("/asserts/web/", filepath))
@@ -37,11 +44,8 @@ func CreateApp() *fiber.App {
 		c.Type(path.Ext(filepath))
 		_, err = io.Copy(c.Fasthttp.Response.BodyWriter(), f)
 		if err != nil {
-			logrus.Errorln(err)
+			log.GetLogger().Error(err.Error())
 		}
-	})
-	app.Get("/", func(c *fiber.Ctx) {
-		c.Send("Hello, World!")
 	})
 
 	app.Get("/test", handler.LogError(func(c *fiber.Ctx, logger *zap.Logger) error {
@@ -52,9 +56,11 @@ func CreateApp() *fiber.App {
 
 	bgmtv.Group(app)
 	rootRouter(app)
+
+	// 404 handler
 	app.Use(func(c *fiber.Ctx) {
-		c.Status(404).SendString(`{}`)
-		// => 404 "Not Found"
+		c.Status(404).
+			SendString(`{"message": "not found", "statue": "error"}`)
 	})
 
 	return app

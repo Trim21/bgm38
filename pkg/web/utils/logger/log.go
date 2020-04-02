@@ -1,4 +1,4 @@
-package utils
+package logger
 
 import (
 	"github.com/gofiber/fiber"
@@ -6,6 +6,8 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
+
+var Logger *zap.Logger
 
 func HeaderFields(ctx *fiber.Ctx) zap.Field {
 	return zap.Object("headers", &status{h: &ctx.Fasthttp.Request.Header})

@@ -11,7 +11,6 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/gofiber/fiber"
 	"github.com/jordic/goics"
-	"github.com/sirupsen/logrus"
 	"go.uber.org/zap"
 
 	"bgm38/config"
@@ -69,7 +68,7 @@ func userCalendar(ctx *fiber.Ctx, logger *zap.Logger) error {
 
 	err = json.Unmarshal(resp.Body(), &data)
 	if err != nil {
-		logrus.Debugln(err)
+		logger.Debug(err.Error())
 		ctx.Status(404)
 		return ctx.JSON(res.Error{
 			Message: "User doesn't exist",
