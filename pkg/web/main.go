@@ -4,17 +4,16 @@ import (
 	"io"
 	"path"
 
-	"github.com/getsentry/sentry-go"
 	"github.com/gofiber/fiber"
-	"github.com/gofiber/recover"
 	"github.com/markbates/pkger"
 	"go.uber.org/zap"
 
-	"bgm38/config"
 	"bgm38/pkg/utils"
 	"bgm38/pkg/utils/log"
 	"bgm38/pkg/web/bgmtv"
+	"bgm38/pkg/web/middleware/headerVersion"
 	"bgm38/pkg/web/middleware/requestid"
+	"bgm38/pkg/web/middleware/sentry"
 	"bgm38/pkg/web/utils/handler"
 )
 
@@ -68,41 +67,6 @@ func CreateApp() *fiber.App {
 
 func setupMiddleware(app *fiber.App) {
 	app.Use(requestid.New())
-	app.Use(func(c *fiber.Ctx) {
-		c.Set("x-server-version", config.Version)
-		c.Next()
-	})
-
-	var logHandler func(*fiber.Ctx, error)
-
-	if sentry.CurrentHub().Client() == nil {
-		logHandler = func(c *fiber.Ctx, err error) {
-			c.SendString(err.Error())
-			c.SendStatus(500)
-		}
-	} else {
-		logHandler = func(c *fiber.Ctx, err error) {
-			event := sentry.Event{
-				Contexts: make(map[string]interface{}),
-				Extra:    make(map[string]interface{}),
-				Tags:     make(map[string]string, 20),
-				Modules:  make(map[string]string),
-				Release:  config.Version,
-			}
-
-			c.Fasthttp.Request.Header.VisitAll(func(key, value []byte) {
-				event.Contexts[string(key)] = value
-			})
-			event.Contexts["method"] = c.Method()
-			event.Contexts["path"] = c.Path()
-			event.Contexts["query"] = c.Fasthttp.QueryArgs().QueryString()
-			sentry.CaptureEvent(sentry.NewEvent())
-			c.SendString("server internal error")
-			c.SendStatus(500)
-		}
-	}
-
-	app.Use(recover.New(recover.Config{
-		Handler: logHandler,
-	}))
+	app.Use(headerVersion.New())
+	app.Use(sentry.New())
 }
