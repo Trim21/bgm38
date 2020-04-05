@@ -126,8 +126,6 @@ github.com/gofiber/fiber v1.8.431 h1:kFLjtUZ/O2ABjL52qJ3WKyazP7ua/wPIzzj+jnamH5k
 github.com/gofiber/fiber v1.8.431/go.mod h1:yQhhFUJprqnZVaEbd5h4ZqU+wb9vzP5imw7UbjGlDuQ=
 github.com/gofiber/recover v0.0.2 h1:lmnmfRR23snGLV9sphU4UClciJ9wTMBy+mvCN8U8vdM=
 github.com/gofiber/recover v0.0.2/go.mod h1:u7FBmAGpH76dq2Nx0u9mVL0AKtF6Y6zofjZPHUPH9YQ=
-github.com/gofiber/requestid v0.0.2 h1:+on5rsnwbsQBwaxyNJ2ZUvE+AwUxGq71smirGTuaSuY=
-github.com/gofiber/requestid v0.0.2/go.mod h1:URdGNWzZYQfXxMTTTy4DVqA4nFCWr5g/0q2oPLIdACs=
 github.com/gogo/protobuf v1.1.1/go.mod h1:r8qH/GZQm5c6nD/R0oafs1akxWv10x8SbQlK7atdtwQ=
 github.com/gogo/protobuf v1.2.1/go.mod h1:hp+jE20tsWTFYpLwKvXlhS1hjn+gTNwPg2I6zVXpSg4=
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b/go.mod h1:SBH7ygxi8pfUlaOkMMuAQtPIUF8ecWP5IEl/CR7VP2Q=

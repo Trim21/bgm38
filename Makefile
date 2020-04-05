@@ -20,10 +20,10 @@ dist/app: generated
 generated: $(MSGP_GEN) $(DOC) pkg/asserts/pkged.go
 
 $(MSGP_GEN): %_gen.go: %.go
-	msgp -file $<
+	msgp -file $< -tests=false
 
 $(DOC): $(WEB_SRC)
-	swag init --generalInfo ./pkg/web/doc.go -o ./pkg/web/docs
+	swag init --generalInfo ./pkg/web/doc.go -o ./pkg/web/docs --generatedTime=false
 
 pkg/asserts/pkged.go: $(ASSERTS)
 	rm -f $@

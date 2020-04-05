@@ -14,8 +14,8 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gofiber/fiber v1.8.431
 	github.com/gofiber/recover v0.0.2
-	github.com/gofiber/requestid v0.0.2
 	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
+	github.com/google/uuid v1.1.1
 	github.com/jarcoal/httpmock v1.0.5
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/jordic/goics v0.0.0-20181215212140-feb996c8e01f

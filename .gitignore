@@ -4,13 +4,12 @@
 dist
 *.db
 
-server/bindata/templates.go
 tmp
+coverage.txt
 *_gen.go
 *_gen_test.go
 web/app/docs/swagger.*
 web/app/docs/docs.go
-coverage.txt
 pkg/web/docs/docs.go
 pkg/web/docs/swagger.*
 pkg/asserts/pkged.go

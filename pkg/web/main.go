@@ -7,7 +7,6 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/gofiber/fiber"
 	"github.com/gofiber/recover"
-	"github.com/gofiber/requestid"
 	"github.com/markbates/pkger"
 	"go.uber.org/zap"
 
@@ -15,6 +14,7 @@ import (
 	"bgm38/pkg/utils"
 	"bgm38/pkg/utils/log"
 	"bgm38/pkg/web/bgmtv"
+	"bgm38/pkg/web/middleware/requestid"
 	"bgm38/pkg/web/utils/handler"
 )
 
