@@ -1,4 +1,4 @@
-package headerVersion
+package headerversion
 
 import (
 	"github.com/gofiber/fiber"

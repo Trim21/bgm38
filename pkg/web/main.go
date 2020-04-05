@@ -11,7 +11,7 @@ import (
 	"bgm38/pkg/utils"
 	"bgm38/pkg/utils/log"
 	"bgm38/pkg/web/bgmtv"
-	"bgm38/pkg/web/middleware/headerVersion"
+	"bgm38/pkg/web/middleware/headerversion"
 	"bgm38/pkg/web/middleware/requestid"
 	"bgm38/pkg/web/middleware/sentry"
 	"bgm38/pkg/web/utils/handler"
@@ -67,6 +67,6 @@ func CreateApp() *fiber.App {
 
 func setupMiddleware(app *fiber.App) {
 	app.Use(requestid.New())
-	app.Use(headerVersion.New())
+	app.Use(headerversion.New())
 	app.Use(sentry.New())
 }
