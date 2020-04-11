@@ -34,3 +34,5 @@ var MysqlAuth = utils.GetEnv("MYSQL_AUTH", "root:password")
 var RedisSpiderURLKey = utils.GetEnv("REDIS_SPIDER_DISPATCH_KEY", "bgm_tv_spider:start_urls")
 
 var TimeZone = time.FixedZone("Asia/Shanghai", 3600*8)
+
+var DSN = utils.GetEnv("SENTRY_DSN", "___DSN___")

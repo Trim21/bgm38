@@ -19,7 +19,7 @@ func main() {
 		logrus.SetLevel(logrus.DebugLevel)
 	} else {
 		err := sentry.Init(sentry.ClientOptions{
-			Dsn: "___DSN___",
+			Dsn: config.DSN,
 		})
 
 		if err != nil {
