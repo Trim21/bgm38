@@ -71,7 +71,7 @@ func userCalendar(ctx *fiber.Ctx, logger *zap.Logger) error {
 		logger.Debug(err.Error())
 		ctx.Status(404)
 		return ctx.JSON(res.Error{
-			Message: "User doesn't exist",
+			Message: "User doesn't exist or can't fetch data from upstream serer, try refresh your page",
 			Status:  "error",
 		})
 	}
