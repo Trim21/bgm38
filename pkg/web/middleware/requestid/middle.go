@@ -23,6 +23,7 @@ func New() func(*fiber.Ctx) {
 		if rid == "" {
 			rid = generator()
 		}
+		c.Locals(fiber.HeaderXRequestID, rid)
 		c.Next()
 		// Set X-Request-ID
 		c.Set(fiber.HeaderXRequestID, rid)
