@@ -1,4 +1,4 @@
-package zapx
+package log
 
 import (
 	"github.com/go-redis/redis/v7"

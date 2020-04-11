@@ -8,7 +8,6 @@ import (
 	"go.uber.org/zap/zapcore"
 
 	"bgm38/config"
-	"bgm38/pkg/zapx"
 )
 
 var _logger *zap.Logger
@@ -28,11 +27,14 @@ func getLogger() *zap.Logger {
 	enc := zapcore.NewJSONEncoder(ec)
 	return zap.New(zapcore.NewCore(
 		enc,
-		zap.CombineWriteSyncers(zapx.NewRedisSink(&redis.Options{
+		zap.CombineWriteSyncers(NewRedisSink(&redis.Options{
 			Addr:     config.RedisAddr,
 			Password: config.RedisPassword,
 			PoolSize: 3,
 		}, "bgm38-log-v2"), zapcore.AddSync(os.Stdout)),
 		zap.InfoLevel,
-	))
+	)).With(zap.Object("@metadata", &Metadata{
+		Beat:    "bgm38-log-v1",
+		Version: config.Version,
+	}))
 }
