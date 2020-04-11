@@ -82,7 +82,7 @@ jobs:
       - name: Build
         run: make release
         env:
-          CGO_ENABLE: "0"
+          CGO_ENABLED: "0"
 
       - name: build docker
         run: docker build -t current .

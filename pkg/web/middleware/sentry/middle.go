@@ -25,7 +25,7 @@ func New() func(ctx *fiber.Ctx) {
 				Extra:    make(map[string]interface{}),
 				Tags:     make(map[string]string, 20),
 				Modules:  make(map[string]string),
-				Release:  config.Version,
+				Release:  config.SHA,
 			}
 
 			c.Fasthttp.Request.Header.VisitAll(func(key, value []byte) {

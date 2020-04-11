@@ -1,5 +1,3 @@
-COMMAND := go build -mod=readonly -ldflags "-s -w -X bgm38/config.Version=$(SLUG)" -o dist/app
-
 COMMIT_SHA ?= $(shell git rev-parse HEAD)
 COMMIT_SHORT_SHA ?= $(shell echo $(COMMIT_SHA)|cut -c1-7)
 COMMIT_DATE ?= $(shell git show -s --pretty=%cs $(COMMIT_SHA))
@@ -10,6 +8,7 @@ DOC = pkg/web/docs/swagger.json pkg/web/docs/swagger.yaml pkg/web/docs/docs.go
 SRC = $(filter-out $(DOC) $(MSGP_GEN), $(shell find -type f -name "*.go"))
 WEB_SRC = $(filter-out $(DOC) $(MSGP_GEN), $(shell find pkg/web/ -type f -name "*.go"))
 ASSERTS = $(wildcard asserts/**/* asserts/*)
+COMMAND := go build -mod=readonly -ldflags "-s -w -X bgm38/config.SHA=$(COMMIT_SHORT_SHA) -X bgm38/config.Version=$(SLUG)" -o dist/app
 
 default: build
 	@echo 'git ref:    ' "'$(COMMIT_REF)'"

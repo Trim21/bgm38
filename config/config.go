@@ -9,6 +9,8 @@ import (
 // Version App build version
 var Version = "development"
 
+var SHA string
+
 // RedisAddr redis ip:port
 var RedisAddr = utils.GetEnv("REDIS_HOST", "192.168.1.3") + ":6379"
 
