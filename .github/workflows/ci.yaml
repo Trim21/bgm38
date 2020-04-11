@@ -79,6 +79,18 @@ jobs:
       - name: Install
         run: make install
 
+      - name: Get Git Ref
+        id: version
+        run: |
+          if [[ ${GITHUB_REF} == refs/tags* ]]; then
+            echo "::set-env name=REF::latest"
+            echo "::set-env name=SLUG::${GITHUB_REF:10}"
+          else
+            echo "::set-env name=REF::${GITHUB_REF:11}"
+            echo "::set-env name=SLUG::${GITHUB_REF:11}-${GITHUB_SHA:0:7}"
+          fi
+          echo "::set-env name=SHA::${GITHUB_SHA:0:7}"
+
       - name: Build
         run: make release
         env:
@@ -90,16 +102,6 @@ jobs:
       - name: release docker
         if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/dev' || startsWith( github.ref, 'refs/tags/v' )
         run: |
-          if [[ ${GITHUB_REF} == refs/tags* ]]; then
-            REF=latest
-            SLUG=${GITHUB_REF:10}
-          else
-            REF=${GITHUB_REF:11}
-            SLUG=${GITHUB_REF:11}-${GITHUB_SHA:0:7}
-          fi
-
-          SHA=${GITHUB_SHA:0:7}
-          
           docker tag current trim21/bgm38:$SLUG
           docker tag current trim21/bgm38:$REF
 
