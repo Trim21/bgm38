@@ -26,15 +26,15 @@ import (
 )
 
 func setupSwaggerRouter(app *fiber.App) {
-	f, err := pkger.Open("/asserts/web/redoc.html")
+	f, err := pkger.Open("/asserts/web/doc.html")
 	if err != nil {
-		log.GetLogger().Fatal("missing redoc html")
+		log.GetLogger().Fatal("missing doc html")
 	}
 
 	content, err := ioutil.ReadAll(f)
 
 	if err != nil {
-		log.GetLogger().Fatal("can't read redoc html")
+		log.GetLogger().Fatal("can't read doc html")
 	}
 
 	j := docs.OpenAPI()
