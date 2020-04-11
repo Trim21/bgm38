@@ -27,7 +27,8 @@ require (
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/russross/blackfriday v1.5.2
 	github.com/sirupsen/logrus v1.5.0
-	github.com/spf13/cobra v0.0.7
+	github.com/spf13/cobra v1.0.0
+	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/testify v1.5.1
 	github.com/swaggo/swag v1.6.5
 	github.com/tinylib/msgp v1.1.2
