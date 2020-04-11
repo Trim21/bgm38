@@ -1,4 +1,10 @@
-SLUG ?= $(shell git rev-parse --abbrev-ref HEAD)-$(shell git rev-parse HEAD|cut -c1-7)
+COMMAND := go build -mod=readonly -ldflags "-s -w -X bgm38/config.Version=$(SLUG)" -o dist/app
+
+COMMIT_SHA ?= $(shell git rev-parse HEAD)
+COMMIT_SHORT_SHA ?= $(shell echo $(COMMIT_SHA)|cut -c1-7)
+COMMIT_DATE ?= $(shell git show -s --pretty=%cs $(COMMIT_SHA))
+COMMIT_REF ?= $(shell git rev-parse --abbrev-ref HEAD)
+SLUG ?= $(COMMIT_REF)-$(COMMIT_SHORT_SHA)
 MSGP_GEN = pkg/log/model_gen.go
 DOC = pkg/web/docs/swagger.json pkg/web/docs/swagger.yaml pkg/web/docs/docs.go
 SRC = $(filter-out $(DOC) $(MSGP_GEN), $(shell find -type f -name "*.go"))
@@ -6,27 +12,29 @@ WEB_SRC = $(filter-out $(DOC) $(MSGP_GEN), $(shell find pkg/web/ -type f -name "
 ASSERTS = $(wildcard asserts/**/* asserts/*)
 
 default: build
+	@echo 'git ref:    ' "'$(COMMIT_REF)'"
+	@echo 'commit date:' "'$(COMMIT_DATE)'"
+	@echo 'git hash:   ' "'$(COMMIT_SHORT_SHA)'"
 
 release: clean generated
-	go build -tags=asserts -mod=readonly -ldflags "-s -w -X bgm38/config.Version=$(SLUG)" -o dist/app
+	$(COMMAND) -tags=asserts
 
 build: dist/app
 
-doc: $(DOC)
+dist/app: generated
+	@$(COMMAND)
+
 generated: $(MSGP_GEN) $(DOC) pkg/asserts/pkged.go
 
 $(MSGP_GEN): %_gen.go: %.go
-	msgp -file $<
+	msgp -file $< -tests=false
 
 $(DOC): $(WEB_SRC)
-	swag init --generalInfo ./pkg/web/doc.go -o ./pkg/web/docs
+	@swag init --generalInfo ./pkg/web/doc.go -o ./pkg/web/docs --generatedTime=false
 
 pkg/asserts/pkged.go: $(ASSERTS)
-	rm -f $@
-	pkger -include /asserts -o pkg/asserts
-
-dist/app: generated
-	go build -mod=readonly -ldflags "-s -w -X bgm38/config.Version=$(SLUG)" -o $@
+	@rm -f $@
+	@pkger -include /asserts -o pkg/asserts
 
 clean:
 	go clean -i ./... | true

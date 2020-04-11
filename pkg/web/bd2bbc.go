@@ -2,6 +2,7 @@ package web
 
 import (
 	"github.com/gofiber/fiber"
+	"go.uber.org/zap"
 
 	"bgm38/pkg/web/md2bbc"
 	"bgm38/pkg/web/utils/handler"
@@ -20,7 +21,7 @@ func rootRouter(app *fiber.App) {
 // @Param markdown body string true "待转换的markdown"
 // @Success 200 {string} string "text/plain"
 // @Router /v1/md2bbc [post]
-func markdownToBBCode(ctx *fiber.Ctx) error {
+func markdownToBBCode(ctx *fiber.Ctx, logger *zap.Logger) error {
 	body := ctx.Fasthttp.Request.Body()
 	ctx.Set("characters", "utf-8")
 	ctx.Set("content-type", "text/plain")

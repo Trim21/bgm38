@@ -2,16 +2,30 @@ package handler
 
 import (
 	"github.com/gofiber/fiber"
-	"github.com/sirupsen/logrus"
+	"github.com/gofiber/requestid"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+
+	"bgm38/pkg/utils/log"
+	loggerUtils "bgm38/pkg/web/utils/logger"
 )
 
-func LogError(f func(*fiber.Ctx) error) func(*fiber.Ctx) {
+func LogError(f func(*fiber.Ctx, *zap.Logger) error) func(*fiber.Ctx) {
+	var _logger = log.GetLogger()
 
 	return func(ctx *fiber.Ctx) {
-		err := f(ctx)
+		s := loggerUtils.HeaderFields(ctx)
+		logger := _logger.With(s, getRequestID(ctx))
+
+		err := f(ctx, logger)
+
 		if err != nil {
-			logrus.Errorln(err)
+			logger.Error(err.Error())
 		}
 
 	}
+}
+
+func getRequestID(c *fiber.Ctx) zapcore.Field {
+	return zap.String(fiber.HeaderXRequestID, requestid.Get(c))
 }

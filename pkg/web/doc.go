@@ -20,21 +20,21 @@ import (
 
 	"github.com/gofiber/fiber"
 	"github.com/markbates/pkger"
-	"github.com/sirupsen/logrus"
 
+	"bgm38/pkg/utils/log"
 	"bgm38/pkg/web/docs"
 )
 
-func setupSwagger(app *fiber.App) {
+func setupSwaggerRouter(app *fiber.App) {
 	f, err := pkger.Open("/asserts/web/redoc.html")
 	if err != nil {
-		logrus.Fatalln("missing redoc html")
+		log.GetLogger().Fatal("missing redoc html")
 	}
 
 	content, err := ioutil.ReadAll(f)
 
 	if err != nil {
-		logrus.Fatalln("can't read redoc html")
+		log.GetLogger().Fatal("can't read redoc html")
 	}
 
 	j := docs.OpenAPI()

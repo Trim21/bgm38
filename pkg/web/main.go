@@ -2,63 +2,70 @@ package web
 
 import (
 	"io"
-	"mime"
 	"path"
 
 	"github.com/gofiber/fiber"
-	"github.com/gofiber/recover"
 	"github.com/gofiber/requestid"
 	"github.com/markbates/pkger"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 
-	"bgm38/config"
+	"bgm38/pkg/utils"
+	"bgm38/pkg/utils/log"
 	"bgm38/pkg/web/bgmtv"
+	"bgm38/pkg/web/middleware/headerversion"
+	"bgm38/pkg/web/middleware/sentry"
+	"bgm38/pkg/web/utils/handler"
 )
 
 func Start() error {
-	return CreateApp().Listen(3000)
+	var port = utils.GetEnv("PORT", "3000")
+	log.GetLogger().Info("start listen on http://127.0.0.1:" + port)
+	return CreateApp().Listen(port)
 }
 
 func CreateApp() *fiber.App {
+
 	app := fiber.New()
 	app.Settings.StrictRouting = true
-	app.Use(requestid.New())
-	app.Use(func(c *fiber.Ctx) {
-		c.Set("x-server-version", config.Version)
-		c.Next()
+	setupMiddleware(app)
+	setupSwaggerRouter(app)
+	app.Get("/", func(c *fiber.Ctx) {
+		c.Redirect("https://api.bgm38.com/swagger")
 	})
-	app.Use(recover.New(recover.Config{
-		Handler: func(c *fiber.Ctx, err error) {
-			c.SendString(err.Error())
-			c.SendStatus(500)
-		},
-	}))
-
-	setupSwagger(app)
-	app.Get("/asserts/web/*", func(c *fiber.Ctx) {
+	app.Get("/asserts/web/*", handler.LogError(func(c *fiber.Ctx, logger *zap.Logger) error {
 		filepath := c.Params("*")
 		f, err := pkger.Open(path.Join("/asserts/web/", filepath))
 		if err != nil {
 			c.SendStatus(404)
-			return
+			return nil
 		}
 		defer f.Close()
-		mintType := mime.TypeByExtension(path.Ext(filepath))
-		c.Set("content-type", mintType)
+		c.Type(path.Ext(filepath))
 		_, err = io.Copy(c.Fasthttp.Response.BodyWriter(), f)
-		if err != nil {
-			logrus.Errorln(err)
-		}
-	})
-	app.Get("/", func(c *fiber.Ctx) {
+		return err
+	}))
+
+	app.Get("/test", handler.LogError(func(c *fiber.Ctx, logger *zap.Logger) error {
+		logger.Info("hello", zap.Int("key", 8))
 		c.Send("Hello, World!")
-	})
+		return nil
+	}))
+
 	bgmtv.Group(app)
 	rootRouter(app)
+
+	// 404 handler
 	app.Use(func(c *fiber.Ctx) {
-		c.Status(404).SendString(`{}`)
-		// => 404 "Not Found"
+		c.Set("content-type", "application/json")
+		c.Status(404).
+			SendString(`{"message": "not found", "statue": "error"}`)
 	})
 
 	return app
+}
+
+func setupMiddleware(app *fiber.App) {
+	app.Use(requestid.New())
+	app.Use(headerversion.New())
+	app.Use(sentry.New())
 }
