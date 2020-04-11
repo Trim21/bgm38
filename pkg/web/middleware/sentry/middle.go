@@ -4,9 +4,9 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/gofiber/fiber"
 	"github.com/gofiber/recover"
+	"github.com/gofiber/requestid"
 
 	"bgm38/config"
-	"bgm38/pkg/web/middleware/requestid"
 )
 
 func New() func(ctx *fiber.Ctx) {

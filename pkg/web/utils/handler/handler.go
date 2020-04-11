@@ -2,11 +2,11 @@ package handler
 
 import (
 	"github.com/gofiber/fiber"
+	"github.com/gofiber/requestid"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
 	"bgm38/pkg/utils/log"
-	"bgm38/pkg/web/middleware/requestid"
 	loggerUtils "bgm38/pkg/web/utils/logger"
 )
 
