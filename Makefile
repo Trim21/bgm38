@@ -33,7 +33,7 @@ $(DOC): $(WEB_SRC)
 
 pkg/asserts/pkged.go: $(ASSERTS)
 	@rm -f $@
-	@pkger -include /asserts -o pkg/asserts
+	pkger -include /asserts -o pkg/asserts
 
 clean:
 	go clean -i ./... | true
