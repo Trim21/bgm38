@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/go-resty/resty/v2"
@@ -21,7 +22,6 @@ import (
 )
 
 var client = resty.New()
-var cstZone = time.FixedZone("CST", 8*3600)
 
 // @ID watchingCalendarV1
 // @Summary 在看番剧日历
@@ -98,25 +98,27 @@ func getAirDayOffset(w time.Weekday, airWeekday int) int {
 func makeCal(userID string, data []model.UserCollection) *goics.Component {
 	cal := goics.NewComponent()
 	cal.SetType("VCALENDAR")
-	cal.AddProperty("name", "Bgm.tv Followed Bangumi Calendar")
+	cal.AddProperty("name", "Bgm.tv Following Bangumi Calendar")
 	cal.AddProperty("description", utils.StrConcat(userID, " Followed Bangumi Calendar"))
 	cal.AddProperty("PRODID", utils.StrConcat("-//trim21//api.bgm38.com//", config.Version, "//"))
 	cal.AddProperty("X-WR-CALNAME", "bgm.tv")
 	cal.AddProperty("version", "2.0")
 
+	now := time.Now().In(config.TimeZone)
+
 	for _, subject := range data {
 		s := goics.NewComponent()
-
+		summary := subject.Subject.NameCn
+		if summary == "" {
+			summary = subject.Name
+		}
 		s.SetType("VEVENT")
-		offsetDay := getAirDayOffset(time.Now().In(cstZone).Weekday(), subject.Subject.AirWeekday)
-		dt := time.Now().In(cstZone).Add(time.Duration(offsetDay*24) * time.Hour)
-		k, v := goics.FormatDateField("DTEND", dt)
-		s.AddProperty(k, v)
-		k, v = goics.FormatDateField("DTSTART", dt)
-		s.AddProperty(k, v)
-
-		s.AddProperty("UID", fmt.Sprintf("%d", subject.SubjectID))
-		s.AddProperty("SUMMARY", subject.Subject.NameCn)
+		s.AddProperty("UID", utils.StrConcat(strconv.Itoa(subject.SubjectID), "@bgm.tv"))
+		s.AddProperty("SUMMARY", summary)
+		offsetDay := getAirDayOffset(now.Weekday(), subject.Subject.AirWeekday)
+		dt := now.Add(time.Hour * 24 * time.Duration(offsetDay))
+		s.AddProperty(goics.FormatDateField("DTEND", dt))
+		s.AddProperty(goics.FormatDateField("DTSTART", dt))
 		cal.AddComponent(s)
 	}
 	return cal
