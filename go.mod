@@ -6,15 +6,15 @@ require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/antchfx/htmlquery v1.2.2
 	github.com/antchfx/xpath v1.1.4 // indirect
-	github.com/getsentry/sentry-go v0.5.1
+	github.com/getsentry/sentry-go v0.6.0
 	github.com/go-openapi/spec v0.19.7 // indirect
 	github.com/go-openapi/swag v0.19.8 // indirect
 	github.com/go-redis/redis/v7 v7.2.0
 	github.com/go-resty/resty/v2 v2.2.0
 	github.com/go-sql-driver/mysql v1.5.0
-	github.com/gofiber/fiber v1.8.431
-	github.com/gofiber/recover v0.0.2
-	github.com/gofiber/requestid v0.0.3
+	github.com/gofiber/fiber v1.9.1
+	github.com/gofiber/recover v0.0.3
+	github.com/gofiber/requestid v0.0.4
 	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
 	github.com/jarcoal/httpmock v1.0.5
 	github.com/jmoiron/sqlx v1.2.0
@@ -33,7 +33,7 @@ require (
 	github.com/swaggo/swag v1.6.5
 	github.com/tinylib/msgp v1.1.2
 	github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31 // indirect
-	github.com/valyala/fasthttp v1.9.0
+	github.com/valyala/fasthttp v1.12.0
 	go.uber.org/zap v1.14.1
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e
 	golang.org/x/tools v0.0.0-20200323144430-8dcfad9e016e // indirect
