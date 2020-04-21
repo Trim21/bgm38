@@ -24,13 +24,15 @@ func Start() error {
 }
 
 func CreateApp() *fiber.App {
-
 	app := fiber.New()
 	app.Settings.StrictRouting = true
 	setupMiddleware(app)
 	setupSwaggerRouter(app)
 	app.Get("/", func(c *fiber.Ctx) {
 		c.Redirect("https://api.bgm38.com/swagger")
+	})
+	app.Get("/about", func(c *fiber.Ctx) {
+		c.Redirect("/swagger")
 	})
 	app.Get("/asserts/web/*", handler.LogError(func(c *fiber.Ctx, logger *zap.Logger) error {
 		filepath := c.Params("*")

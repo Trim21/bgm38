@@ -16,6 +16,7 @@ func rootRouter(app *fiber.App) {
 // @Summary 转换markdown为bbcode
 // @Description 转换markdown为bbcode,
 // @Description 有部分bbcode不支持的功能不进行转换
+// @Description [一个简单的UI](/asserts/web/md2bbc.html)
 // @Accept plain
 // @Produce plain
 // @Param markdown body string true "待转换的markdown"

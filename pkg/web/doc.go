@@ -1,17 +1,16 @@
 // @title bgm38 api server
-// @version 0.0.1
+// @version dev
 // @description  A Set of http api for bangumi.
 
 // @schemes https
 // @host api.bgm38.com
 // @BasePath /
 
-// @contact.name Trim21
-// @contact.url https://github.com/Trim21/bgm38/issues
-// @contact.email i@trim21.me
+// @contact.name github.com/Trim21/bgm38
+// @contact.url https://github.com/Trim21/bgm38
 
-// @license.name MIT
-// @license.url https://github.com/Trim21/bgm38/blob/dev/LICENSE
+// @license.name MIT License
+// @license.url https://github.com/Trim21/bgm38/blob/master/LICENSE
 
 package web
 
