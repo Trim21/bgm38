@@ -37,12 +37,12 @@ func setupSwaggerRouter(app *fiber.App) {
 	}
 
 	j := docs.OpenAPI()
-	app.Get("/swagger/doc.json", func(ctx *fiber.Ctx) {
+	app.Get("/swagger.json", func(ctx *fiber.Ctx) {
 		ctx.Set("Content-Type", "application/json")
 		ctx.Status(200).SendString(j)
 	})
 
-	app.Get("/swagger", func(ctx *fiber.Ctx) {
+	app.Get("/", func(ctx *fiber.Ctx) {
 		ctx.Set("Content-Type", "text/html")
 		ctx.Status(200).SendBytes(content)
 	})

@@ -8,7 +8,7 @@ import (
 	"bgm38/pkg/web/utils/handler"
 )
 
-func rootRouter(app *fiber.App) {
+func md2bbcRouter(app *fiber.App) {
 	app.Post("/v1/md2bbc", handler.LogError(markdownToBBCode))
 }
 
