@@ -20,20 +20,20 @@ import (
 	"github.com/gofiber/fiber"
 	"github.com/markbates/pkger"
 
-	"bgm38/pkg/utils/log"
 	"bgm38/pkg/web/docs"
+	"bgm38/pkg/web/utils/logger"
 )
 
 func setupSwaggerRouter(app *fiber.App) {
 	f, err := pkger.Open("/asserts/web/doc.html")
 	if err != nil {
-		log.GetLogger().Fatal("missing doc html")
+		logger.GetLogger().Fatal("missing doc html")
 	}
 
 	content, err := ioutil.ReadAll(f)
 
 	if err != nil {
-		log.GetLogger().Fatal("can't read doc html")
+		logger.GetLogger().Fatal("can't read doc html")
 	}
 
 	j := docs.OpenAPI()

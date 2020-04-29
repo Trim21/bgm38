@@ -3,10 +3,9 @@ COMMIT_SHORT_SHA ?= $(shell echo $(COMMIT_SHA)|cut -c1-7)
 COMMIT_DATE ?= $(shell git show -s --pretty=%cs $(COMMIT_SHA))
 COMMIT_REF ?= $(shell git rev-parse --abbrev-ref HEAD)
 SLUG ?= $(COMMIT_REF)-$(COMMIT_SHORT_SHA)
-MSGP_GEN = pkg/log/model_gen.go
 DOC = pkg/web/docs/swagger.json pkg/web/docs/swagger.yaml pkg/web/docs/docs.go
-SRC = $(filter-out $(DOC) $(MSGP_GEN), $(shell find -type f -name "*.go"))
-WEB_SRC = $(filter-out $(DOC) $(MSGP_GEN), $(shell find pkg/web/ -type f -name "*.go"))
+SRC = $(filter-out $(DOC), $(shell find -type f -name "*.go"))
+WEB_SRC = $(filter-out $(DOC), $(shell find pkg/web/ -type f -name "*.go"))
 ASSERTS = $(wildcard asserts/**/* asserts/*)
 COMMAND := go build -mod=readonly -ldflags "-s -w -X bgm38/config.SHA=$(COMMIT_SHORT_SHA) -X bgm38/config.Version=$(SLUG)" -o dist/app
 
@@ -23,10 +22,7 @@ build: dist/app
 dist/app: generated
 	@$(COMMAND)
 
-generated: $(MSGP_GEN) $(DOC) pkg/asserts/pkged.go
-
-$(MSGP_GEN): %_gen.go: %.go
-	msgp -file $< -tests=false
+generated: $(DOC) pkg/asserts/pkged.go
 
 $(DOC): $(WEB_SRC)
 	@swag init --generalInfo ./pkg/web/doc.go -o ./pkg/web/docs --generatedTime=false

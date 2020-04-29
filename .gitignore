@@ -3,7 +3,7 @@
 *.exe~
 dist
 *.db
-
+bin
 tmp
 coverage.txt
 *_gen.go

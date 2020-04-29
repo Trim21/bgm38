@@ -6,12 +6,11 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	"bgm38/pkg/utils/log"
 	loggerUtils "bgm38/pkg/web/utils/logger"
 )
 
 func LogError(f func(*fiber.Ctx, *zap.Logger) error) func(*fiber.Ctx) {
-	var _logger = log.GetLogger()
+	var _logger = loggerUtils.GetLogger()
 
 	return func(ctx *fiber.Ctx) {
 		s := loggerUtils.HeaderFields(ctx)

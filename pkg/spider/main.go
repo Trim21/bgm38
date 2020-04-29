@@ -7,13 +7,18 @@ import (
 
 	"github.com/antchfx/htmlquery"
 	"github.com/go-resty/resty/v2"
+	"go.uber.org/zap"
 	"golang.org/x/net/html"
 
 	"bgm38/pkg/db"
+	"bgm38/pkg/utils/log"
 )
+
+var logger *zap.Logger
 
 func Start() error {
 	fmt.Println("spider start")
+	logger = log.BindMeta(log.CreateLogger("bgm38-spider-v1"))
 	db.InitDB()
 	prepareStmt()
 	var urlToFetch = make(chan string)

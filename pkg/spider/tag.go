@@ -4,7 +4,7 @@ import (
 	"strconv"
 
 	"github.com/antchfx/htmlquery"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"golang.org/x/net/html"
 
 	"bgm38/pkg/db"
@@ -22,7 +22,7 @@ func parseTagFromDoc(doc *html.Node, subjectID int) {
 		countText := htmlquery.InnerText(htmlquery.FindOne(n, "small/text()"))
 		count, err := strconv.Atoi(countText)
 		if err != nil {
-			logrus.Errorln(err)
+			logger.Error(err.Error())
 			continue
 		}
 		if text != "" {
@@ -44,7 +44,8 @@ func uploadTags(tags []*db.Tag) {
 	for _, tag := range tags {
 		_, err = tagUpsertStmt.Exec(tag)
 		if err != nil {
-			logrus.Errorln("insert into table `tag`", tag, err)
+			logger.Error("insert into table `tag`",
+				zap.Object("tag", tag), zap.String("err", err.Error()))
 		}
 	}
 }

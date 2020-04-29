@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/antchfx/htmlquery"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"golang.org/x/net/html"
 
 	"bgm38/pkg/db"
@@ -34,7 +34,7 @@ func parseRelation(doc *html.Node, subjectID int) {
 				sl := strings.Split(targetText, "/")
 				target, err := strconv.Atoi(sl[len(sl)-1])
 				if err != nil {
-					logrus.Errorln(err)
+					logger.Error(err.Error())
 					continue
 				}
 				relations = append(relations,
@@ -57,7 +57,9 @@ func uploadRelations(relations []*db.Relation) {
 	for _, relation := range relations {
 		_, err = relationUpsertStmt.Exec(relation)
 		if err != nil {
-			logrus.Errorln("upsert into table `relation`", relation, err)
+			logger.Error("upsert into table `relation`",
+				zap.Object("relation", relation),
+				zap.String("err", err.Error()))
 		}
 	}
 
