@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/antchfx/htmlquery"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"golang.org/x/net/html"
 
 	"bgm38/pkg/db"
@@ -21,7 +21,7 @@ func parseEpList(doc *html.Node, subjectID int) {
 		sl := strings.Split(href, "/")
 		epID, err := strconv.Atoi(sl[len(sl)-1])
 		if err != nil {
-			logrus.Errorln(err)
+			logger.Error(err.Error())
 			continue
 		}
 		eps = append(eps,
@@ -49,7 +49,7 @@ func uploadEps(eps []*db.Ep) {
 	for _, ep := range eps {
 		_, err := epUpsertStmt.Exec(ep)
 		if err != nil {
-			logrus.Errorln("upsert ep error", ep, err)
+			logger.Error("upsert ep error", zap.String("err", err.Error()), zap.Object("ep", ep))
 		}
 	}
 }

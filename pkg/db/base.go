@@ -2,10 +2,10 @@ package db
 
 import (
 	"fmt"
+	"log"
 
 	_ "github.com/go-sql-driver/mysql" // mysql driver
 	"github.com/jmoiron/sqlx"
-	"github.com/sirupsen/logrus"
 
 	"bgm38/config"
 )
@@ -18,7 +18,7 @@ func InitDB() {
 		config.MysqlAuth, config.MysqlHost)
 	MysqlX, err = sqlx.Connect("mysql", dsn)
 	if err != nil {
-		logrus.Fatalln(err)
+		log.Fatalln(err)
 	}
 
 }

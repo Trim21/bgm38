@@ -1,11 +1,21 @@
 package db
 
+import "go.uber.org/zap/zapcore"
+
 //
 type Ep struct {
 	EpID      int    `gorm:"primary_key" json:"-" db:"ep_id"`
 	SubjectID int    `json:"subject_id" db:"subject_id"`
 	Name      string `json:"name" db:"name"`
 	Episode   string `json:"episode" db:"episode"`
+}
+
+func (e *Ep) MarshalLogObject(enc zapcore.ObjectEncoder) error {
+	enc.AddInt("id", e.EpID)
+	enc.AddInt("subject_id", e.SubjectID)
+	enc.AddString("name", e.Name)
+	enc.AddString("episode", e.Episode)
+	return nil
 }
 
 //

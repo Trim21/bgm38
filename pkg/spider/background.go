@@ -10,7 +10,7 @@ import (
 	"github.com/antchfx/htmlquery"
 	"github.com/go-redis/redis/v7"
 	"github.com/go-resty/resty/v2"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 
 	"bgm38/config"
 	"bgm38/pkg/db"
@@ -27,7 +27,7 @@ func dispatcher(urlToFetch chan string) {
 		}
 	}()
 
-	logrus.Debugln("start spider dispatcher")
+	logger.Debug("start spider dispatcher")
 	for i := 310000; i > 0; i-- {
 		urlToFetch <- fmt.Sprintf("https://mirror.bgm.rin.cat/subject/%d", i)
 		count++
@@ -36,7 +36,7 @@ func dispatcher(urlToFetch chan string) {
 	for {
 		res, err := db.Redis.BRPop(time.Minute, config.RedisSpiderURLKey).Result()
 		if err != nil && err != redis.Nil {
-			logrus.Errorln(err)
+			logger.Error(err.Error())
 			continue
 		}
 		for _, s := range res {
@@ -51,17 +51,17 @@ func dispatcher(urlToFetch chan string) {
 
 func downloader(urlToFetch chan string, resQueue chan response) {
 	var client = resty.New()
-	logrus.Info("start downloader")
+	logger.Info("start downloader")
 	for url := range urlToFetch {
-		logrus.Debugln(url)
+		logger.Debug(url)
 		req := client.R()
 		res, err := req.Get(url)
 		if err != nil {
 
-			if nerr, ok := err.(net.Error); ok {
-				if nerr.Timeout() {
+			if netErr, ok := err.(net.Error); ok {
+				if netErr.Timeout() {
 					go func() {
-						logrus.Debugln("re-send request", url)
+						logger.Debug("re-send request", zap.String("url", url))
 						time.Sleep(5 * time.Second)
 						urlToFetch <- url
 					}()
@@ -69,7 +69,7 @@ func downloader(urlToFetch chan string, resQueue chan response) {
 				}
 			}
 
-			logrus.Errorln("request error", err.Error())
+			logger.Error("request error", zap.String("err", err.Error()))
 			continue
 		}
 		if res.StatusCode() > 300 || bytes.Contains([]byte("502 Bad Gateway"), res.Body()) {
@@ -97,15 +97,15 @@ func parser(resQueue chan response) {
 
 			subjectID, err := getSubjectID(res.url)
 			if err != nil {
-				logrus.Errorln(err)
+				logger.Error(err.Error())
 				return
 			}
 			if subjectID == 0 {
-				logrus.Fatalln(res.url)
+				logger.Fatal(res.url)
 			}
 			doc, err := htmlquery.Parse(bytes.NewReader(res.res.Body()))
 			if err != nil {
-				logrus.Errorln(err)
+				logger.Error(err.Error())
 				return
 			}
 			bodyString := string(res.res.Body())

@@ -1,6 +1,10 @@
 package db
 
-import "time"
+import (
+	"time"
+
+	"go.uber.org/zap/zapcore"
+)
 
 //
 type Usertoken struct {
@@ -32,6 +36,13 @@ type Tag struct {
 	Count     int    `json:"count" db:"count"`
 }
 
+func (t *Tag) MarshalLogObject(enc zapcore.ObjectEncoder) error {
+	enc.AddInt("subject_id", t.SubjectID)
+	enc.AddString("text", t.Text)
+	enc.AddInt("count", t.Count)
+	return nil
+}
+
 //
 type Subject struct {
 	ID           int    `gorm:"primary_key" json:"id" db:"id"`
@@ -61,6 +72,16 @@ type Relation struct {
 	Target   int    `json:"target" db:"target"`
 	Map      int    `json:"-" db:"map"`
 	Removed  int8   `json:"-" db:"removed"`
+}
+
+func (r *Relation) MarshalLogObject(enc zapcore.ObjectEncoder) error {
+	enc.AddString("id", r.ID)
+	enc.AddString("relation", r.Relation)
+	enc.AddInt("source", r.Source)
+	enc.AddInt("target", r.Target)
+	enc.AddInt("map", r.Map)
+	enc.AddInt8("removed", r.Removed)
+	return nil
 }
 
 //

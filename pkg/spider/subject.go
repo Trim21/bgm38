@@ -32,7 +32,7 @@ func getCollectorCount(doc *html.Node, subject *db.Subject) {
 
 		v, err := strconv.Atoi(strings.Split(s, "人")[0])
 		if err != nil {
-			logrus.Errorln(err)
+			logger.Error(err.Error())
 		}
 
 		switch key {

@@ -10,16 +10,16 @@ import (
 	"go.uber.org/zap"
 
 	"bgm38/pkg/utils"
-	"bgm38/pkg/utils/log"
 	"bgm38/pkg/web/bgmtv"
 	"bgm38/pkg/web/middleware/headerversion"
 	"bgm38/pkg/web/middleware/sentry"
 	"bgm38/pkg/web/utils/handler"
+	"bgm38/pkg/web/utils/logger"
 )
 
 func Start() error {
 	var port = utils.GetEnv("PORT", "3000")
-	log.GetLogger().Info("start listen on http://127.0.0.1:" + port)
+	logger.GetLogger().Info("start listen on http://127.0.0.1:" + port)
 	return createApp().Listen(port)
 }
 
