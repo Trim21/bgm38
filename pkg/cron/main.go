@@ -24,6 +24,10 @@ func formatKeysAndValues(keysAndValues ...interface{}) []zap.Field {
 			s = append(s, zap.Int(strconv.Itoa(i), v))
 		case string:
 			s = append(s, zap.String(strconv.Itoa(i), v))
+		case bool:
+			s = append(s, zap.Bool(strconv.Itoa(i), v))
+		default:
+			s = append(s, zap.String(strconv.Itoa(i), fmt.Sprintf("%v", v)))
 		}
 	}
 	return s
