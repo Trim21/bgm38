@@ -56,7 +56,7 @@ func Run(name string) error {
 
 func Start() error {
 	db.InitDB()
-	logger = log.BindMeta(log.CreateLogger("bgm38-cron"))
+	logger = log.BindMeta("bgm38-cron-v1", log.CreateLogger())
 	var err error
 	fmt.Println("setup cron")
 	var logger = lo{}

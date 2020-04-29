@@ -10,7 +10,7 @@ import (
 	"bgm38/config"
 )
 
-func CreateLogger(key string) *zap.Logger {
+func CreateLogger() *zap.Logger {
 	ec := zap.NewProductionEncoderConfig()
 	ec.EncodeDuration = zapcore.NanosDurationEncoder
 	ec.EncodeTime = zapcore.ISO8601TimeEncoder
@@ -22,14 +22,18 @@ func CreateLogger(key string) *zap.Logger {
 			Addr:     config.RedisAddr,
 			Password: config.RedisPassword,
 			PoolSize: 3,
-		}, key), zapcore.AddSync(os.Stdout)),
+		}, "bgm38-log-v2"), zapcore.AddSync(os.Stdout)),
 		zap.InfoLevel,
 	))
 }
 
-func BindMeta(logger *zap.Logger) *zap.Logger {
+func BindMeta(beatName string, logger *zap.Logger) *zap.Logger {
+	// var beatName = "bgm38-log-v1"
+	// if len(beatNames) > 0 {
+	// 	beatName = beatNames[0]
+	// }
 	return logger.With(zap.Object("@metadata", &Metadata{
-		Beat:    "bgm38-log-v1",
+		Beat:    beatName,
 		Version: config.Version,
 	}))
 }

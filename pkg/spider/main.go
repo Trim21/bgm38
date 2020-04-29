@@ -18,7 +18,7 @@ var logger *zap.Logger
 
 func Start() error {
 	fmt.Println("spider start")
-	logger = log.BindMeta(log.CreateLogger("bgm38-spider-v1"))
+	logger = log.BindMeta("bgm38-spider-v1", log.CreateLogger())
 	db.InitDB()
 	prepareStmt()
 	var urlToFetch = make(chan string)

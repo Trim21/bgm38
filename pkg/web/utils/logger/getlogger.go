@@ -16,5 +16,5 @@ func GetLogger() *zap.Logger {
 }
 
 func getLogger() *zap.Logger {
-	return log.BindMeta(log.CreateLogger("bgm38-log-v2"))
+	return log.BindMeta("bgm38-request-v1", log.CreateLogger())
 }
