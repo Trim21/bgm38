@@ -3,9 +3,11 @@
     "github>Trim21/renovate-config",
     "schedule:monthly"
   ],
-  "postUpdateOptions": [
-    "gomodTidy"
-  ],
+  "gomod": {
+    "major": {
+      "enabled": false
+    }
+  },
   "packageRules": [
     {
       "groupName": "deps",
