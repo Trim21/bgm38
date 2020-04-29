@@ -18,15 +18,12 @@ require (
 	github.com/jordic/goics v0.0.0-20181215212140-feb996c8e01f
 	github.com/mailru/easyjson v0.7.1
 	github.com/markbates/pkger v0.15.1
-	github.com/philhofer/fwd v1.0.0 // indirect
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/russross/blackfriday v1.5.2
 	github.com/sirupsen/logrus v1.5.0
 	github.com/spf13/cobra v1.0.0
 	github.com/stretchr/testify v1.5.1
 	github.com/swaggo/swag v1.6.5
-	github.com/tinylib/msgp v1.1.2
-	github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31 // indirect
 	github.com/valyala/fasthttp v1.12.0
 	go.uber.org/zap v1.14.1
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e

@@ -39,7 +39,6 @@ clean:
 
 deps:
 	go mod download
-	go get github.com/tinylib/msgp
 	go get github.com/swaggo/swag/cmd/swag
 	go get github.com/markbates/pkger/cmd/pkger
 
