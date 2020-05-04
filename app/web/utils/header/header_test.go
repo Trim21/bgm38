@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"bgm38/pkg/web/utils/header"
+	"bgm38/app/web/utils/header"
 )
 
 func TestIsBrowser(t *testing.T) {

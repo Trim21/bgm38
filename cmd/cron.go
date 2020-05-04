@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"bgm38/pkg/cron"
+	"bgm38/app/cron"
 )
 
 var cronCmd = &cobra.Command{

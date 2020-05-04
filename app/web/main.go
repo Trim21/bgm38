@@ -9,12 +9,12 @@ import (
 	"github.com/markbates/pkger"
 	"go.uber.org/zap"
 
+	"bgm38/app/web/bgmtv"
+	"bgm38/app/web/middleware/headerversion"
+	"bgm38/app/web/middleware/sentry"
+	"bgm38/app/web/utils/handler"
+	"bgm38/app/web/utils/logger"
 	"bgm38/pkg/utils"
-	"bgm38/pkg/web/bgmtv"
-	"bgm38/pkg/web/middleware/headerversion"
-	"bgm38/pkg/web/middleware/sentry"
-	"bgm38/pkg/web/utils/handler"
-	"bgm38/pkg/web/utils/logger"
 )
 
 func Start() error {

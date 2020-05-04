@@ -6,7 +6,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	loggerUtils "bgm38/pkg/web/utils/logger"
+	loggerUtils "bgm38/app/web/utils/logger"
 )
 
 func LogError(f func(*fiber.Ctx, *zap.Logger) error) func(*fiber.Ctx) {

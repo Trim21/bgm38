@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"bgm38/pkg/spider"
+	"bgm38/app/spider"
 )
 
 var spiderCmd = &cobra.Command{

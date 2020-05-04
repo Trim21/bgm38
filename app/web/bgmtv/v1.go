@@ -14,11 +14,11 @@ import (
 	"github.com/jordic/goics"
 	"go.uber.org/zap"
 
+	"bgm38/app/web/res"
+	"bgm38/app/web/utils/header"
 	"bgm38/config"
 	"bgm38/pkg/model"
 	"bgm38/pkg/utils"
-	"bgm38/pkg/web/res"
-	"bgm38/pkg/web/utils/header"
 )
 
 var client = resty.New()
