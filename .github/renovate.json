@@ -1,7 +1,7 @@
 {
   "extends": [
-    "github>Trim21/renovate-config",
-    "schedule:monthly"
+    "@trim21",
+    "@trim21:monthly"
   ],
   "gomod": {
     "major": {

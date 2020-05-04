@@ -5,7 +5,6 @@ go 1.14
 require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/antchfx/htmlquery v1.2.3
-	github.com/antchfx/xpath v1.1.6 // indirect
 	github.com/getsentry/sentry-go v0.6.0
 	github.com/go-redis/redis/v7 v7.2.0
 	github.com/go-resty/resty/v2 v2.2.0
