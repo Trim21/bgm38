@@ -3,7 +3,7 @@ name: golangci-lint
 on: [pull_request]
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
