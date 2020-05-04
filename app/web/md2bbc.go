@@ -4,8 +4,8 @@ import (
 	"github.com/gofiber/fiber"
 	"go.uber.org/zap"
 
-	"bgm38/pkg/web/md2bbc"
-	"bgm38/pkg/web/utils/handler"
+	"bgm38/app/web/md2bbc"
+	"bgm38/app/web/utils/handler"
 )
 
 func md2bbcRouter(app *fiber.App) {

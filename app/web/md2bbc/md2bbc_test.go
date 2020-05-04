@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"bgm38/pkg/web/md2bbc"
+	"bgm38/app/web/md2bbc"
 )
 
 func TestRender(t *testing.T) {

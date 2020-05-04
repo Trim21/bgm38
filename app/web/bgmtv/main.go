@@ -3,7 +3,7 @@ package bgmtv
 import (
 	"github.com/gofiber/fiber"
 
-	"bgm38/pkg/web/utils/handler"
+	"bgm38/app/web/utils/handler"
 )
 
 func Group(app *fiber.App) {

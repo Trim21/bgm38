@@ -20,8 +20,8 @@ import (
 	"github.com/gofiber/fiber"
 	"github.com/markbates/pkger"
 
-	"bgm38/pkg/web/docs"
-	"bgm38/pkg/web/utils/logger"
+	"bgm38/app/web/docs"
+	"bgm38/app/web/utils/logger"
 )
 
 func setupSwaggerRouter(app *fiber.App) {
