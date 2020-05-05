@@ -12,16 +12,18 @@ import (
 type Floor [2]int
 
 type SubReply struct {
-	Time   time.Time
-	Author string
-	Floor  Floor
+	Time       time.Time
+	Author     string
+	Floor      Floor
+	RawContent *html.Node
 }
 
 type Reply struct {
-	Time    time.Time
-	Author  string
-	Floor   Floor
-	Replies []SubReply
+	Time       time.Time
+	Author     string
+	Floor      Floor
+	RawContent *html.Node
+	Replies    []SubReply
 }
 
 type T struct {
@@ -47,6 +49,7 @@ func Topic(doc *html.Node) (t T, err error) {
 func getReplyList(doc *html.Node) (s []Reply, err error) {
 	for _, div := range htmlquery.Find(doc, "//*[@id='comment_list']/div") {
 		r := Reply{}
+		r.RawContent = htmlquery.FindOne(div, "./div[@class='inner']/div[@class='reply_content']/div[@class='message']")
 		replyInfo := htmlquery.InnerText(htmlquery.FindOne(div, "./div[@class='re_info']"))
 		r.Floor, r.Time, err = reInfo(replyInfo)
 		if err != nil {
@@ -67,6 +70,7 @@ func getReplyList(doc *html.Node) (s []Reply, err error) {
 func getSubReplyList(doc *html.Node) (s []SubReply, err error) {
 	for _, div := range htmlquery.Find(doc, "./div[@class='inner']//div[@class='topic_sub_reply']/div") {
 		r := SubReply{}
+		r.RawContent = htmlquery.FindOne(div, ".//*[@class='cmt_sub_content']")
 		replyInfo := htmlquery.InnerText(htmlquery.FindOne(div, ".//div[@class='re_info']"))
 		r.Floor, r.Time, err = reInfo(replyInfo)
 		if err != nil {

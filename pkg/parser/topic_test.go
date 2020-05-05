@@ -18,6 +18,8 @@ func Test_parseReply(t *testing.T) {
 	assert.Equal(t, 4, len(replyList[0].Replies))
 	assert.Equal(t, 0, len(replyList[1].Replies))
 	assert.Equal(t, 0, len(replyList[2].Replies))
+	assert.NotNil(t, replyList[0].RawContent)
+	assert.NotNil(t, replyList[0].Replies[0].RawContent)
 }
 
 func Test_Topic(t *testing.T) {

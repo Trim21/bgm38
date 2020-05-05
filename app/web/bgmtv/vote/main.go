@@ -47,14 +47,16 @@ func vote(c *fiber.Ctx, logger *zap.Logger) error {
 	}
 
 	voteOptions, err := extraRawOption(t)
-	if err != nil {
+	if err != nil || voteOptions == "" {
 		return err
 	}
 
 	o, err := parseOption(voteOptions)
 	if err != nil {
-		// todo: show that options is not correct
-		return err
+		return c.Status(401).JSON(res.Error{
+			Status:  "error",
+			Message: "options is not correct",
+		})
 	}
 
 	return c.JSON(o)
