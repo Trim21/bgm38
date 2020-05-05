@@ -18,8 +18,12 @@ func Test_parseReply(t *testing.T) {
 	assert.Equal(t, 4, len(replyList[0].Replies))
 	assert.Equal(t, 0, len(replyList[1].Replies))
 	assert.Equal(t, 0, len(replyList[2].Replies))
-	assert.NotNil(t, replyList[0].RawContent)
-	assert.NotNil(t, replyList[0].Replies[0].RawContent)
+	for _, reply := range replyList {
+		assert.NotNil(t, reply.RawContent)
+		for _, subReply := range reply.Replies {
+			assert.NotNil(t, subReply.RawContent)
+		}
+	}
 }
 
 func Test_Topic(t *testing.T) {
