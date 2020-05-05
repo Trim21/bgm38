@@ -26,9 +26,9 @@ func Group(app *fiber.Group) {
 // @Description 解析帖子，生成投票结果
 // @Produce  image/svg+xml
 // @Param topic_id path int true "topic_id, 小组讨论贴的主题"
-// @Success 200 {string} string "image/xvg+xml"
-// @Failure 401 {object} res.Error
-// @Failure 502 {object} res.Error
+// @Success 200 {string} string "image/svg+xml"
+// @Failure 401 {object} res.Error "application/json"
+// @Failure 502 {object} res.Error "application/json"
 // @Router /bgm.tv/v1/vote/{topic_id} [get]
 func vote(c *fiber.Ctx, logger *zap.Logger) error {
 	var topicInput = c.Params("topic_id")
@@ -41,6 +41,7 @@ func vote(c *fiber.Ctx, logger *zap.Logger) error {
 	}
 	t, err := load(topicID)
 	if err != nil {
+		logger.Error("fetch and parse topic" + topicInput + " err: " + err.Error())
 		return c.Status(502).JSON(res.Error{
 			Status:  "error",
 			Message: "can't fetch topic html or can't parse it",
