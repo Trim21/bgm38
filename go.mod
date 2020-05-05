@@ -12,6 +12,7 @@ require (
 	github.com/gofiber/fiber v1.9.3
 	github.com/gofiber/recover v0.0.3
 	github.com/gofiber/requestid v0.0.4
+	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/jarcoal/httpmock v1.0.5
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/jordic/goics v0.0.0-20181215212140-feb996c8e01f
@@ -24,7 +25,9 @@ require (
 	github.com/stretchr/testify v1.5.1
 	github.com/swaggo/swag v1.6.5
 	github.com/valyala/fasthttp v1.12.0
+	github.com/wcharczuk/go-chart v2.0.2-0.20191206192251-962b9abdec2b+incompatible
 	go.uber.org/zap v1.15.0
+	golang.org/x/image v0.0.0-20200430140353-33d19683fad8 // indirect
 	golang.org/x/net v0.0.0-20200425230154-ff2c4b7c35a0
 	gopkg.in/yaml.v2 v2.2.7
 )

@@ -2,9 +2,13 @@ package vote
 
 import (
 	"strconv"
+	"strings"
 
+	"github.com/antchfx/htmlquery"
 	"github.com/gofiber/fiber"
+	"github.com/wcharczuk/go-chart"
 	"go.uber.org/zap"
+	"golang.org/x/net/html"
 
 	"bgm38/app/web/res"
 	"bgm38/app/web/utils/handler"
@@ -19,8 +23,8 @@ func Group(app *fiber.Group) {
 // @ID voteResult
 // @Summary 解析帖子，生成投票结果
 // @Description 解析帖子，生成投票结果
-// @Produce  text/plain
-// @Param topic_id path int true "user_id, 可以在个人主页的网址中找到"
+// @Produce  image/svg+xml
+// @Param topic_id path int true "topic_id, 小组讨论贴的主题"
 // @Success 200 {string} string "text/calendar"
 // @Failure 422 {object} res.Error
 // @Failure 404 {object} res.Error
@@ -53,11 +57,69 @@ func vote(c *fiber.Ctx, logger *zap.Logger) error {
 
 	o, err := parseOption(voteOptions)
 	if err != nil {
+		logger.Info(err.Error())
 		return c.Status(401).JSON(res.Error{
 			Status:  "error",
 			Message: "options is not correct",
 		})
 	}
+	var l = o.Len()
+	var userVotes = make(map[string][]int)
+	for _, reply := range t.Replies {
+		v := getVote(reply.RawContent, l)
+		if len(v) > 0 {
+			userVotes[reply.Author] = v
+		}
+		for _, subReply := range reply.Replies {
+			v := getVote(subReply.RawContent, l)
+			if len(v) > 0 {
+				userVotes[subReply.Author] = v
+			}
+		}
+	}
+	var counter = make(map[int]int)
 
-	return c.JSON(o)
+	for _, ints := range userVotes {
+		for _, i := range ints {
+			if _, ok := counter[i]; !ok {
+				counter[i] = 0
+			}
+			counter[i]++
+		}
+	}
+	var v chart.Values
+	for key, value := range counter {
+		v = append(v,
+			chart.Value{
+				Label: o.Options[key-1],
+				Value: float64(value),
+			})
+
+	}
+	pie := chart.PieChart{
+		Width:  256,
+		Height: 256,
+		Values: v,
+	}
+	c.Fasthttp.Response.Header.SetContentType("image/svg+xml")
+	return pie.Render(chart.SVG, c.Fasthttp.Response.BodyWriter())
+}
+
+func getVote(doc *html.Node, voteOptionsLen int) (s []int) {
+	el := htmlquery.FindOne(doc, ".//div[@class='codeHighlight']/pre")
+	if el == nil {
+		return
+	}
+	text := strings.Trim(htmlquery.InnerText(el), "\u00A0 \n")
+	if strings.HasPrefix(text, "$") && strings.HasSuffix(text, "$") {
+		o := text[1 : len(text)-1]
+		v, err := strconv.Atoi(o)
+		if err != nil {
+			return
+		}
+		if 0 < v && v <= voteOptionsLen {
+			s = append(s, v)
+		}
+	}
+	return
 }

@@ -13,6 +13,19 @@ import (
 	"bgm38/pkg/fetch"
 )
 
+func TestRouterRealWorld(t *testing.T) {
+	app := fiber.New()
+	Group(app.Group("/t"))
+	req, _ := http.NewRequest("GET", "http://example.com/t/vote/350665", nil)
+	res, err := app.Test(req, -1)
+	assert.Nil(t, err)
+	defer res.Body.Close()
+
+	body, _ := ioutil.ReadAll(res.Body)
+	assert.Equal(t, 200, res.StatusCode)
+	assert.Contains(t, string(body), `xmlns="http://www.w3.org/2000/svg"`)
+}
+
 func TestRouterErrInput(t *testing.T) {
 	app := fiber.New()
 	Group(app.Group("/t"))
