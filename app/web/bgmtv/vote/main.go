@@ -40,14 +40,17 @@ func vote(c *fiber.Ctx, logger *zap.Logger) error {
 	}
 	t, err := load(topicID)
 	if err != nil {
-		return c.JSON(res.Error{
+		return c.Status(502).JSON(res.Error{
 			Status:  "error",
 			Message: "can't fetch topic html or can't parse it",
 		})
 	}
 	voteOptions, err := extraRawOption(t)
 	if err != nil || voteOptions == "" {
-		return err
+		return c.Status(401).JSON(res.Error{
+			Status:  "error",
+			Message: "can't find valid options, should start with `[code]vote: true`",
+		})
 	}
 	o, err := parseOption(voteOptions)
 	if err != nil {
