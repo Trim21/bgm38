@@ -1,0 +1,7 @@
+vote: true
+multi: false
+filter:
+  permission: [1,2,3,10]
+options:
+  - hello
+  - world
