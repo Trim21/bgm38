@@ -1,6 +1,7 @@
 package vote
 
 import (
+	"io"
 	"strconv"
 	"strings"
 
@@ -59,38 +60,8 @@ func vote(c *fiber.Ctx, logger *zap.Logger) error {
 			Message: "options is not correct",
 		})
 	}
-	var l = o.Len()
-	var userVotes = make(map[string][]int)
-	for _, reply := range t.Replies {
-		v := getVote(reply.RawContent, l)
-		if len(v) > 0 {
-			userVotes[reply.Author] = v
-		}
-		for _, subReply := range reply.Replies {
-			v := getVote(subReply.RawContent, l)
-			if len(v) > 0 {
-				userVotes[subReply.Author] = v
-			}
-		}
-	}
-	var counter = countVotes(userVotes)
-
-	var v chart.Values
-	for key, value := range counter {
-		v = append(v,
-			chart.Value{
-				Label: o.Options[key-1],
-				Value: float64(value),
-			})
-
-	}
-	pie := chart.PieChart{
-		Width:  256,
-		Height: 256,
-		Values: v,
-	}
 	c.Fasthttp.Response.Header.SetContentType("image/svg+xml")
-	return pie.Render(chart.SVG, c.Fasthttp.Response.BodyWriter())
+	return render(c.Fasthttp.Response.BodyWriter(), t, o)
 }
 
 func getVote(doc *html.Node, voteOptionsLen int) (s []int) {
@@ -123,6 +94,43 @@ func countVotes(userVotes map[string][]int) map[int]int {
 	}
 	return counter
 }
+
+func render(w io.Writer, t parser.T, o Options) error {
+	var l = o.Len()
+	var userVotes = make(map[string][]int)
+	for _, reply := range t.Replies {
+		v := getVote(reply.RawContent, l)
+		if len(v) > 0 {
+			userVotes[reply.Author] = v
+		}
+		for _, subReply := range reply.Replies {
+			v := getVote(subReply.RawContent, l)
+			if len(v) > 0 {
+				userVotes[subReply.Author] = v
+			}
+		}
+	}
+	if len(userVotes) == 0 {
+		c.SendString(`<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>`)
+	}
+	var counter = countVotes(userVotes)
+	var v chart.Values
+	for key, value := range counter {
+		v = append(v,
+			chart.Value{
+				Label: o.Options[key-1],
+				Value: float64(value),
+			})
+
+	}
+	pie := chart.PieChart{
+		Width:  256,
+		Height: 256,
+		Values: v,
+	}
+	return pie.Render(chart.SVG, w)
+}
+
 func load(topicID int) (parser.T, error) {
 	var t parser.T
 	doc, err := fetch.Topic(topicID)
