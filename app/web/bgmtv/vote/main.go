@@ -25,9 +25,8 @@ func Group(app *fiber.Group) {
 // @Description 解析帖子，生成投票结果
 // @Produce  image/svg+xml
 // @Param topic_id path int true "topic_id, 小组讨论贴的主题"
-// @Success 200 {string} string "text/calendar"
-// @Failure 422 {object} res.Error
-// @Failure 404 {object} res.Error
+// @Success 200 {string} string "image/xvg+xml"
+// @Failure 401 {object} res.Error
 // @Failure 502 {object} res.Error
 // @Router /bgm.tv/v1/vote/{topic_id} [get]
 func vote(c *fiber.Ctx, logger *zap.Logger) error {
@@ -39,25 +38,19 @@ func vote(c *fiber.Ctx, logger *zap.Logger) error {
 			Message: "`topic_id` should be int",
 		})
 	}
-
-	doc, err := fetch.Topic(topicID)
+	t, err := load(topicID)
 	if err != nil {
-		return err
+		return c.JSON(res.Error{
+			Status:  "error",
+			Message: "can't fetch topic html or can't parse it",
+		})
 	}
-
-	t, err := parser.Topic(doc)
-	if err != nil {
-		return err
-	}
-
 	voteOptions, err := extraRawOption(t)
 	if err != nil || voteOptions == "" {
 		return err
 	}
-
 	o, err := parseOption(voteOptions)
 	if err != nil {
-		logger.Info(err.Error())
 		return c.Status(401).JSON(res.Error{
 			Status:  "error",
 			Message: "options is not correct",
@@ -126,4 +119,17 @@ func countVotes(userVotes map[string][]int) map[int]int {
 		}
 	}
 	return counter
+}
+func load(topicID int) (parser.T, error) {
+	var t parser.T
+	doc, err := fetch.Topic(topicID)
+	if err != nil {
+		return t, err
+	}
+
+	t, err = parser.Topic(doc)
+	if err != nil {
+		return t, err
+	}
+	return t, err
 }
