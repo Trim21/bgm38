@@ -81,7 +81,7 @@ func getSubReplyList(doc *html.Node) (s []SubReply, err error) {
 func reInfo(s string) (floor Floor, t time.Time, err error) {
 	// #1 - 2020-5-4 04:27
 	// #1-1 - 2020-5-4 04:27
-	s = strings.Trim(s, "\n #")
+	s = strings.Trim(s, "\t\n #")
 	l := strings.SplitN(s, " - ", 2)
 	floorS := strings.Split(l[0], "-")
 	floor[0], err = strconv.Atoi(floorS[0])

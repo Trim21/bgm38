@@ -1,13 +1,14 @@
 package vote
 
 import (
-	"os"
+	"strconv"
 
-	"github.com/antchfx/htmlquery"
 	"github.com/gofiber/fiber"
 	"go.uber.org/zap"
 
+	"bgm38/app/web/res"
 	"bgm38/app/web/utils/handler"
+	"bgm38/pkg/fetch"
 	"bgm38/pkg/parser"
 )
 
@@ -26,16 +27,16 @@ func Group(app *fiber.Group) {
 // @Failure 502 {object} res.Error
 // @Router /bgm.tv/v1/vote/{topic_id} [get]
 func vote(c *fiber.Ctx, logger *zap.Logger) error {
-	// doc, err := fetch.Topic(350665)
-	// if err != nil {
-	// 	return err
-	// }
-	f, err := os.Open("tests/fixtures/vote/input.html")
+	var topicInput = c.Params("topic_id")
+	topicID, err := strconv.Atoi(topicInput)
 	if err != nil {
-		return err
+		return c.Status(401).JSON(res.Error{
+			Status:  "error",
+			Message: "`topic_id` should be int",
+		})
 	}
 
-	doc, err := htmlquery.Parse(f)
+	doc, err := fetch.Topic(topicID)
 	if err != nil {
 		return err
 	}
