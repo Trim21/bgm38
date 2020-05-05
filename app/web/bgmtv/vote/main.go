@@ -77,16 +77,8 @@ func vote(c *fiber.Ctx, logger *zap.Logger) error {
 			}
 		}
 	}
-	var counter = make(map[int]int)
+	var counter = countVotes(userVotes)
 
-	for _, ints := range userVotes {
-		for _, i := range ints {
-			if _, ok := counter[i]; !ok {
-				counter[i] = 0
-			}
-			counter[i]++
-		}
-	}
 	var v chart.Values
 	for key, value := range counter {
 		v = append(v,
@@ -122,4 +114,16 @@ func getVote(doc *html.Node, voteOptionsLen int) (s []int) {
 		}
 	}
 	return
+}
+func countVotes(userVotes map[string][]int) map[int]int {
+	counter := make(map[int]int)
+	for _, ints := range userVotes {
+		for _, i := range ints {
+			if _, ok := counter[i]; !ok {
+				counter[i] = 0
+			}
+			counter[i]++
+		}
+	}
+	return counter
 }
