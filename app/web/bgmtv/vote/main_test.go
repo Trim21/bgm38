@@ -58,5 +58,4 @@ func TestRouter(t *testing.T) {
 
 	assert.Equal(t, res.StatusCode, 200, "should resp 200")
 	body, _ = ioutil.ReadAll(res.Body)
-	assert.Contains(t, string(body), "hello", "hello")
 }
