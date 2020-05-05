@@ -24,9 +24,8 @@ func Group(app *fiber.Group) {
 // @ID voteResult
 // @Summary 解析帖子，生成投票结果
 // @Description 解析帖子，生成投票结果
-// @Produce  image/svg+xml
 // @Param topic_id path int true "topic_id, 小组讨论贴的主题"
-// @Success 200 {string} string "image/svg+xml"
+// @Success 200 {string} string "image/svg"
 // @Failure 401 {object} res.Error "application/json"
 // @Failure 502 {object} res.Error "application/json"
 // @Router /bgm.tv/v1/vote/{topic_id} [get]
