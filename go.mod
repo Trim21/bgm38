@@ -10,7 +10,7 @@ require (
 	github.com/go-resty/resty/v2 v2.2.0
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gofiber/fiber v1.9.3
-	github.com/gofiber/recover v0.0.3
+	github.com/gofiber/recover v0.0.4
 	github.com/gofiber/requestid v0.0.4
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/jarcoal/httpmock v1.0.5
@@ -20,7 +20,7 @@ require (
 	github.com/markbates/pkger v0.15.1
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/russross/blackfriday v1.5.2
-	github.com/sirupsen/logrus v1.5.0
+	github.com/sirupsen/logrus v1.6.0
 	github.com/spf13/cobra v1.0.0
 	github.com/stretchr/testify v1.5.1
 	github.com/swaggo/swag v1.6.5
@@ -28,6 +28,6 @@ require (
 	github.com/wcharczuk/go-chart v2.0.2-0.20191206192251-962b9abdec2b+incompatible
 	go.uber.org/zap v1.15.0
 	golang.org/x/image v0.0.0-20200430140353-33d19683fad8 // indirect
-	golang.org/x/net v0.0.0-20200425230154-ff2c4b7c35a0
-	gopkg.in/yaml.v2 v2.2.7
+	golang.org/x/net v0.0.0-20200505041828-1ed23360d12c
+	gopkg.in/yaml.v2 v2.2.8
 )
