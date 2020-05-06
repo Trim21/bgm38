@@ -4,11 +4,12 @@ import (
 	"strings"
 
 	"gopkg.in/yaml.v2"
+
+	"bgm38/pkg/model"
 )
 
 type Filter struct {
-	Permission []int `yaml:"permission" json:"permission"`
-	UserGroup  []int `yaml:"user_group"`
+	UserGroup []model.UserGroup `yaml:"user_group"`
 }
 type Options struct {
 	Vote    bool     `yaml:"vote" json:"vote"`
