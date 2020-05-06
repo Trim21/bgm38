@@ -3,36 +3,36 @@ package model
 type UserGroup int
 
 const (
-	UserGroup_Admin        UserGroup = 1
-	UserGroup_BangumiAdmin UserGroup = 2
-	UserGroup_DouJinAdmin  UserGroup = 3
-	UserGroup_Banned       UserGroup = 4
-	UserGroup_AccessDeny   UserGroup = 5
-	UserGroup_RoleAdmin    UserGroup = 8
-	UserGroup_WikiAdmin    UserGroup = 9
-	UserGroup_User         UserGroup = 10
-	UserGroup_Wiki         UserGroup = 11
+	UserGroupAdmin        UserGroup = 1
+	UserGroupBangumiAdmin UserGroup = 2
+	UserGroupDouJinAdmin  UserGroup = 3
+	UserGroupBanned       UserGroup = 4
+	UserGroupAccessDeny   UserGroup = 5
+	UserGroupRoleAdmin    UserGroup = 8
+	UserGroupWikiAdmin    UserGroup = 9
+	UserGroupUser         UserGroup = 10
+	UserGroupWiki         UserGroup = 11
 )
 
 func (u UserGroup) String() string {
 	switch u {
-	case UserGroup_Admin:
+	case UserGroupAdmin:
 		return "管理员"
-	case UserGroup_BangumiAdmin:
+	case UserGroupBangumiAdmin:
 		return "Bangumi 管理猿"
-	case UserGroup_DouJinAdmin:
+	case UserGroupDouJinAdmin:
 		return "天窗管理猿"
-	case UserGroup_Banned:
+	case UserGroupBanned:
 		return "禁言用户"
-	case UserGroup_AccessDeny:
+	case UserGroupAccessDeny:
 		return "禁止访问用户"
-	case UserGroup_RoleAdmin:
+	case UserGroupRoleAdmin:
 		return "人物管理猿"
-	case UserGroup_WikiAdmin:
+	case UserGroupWikiAdmin:
 		return "维基条目管理猿"
-	case UserGroup_User:
+	case UserGroupUser:
 		return "用户"
-	case UserGroup_Wiki:
+	case UserGroupWiki:
 		return "维基人"
 	}
 	return "不明用户组"

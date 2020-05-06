@@ -9,8 +9,7 @@ import (
 )
 
 type Filter struct {
-	Permission []int             `yaml:"permission" json:"permission"`
-	UserGroup  []model.UserGroup `yaml:"user_group"`
+	UserGroup []model.UserGroup `yaml:"user_group"`
 }
 type Options struct {
 	Vote    bool     `yaml:"vote" json:"vote"`
