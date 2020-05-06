@@ -14,6 +14,7 @@ import (
 	"bgm38/app/web/res"
 	"bgm38/app/web/utils/handler"
 	"bgm38/pkg/fetch"
+	"bgm38/pkg/model"
 	"bgm38/pkg/parser"
 )
 
@@ -82,9 +83,27 @@ func getVote(doc *html.Node, voteOptionsLen int) (s []int) {
 	}
 	return
 }
-func countVotes(userVotes map[string][]int) map[int]int {
+
+func countVotes(userVotes map[string][]int, options Options) map[int]int {
 	counter := make(map[int]int)
-	for _, ints := range userVotes {
+	for userPath, ints := range userVotes {
+		var u, err = getUserInfo(userPath)
+		if err != nil {
+			continue
+		}
+
+		if len(options.Filter.UserGroup) > 0 {
+			find := false
+			for _, userGroup := range options.Filter.UserGroup {
+				if userGroup == u.UserGroup {
+					find = true
+				}
+			}
+			if !find {
+				continue
+			}
+		}
+
 		for _, i := range ints {
 			if _, ok := counter[i]; !ok {
 				counter[i] = 0
@@ -93,6 +112,11 @@ func countVotes(userVotes map[string][]int) map[int]int {
 		}
 	}
 	return counter
+}
+
+func getUserInfo(userPath string) (model.User, error) {
+	s := strings.Split(userPath, "/")
+	return fetch.User(s[len(s)-1])
 }
 
 func render(w io.Writer, t parser.T, o Options) error {
@@ -115,7 +139,7 @@ func render(w io.Writer, t parser.T, o Options) error {
 <svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>`))
 		return err
 	}
-	var counter = countVotes(userVotes)
+	var counter = countVotes(userVotes, o)
 	var v chart.Values
 	for key, value := range counter {
 		v = append(v,
@@ -123,7 +147,6 @@ func render(w io.Writer, t parser.T, o Options) error {
 				Label: o.Options[key-1],
 				Value: float64(value),
 			})
-
 	}
 	pie := chart.PieChart{
 		Width:  256,
