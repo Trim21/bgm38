@@ -1,9 +1,7 @@
 package web
 
 import (
-	"io"
-	"path"
-
+	"github.com/gofiber/embed"
 	"github.com/gofiber/fiber"
 	"github.com/gofiber/requestid"
 	"github.com/markbates/pkger"
@@ -56,23 +54,7 @@ func setupMiddleware(app *fiber.App) {
 }
 
 func assertsRouter(app *fiber.App) {
-	app.Get("/asserts/web/*", handler.LogError(func(c *fiber.Ctx, logger *zap.Logger) error {
-		filepath := c.Params("*")
-		if filepath == "" {
-			c.SendStatus(404)
-			c.SendString("index")
-			return nil
-		}
-
-		f, err := pkger.Open(path.Join("/asserts/web/", filepath))
-		if err != nil {
-			c.SendStatus(404)
-			return nil
-		}
-		defer f.Close()
-
-		c.Type(path.Ext(filepath))
-		_, err = io.Copy(c.Fasthttp.Response.BodyWriter(), f)
-		return err
+	app.Use("/asserts/web", embed.New(embed.Config{
+		Root: pkger.Dir("/asserts/web"),
 	}))
 }

@@ -9,6 +9,7 @@ require (
 	github.com/go-redis/redis/v7 v7.2.0
 	github.com/go-resty/resty/v2 v2.2.0
 	github.com/go-sql-driver/mysql v1.5.0
+	github.com/gofiber/embed v0.0.8
 	github.com/gofiber/fiber v1.9.3
 	github.com/gofiber/recover v0.0.4
 	github.com/gofiber/requestid v0.0.4
