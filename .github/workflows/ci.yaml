@@ -80,6 +80,9 @@ jobs:
           if [[ ${GITHUB_REF} == refs/tags* ]]; then
             echo "::set-env name=REF::latest"
             echo "::set-env name=SLUG::${GITHUB_REF:10}"
+          if [[ ${GITHUB_REF} == refs/pull* ]]; then
+            echo "::set-env name=REF::${GITHUB_REF:11}"
+            echo "::set-env name=SLUG::pr-${GITHUB_REF:10:-6}-${GITHUB_SHA:0:7}"
           else
             echo "::set-env name=REF::${GITHUB_REF:11}"
             echo "::set-env name=SLUG::${GITHUB_REF:11}-${GITHUB_SHA:0:7}"
