@@ -49,7 +49,7 @@ func TestUserWatchingCalendar(t *testing.T) {
 
 	app := fiber.New()
 	Group(app)
-	req, _ := http.NewRequest("GET", baseURL+"/bgm_tv/v1/calendar/trim21", nil)
+	req, _ := http.NewRequest("GET", baseURL+"/bgm.tv/v1/calendar/trim21", nil)
 	res, err := app.Test(req, -1)
 	assert.Nil(t, err)
 	defer res.Body.Close()
