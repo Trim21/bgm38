@@ -25,7 +25,7 @@ dist/app: generated
 generated: $(DOC) pkg/asserts/pkged.go
 
 $(DOC): $(WEB_SRC)
-	@swag init --generalInfo ./app/web/doc.go -o ./app/web/docs --generatedTime=false
+	@swag init --generalInfo ./app/web/doc.go --output ./app/web/docs --generatedTime=false
 
 pkg/asserts/pkged.go: $(ASSERTS)
 	@rm -f $@
