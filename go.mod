@@ -10,7 +10,7 @@ require (
 	github.com/go-resty/resty/v2 v2.3.0
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gofiber/embed v0.1.0
-	github.com/gofiber/fiber v1.10.1
+	github.com/gofiber/fiber v1.10.3
 	github.com/gofiber/recover v0.1.0
 	github.com/gofiber/requestid v0.1.0
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
