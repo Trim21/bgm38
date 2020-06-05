@@ -138,6 +138,8 @@ github.com/gofiber/fiber v1.10.1 h1:sfxWGvNOYoK8gNciZVfJ0XS7UTPz3+Zlb/fYGWsywNY=
 github.com/gofiber/fiber v1.10.1/go.mod h1:8083zyrwS9acYIAgpYPbXPW80m57uc8WPzPF3wt1qNk=
 github.com/gofiber/fiber v1.10.3 h1:kYnH+NC+1T4zr8eyXgnkDnSV2Q/64swE3mPd0ZpES28=
 github.com/gofiber/fiber v1.10.3/go.mod h1:8083zyrwS9acYIAgpYPbXPW80m57uc8WPzPF3wt1qNk=
+github.com/gofiber/fiber v1.10.5 h1:zitQhmNh2qtClV1VB+q+/gSYTxeURhQhYZ6oqtS24bw=
+github.com/gofiber/fiber v1.10.5/go.mod h1:jA7DEjzDo1dH8rRJuZ0p6tpkANmuVyZk+tUoILo7VTs=
 github.com/gofiber/recover v0.0.3 h1:nl7qG353fGcrLoc7XfDB4WriYpQFxhtTvMhPvdr6SeU=
 github.com/gofiber/recover v0.0.3/go.mod h1:H8ldGYfi3tIsRl9sbEi9RzHkfuS1KgQzDKFzK14awa0=
 github.com/gofiber/recover v0.0.4 h1:QpHdqxwbpJFRXdaanBy0Ws9PwmMbq8UJ8u/VA6I+pXk=
@@ -150,6 +152,8 @@ github.com/gofiber/requestid v0.1.0 h1:E2Igt+LK/09kJBdKPPlXyeXtpW7MuYNE3M/IolC7S
 github.com/gofiber/requestid v0.1.0/go.mod h1:pWAuAauhi4IB23kZOKdChpuJllUZLlok0wB2022QpjE=
 github.com/gofiber/utils v0.0.3 h1:nNQKfZbZAGmOHqTOYplJwwOvX1Mg/NsTjfFO4/wTGrU=
 github.com/gofiber/utils v0.0.3/go.mod h1:pacRFtghAE3UoknMOUiXh2Io/nLWSUHtQCi/3QASsOc=
+github.com/gofiber/utils v0.0.4 h1:gcOb+WZDQ319bELqAp5ePDYwxostDDzWh4pY7S0KiMI=
+github.com/gofiber/utils v0.0.4/go.mod h1:pacRFtghAE3UoknMOUiXh2Io/nLWSUHtQCi/3QASsOc=
 github.com/gogo/protobuf v1.1.1/go.mod h1:r8qH/GZQm5c6nD/R0oafs1akxWv10x8SbQlK7atdtwQ=
 github.com/gogo/protobuf v1.2.1/go.mod h1:hp+jE20tsWTFYpLwKvXlhS1hjn+gTNwPg2I6zVXpSg4=
 github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 h1:DACJavvAHhabrF08vX0COfcOBJRhZ8lUbR+ZWIs0Y5g=
@@ -252,6 +256,8 @@ github.com/markbates/pkger v0.15.1 h1:3MPelV53RnGSW07izx5xGxl4e/sdRD6zqseIk0rMAS
 github.com/markbates/pkger v0.15.1/go.mod h1:0JoVlrol20BSywW79rN3kdFFsE5xYM+rSCQDXbLhiuI=
 github.com/markbates/pkger v0.16.0 h1:bZGAXW80/vi6ORfJCDVQhT8/9raoPdGAhvFd9Yq0LMA=
 github.com/markbates/pkger v0.16.0/go.mod h1:0JoVlrol20BSywW79rN3kdFFsE5xYM+rSCQDXbLhiuI=
+github.com/markbates/pkger v0.17.0 h1:RFfyBPufP2V6cddUyyEVSHBpaAnM1WzaMNyqomeT+iY=
+github.com/markbates/pkger v0.17.0/go.mod h1:0JoVlrol20BSywW79rN3kdFFsE5xYM+rSCQDXbLhiuI=
 github.com/mattn/go-colorable v0.1.2/go.mod h1:U0ppj6V5qS13XJ6of8GYAs25YV2eR4EVcfRqFIhoBtE=
 github.com/mattn/go-isatty v0.0.4/go.mod h1:M+lRXTBqGeGNdLjl/ufCoiOlB5xdOkqRJdNxMWT7Zi4=
 github.com/mattn/go-isatty v0.0.7/go.mod h1:Iq45c/XA43vh69/j3iqttzPXn0bhXyGjM0Hdxcsrc5s=
@@ -350,6 +356,7 @@ github.com/swaggo/swag v1.5.1/go.mod h1:1Bl9F/ZBpVWh22nY0zmYyASPO1lI/zIwRDrpZU+t
 github.com/swaggo/swag v1.6.5 h1:2C+t+xyK6p1sujqncYO/VnMvPZcBJjNdKKyxbOdAW8o=
 github.com/swaggo/swag v1.6.5/go.mod h1:Y7ZLSS0d0DdxhWGVhQdu+Bu1QhaF5k0RD7FKdiAykeY=
 github.com/swaggo/swag v1.6.6/go.mod h1:xDhTyuFIujYiN3DKWC/H/83xcfHp+UE/IzWWampG7Zc=
+github.com/swaggo/swag v1.6.7/go.mod h1:xDhTyuFIujYiN3DKWC/H/83xcfHp+UE/IzWWampG7Zc=
 github.com/tmc/grpc-websocket-proxy v0.0.0-20190109142713-0ad062ec5ee5/go.mod h1:ncp9v5uamzpCO7NfCPTXjqaC+bZgJeR0sMTm6dMHP7U=
 github.com/ugorji/go v1.1.4/go.mod h1:uQMGLiO92mf5W77hV/PUCpI3pbzQx3CRekS0kk+RGrc=
 github.com/ugorji/go v1.1.5-pre/go.mod h1:FwP/aQVg39TXzItUBMwnWp9T9gPQnXw4Poh4/oBQZ/0=
@@ -372,6 +379,8 @@ github.com/valyala/fasthttp v1.12.0 h1:TsB9qkSeiMXB40ELWWSRMjlsE+8IkqXHcs01y2d9a
 github.com/valyala/fasthttp v1.12.0/go.mod h1:229t1eWu9UXTPmoUkbpN/fctKPBY4IJoFXQnxHGXy6E=
 github.com/valyala/fasthttp v1.13.1 h1:Z7kVhKP9NZz+tCSY7AVhCMPPAk7b+e5fq0l/BfdTlFc=
 github.com/valyala/fasthttp v1.13.1/go.mod h1:ol1PCaL0dX20wC0htZ7sYCsvCYmrouYra0zHzaclZhE=
+github.com/valyala/fasthttp v1.14.0 h1:67bfuW9azCMwW/Jlq/C+VeihNpAuJMWkYPBig1gdi3A=
+github.com/valyala/fasthttp v1.14.0/go.mod h1:ol1PCaL0dX20wC0htZ7sYCsvCYmrouYra0zHzaclZhE=
 github.com/valyala/fasttemplate v1.0.1/go.mod h1:UQGH1tvbgY+Nz5t2n7tXsz52dQxojPUpymEIMZ47gx8=
 github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a h1:0R4NLDRDZX6JcmhJgXi5E4b8Wg84ihbmUKp/GvSPEzc=
 github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a/go.mod h1:v3UYOV9WzVtRmSR+PDvWpU/qWl4Wa5LApYYX4ZtKbio=
@@ -440,6 +449,8 @@ golang.org/x/net v0.0.0-20200505041828-1ed23360d12c/go.mod h1:qpuaurCH72eLCgpAm/
 golang.org/x/net v0.0.0-20200513185701-a91f0712d120/go.mod h1:qpuaurCH72eLCgpAm/N6yyVIVM9cpaDIP3A8BGJEC5A=
 golang.org/x/net v0.0.0-20200528225125-3c3fba18258b h1:IYiJPiJfzktmDAO1HQiwjMjwjlYKHAL7KzeD544RJPs=
 golang.org/x/net v0.0.0-20200528225125-3c3fba18258b/go.mod h1:qpuaurCH72eLCgpAm/N6yyVIVM9cpaDIP3A8BGJEC5A=
+golang.org/x/net v0.0.0-20200602114024-627f9648deb9 h1:pNX+40auqi2JqRfOP1akLGtYcn15TUbkhwuCO3foqqM=
+golang.org/x/net v0.0.0-20200602114024-627f9648deb9/go.mod h1:qpuaurCH72eLCgpAm/N6yyVIVM9cpaDIP3A8BGJEC5A=
 golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be/go.mod h1:N/0e6XlmueqKjAGxoOufVs8QHGRruUQn6yWY3a++T0U=
 golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
 golang.org/x/sync v0.0.0-20181108010431-42b317875d0f/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
