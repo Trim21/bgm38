@@ -1,6 +1,10 @@
 package db
 
-import "go.uber.org/zap/zapcore"
+import (
+	"time"
+
+	"go.uber.org/zap/zapcore"
+)
 
 //
 type Ep struct {
@@ -8,6 +12,7 @@ type Ep struct {
 	SubjectID int    `json:"subject_id" db:"subject_id"`
 	Name      string `json:"name" db:"name"`
 	Episode   string `json:"episode" db:"episode"`
+	Air       int64  `db:"air"`
 }
 
 func (e *Ep) MarshalLogObject(enc zapcore.ObjectEncoder) error {
@@ -15,6 +20,7 @@ func (e *Ep) MarshalLogObject(enc zapcore.ObjectEncoder) error {
 	enc.AddInt("subject_id", e.SubjectID)
 	enc.AddString("name", e.Name)
 	enc.AddString("episode", e.Episode)
+	enc.AddTime("air", time.Unix(e.Air, 0))
 	return nil
 }
 

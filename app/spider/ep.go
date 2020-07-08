@@ -1,8 +1,10 @@
 package spider
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/antchfx/htmlquery"
 	"go.uber.org/zap"
@@ -24,12 +26,22 @@ func parseEpList(doc *html.Node, subjectID int) {
 			logger.Error(err.Error())
 			continue
 		}
+		moreInfoElSelector := htmlquery.SelectAttr(ep, "rel")
+		moreInfoEl := htmlquery.FindOne(doc, fmt.Sprintf(`//[@id="%s"`, moreInfoElSelector[1:]))
+		tip := htmlquery.InnerText(htmlquery.FindOne(moreInfoEl, `//span[@class="tip"]`))
+		airTime, err := time.Parse("", tip)
+		if err != nil {
+			logger.Error(err.Error())
+			airTime = time.Unix(0, 0)
+		}
+
 		eps = append(eps,
 			&db.Ep{
 				EpID:      epID,
 				SubjectID: subjectID,
 				Name:      htmlquery.SelectAttr(ep, "title"),
 				Episode:   formatEp(ep),
+				Air:       airTime.Unix(),
 			})
 	}
 	if len(eps) > 0 {
