@@ -1,15 +1,21 @@
 package spider
 
 import (
+	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/antchfx/htmlquery"
 	"go.uber.org/zap"
 	"golang.org/x/net/html"
 
+	"bgm38/config"
 	"bgm38/pkg/db"
 )
+
+var airTimePattern = regexp.MustCompile(`首播:(?P<Year>\d{4})-(?P<Month>\d{2})-(?P<Day>\d{2})`)
 
 func parseEpList(doc *html.Node, subjectID int) {
 	var eps []*db.Ep
@@ -24,12 +30,38 @@ func parseEpList(doc *html.Node, subjectID int) {
 			logger.Error(err.Error())
 			continue
 		}
+		moreInfoElSelector := htmlquery.SelectAttr(ep, "rel")
+		moreInfoEl := htmlquery.FindOne(doc, fmt.Sprintf(`//*[@id="%s"]`, moreInfoElSelector[1:]))
+		tip := htmlquery.InnerText(htmlquery.FindOne(moreInfoEl, `//span[@class="tip"]`))
+		var airTime *time.Time = nil
+		result := airTimePattern.FindStringSubmatch(tip)
+		if len(result) > 0 {
+			var e error
+			year, err := strconv.Atoi(result[1])
+			if err != nil {
+				e = err
+			}
+			month, err := strconv.Atoi(result[2])
+			if err != nil {
+				e = err
+			}
+			day, err := strconv.Atoi(result[3])
+			if err != nil {
+				e = err
+			}
+			if e == nil {
+				d := time.Date(year, time.Month(month), day, 0, 0, 0, 0, config.TimeZone)
+				airTime = &d
+			}
+
+		}
 		eps = append(eps,
 			&db.Ep{
 				EpID:      epID,
 				SubjectID: subjectID,
 				Name:      htmlquery.SelectAttr(ep, "title"),
 				Episode:   formatEp(ep),
+				AirTime:   airTime,
 			})
 	}
 	if len(eps) > 0 {
