@@ -8,11 +8,11 @@ import (
 
 //
 type Ep struct {
-	EpID      int    `gorm:"primary_key" json:"-" db:"ep_id"`
-	SubjectID int    `json:"subject_id" db:"subject_id"`
-	Name      string `json:"name" db:"name"`
-	Episode   string `json:"episode" db:"episode"`
-	Air       int64  `db:"air"`
+	EpID      int        `gorm:"primary_key" json:"-" db:"ep_id"`
+	SubjectID int        `json:"subject_id" db:"subject_id"`
+	Name      string     `json:"name" db:"name"`
+	Episode   string     `json:"episode" db:"episode"`
+	AirTime   *time.Time `json:"air_time" db:"air_time"`
 }
 
 func (e *Ep) MarshalLogObject(enc zapcore.ObjectEncoder) error {
@@ -20,7 +20,11 @@ func (e *Ep) MarshalLogObject(enc zapcore.ObjectEncoder) error {
 	enc.AddInt("subject_id", e.SubjectID)
 	enc.AddString("name", e.Name)
 	enc.AddString("episode", e.Episode)
-	enc.AddTime("air", time.Unix(e.Air, 0))
+	if e.AirTime != nil {
+		enc.AddTime("air_time", *e.AirTime)
+	} else {
+		enc.AddString("air_time", "null")
+	}
 	return nil
 }
 

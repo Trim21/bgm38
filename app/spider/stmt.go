@@ -41,9 +41,9 @@ func prepareStmt() {
 	if err != nil {
 		log.Fatalln("prepare statements error for tag upsert", err)
 	}
-	epUpsertStmt, err = db.MysqlX.PrepareNamed("INSERT INTO `ep`(`ep_id`, `subject_id`, `name`, `episode` `air`) " +
-		"VALUES (:ep_id, :subject_id, :name, :episode :air) " +
-		"ON DUPLICATE KEY UPDATE `name` = VALUES(`name`), `episode` = VALUES(`episode`), `air` = VALUES(`air`)")
+	epUpsertStmt, err = db.MysqlX.PrepareNamed("INSERT INTO `ep`(`ep_id`, `subject_id`, `name`, `episode`, `air_time`) " +
+		"VALUES (:ep_id, :subject_id, :name, :episode, :air_time) " +
+		"ON DUPLICATE KEY UPDATE `name` = VALUES(`name`), `episode` = VALUES(`episode`), `air_time` = VALUES(`air_time`)")
 	if err != nil {
 		log.Fatalln("prepare statements error for ep upsert", err)
 	}
